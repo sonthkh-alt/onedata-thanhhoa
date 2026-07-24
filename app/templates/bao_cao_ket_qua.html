@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Kết quả sinh báo cáo — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<p><a href="/dashboard">← Về dashboard tỉnh</a></p>
+<h1>✅ Đã sinh xong báo cáo hàng loạt</h1>
+
+<div class="thong-diep-chinh">
+  <strong>{{ so_file }} báo cáo</strong> ({{ ten_mau }} tháng {{ thang }}/2026)
+  được máy soạn thảo tự động đúng thể thức Nghị định 30/2020/NĐ-CP trong
+  <strong>{{ thoi_gian }} giây</strong> — không một công chức nào phải gõ lại số liệu.
+</div>
+
+<p>
+  <a class="nut" href="/bao-cao/tao-tat-ca?mau=BC-DTC&thang={{ thang }}">Sinh lại mẫu giải ngân</a>
+  <a class="nut nut--xam" href="/bao-cao/tao-tat-ca?mau=BC-TTHC&thang={{ thang }}">Sinh mẫu TTHC cho 15 xã</a>
+</p>
+
+<h2>Danh sách file đã tạo (thư mục outputs/)</h2>
+<table class="bang-nhap">
+  <thead><tr><th>#</th><th>Tên file</th><th></th></tr></thead>
+  <tbody>
+    {% for f in ds_file %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ f }}</td>
+      <td><a href="/bao-cao/tai/{{ f }}">⬇ Tải xuống</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

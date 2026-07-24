@@ -51,6 +51,20 @@
   <canvas id="bieuDoDienBien" height="90"></canvas>
 </div>
 
+{% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
+<div class="khoi-bieu-do">
+  <h2>📄 Máy soạn báo cáo (thể thức Nghị định 30/2020/NĐ-CP)</h2>
+  <p>
+    <a class="nut" href="/bao-cao/tao-tat-ca?mau=BC-DTC&thang={{ thang }}">
+      Tạo báo cáo giải ngân tháng {{ thang }} cho TẤT CẢ 15 xã</a>
+    <a class="nut nut--xam" href="/bao-cao/tao-tat-ca?mau=BC-TTHC&thang={{ thang }}">
+      Tạo báo cáo TTHC cho 15 xã</a>
+  </p>
+  <p class="ghi-chu">Hệ thống đo và hiển thị thời gian chạy — phục vụ câu chốt
+    "15 báo cáo trong X giây".</p>
+</div>
+{% endif %}
+
 <h2>🔥 Bảng điểm nóng (cảnh báo sớm theo ngưỡng)</h2>
 {% if diem_nong %}
 <table class="bang-nhap bang-diem-nong">
