@@ -12,3 +12,6 @@ __pycache__/
 *.db
 data/*.db
 outputs/
+
+# Van ban tham khao cua tinh (ban du thao, khong dua len GitHub)
+*.pdf

@@ -23,6 +23,20 @@
   tiếng Việt nghiêm túc, phù hợp môi trường cơ quan nhà nước.
 - Người dùng demo: lãnh đạo tỉnh/sở (xem, hỏi đáp), công chức xã (nhập liệu),
   đại biểu HĐND (giám sát), người dân (trang công khai).
+- **Căn cứ chuẩn dữ liệu của tỉnh** — 2 văn bản đặt tại thư mục gốc (chỉ tham khảo
+  cục bộ, KHÔNG commit lên GitHub — xem Mục 14):
+  - `2053.pdf` — Quyết định của Chủ tịch UBND tỉnh Thanh Hóa (2026) ban hành
+    **Danh mục dữ liệu chủ chuyên ngành, dữ liệu dùng chung và dữ liệu mở tỉnh
+    Thanh Hóa** (3 phụ lục; thay thế QĐ 630/QĐ-UBND 2023 và QĐ 3111/QĐ-UBND 2024).
+  - `2176.pdf` — Quyết định của Chủ tịch UBND tỉnh Thanh Hóa (2026) ban hành
+    **Bộ trường thông tin dữ liệu gốc, dữ liệu chủ, dữ liệu tham chiếu tỉnh
+    Thanh Hóa** (từ điển dữ liệu chi tiết đến mức trường).
+  Mọi trường thông tin, thuật ngữ, danh mục, cơ quan chủ quản trong demo phải
+  bám theo hai văn bản này — bảng đối chiếu tuân thủ ở **Mục 15**. Thông điệp
+  "Không báo cáo lại" có căn cứ trực tiếp tại Điều 3 khoản 3 điểm f của quyết
+  định danh mục dữ liệu: các sở ngành *"phân quyền cho UBND cấp xã truy cập,
+  cập nhật và khai thác dữ liệu thuộc phạm vi quản lý, **không yêu cầu báo cáo
+  thủ công**"*.
 
 ## 2. Phạm vi bản demo (v0.1)
 
@@ -116,22 +130,48 @@ onedata-thanhhoa/
 
 ## 6. Mô hình dữ liệu
 
-Bảng chính (SQLAlchemy; tên bảng snake_case):
+Bảng chính (SQLAlchemy; tên bảng snake_case). Các trường đánh dấu **(chuẩn tỉnh)**
+được bổ sung để tuân thủ Bộ trường thông tin trong `2176.pdf` — xem Mục 15:
 
-- `don_vi(id, ma, ten, loai, vung)` — `loai` ∈ {`xa`, `phuong`, `so_nganh`, `tinh`};
+- `don_vi(id, ma, ma_dinh_danh, ma_dvhc, ten, loai, loai_dvhc, vung, trang_thai,
+  ngay_cap_nhat)` — `loai` ∈ {`xa`, `phuong`, `so_nganh`, `tinh`};
   `vung` ∈ {`do_thi`, `dong_bang`, `mien_nui`}.
-- `linh_vuc(id, ma, ten)` — 3 bản ghi: `DTC`, `TTHC`, `ASXH`.
+  - `ma_dinh_danh` **(chuẩn tỉnh)**: mã định danh điện tử cơ quan theo
+    QCVN 102:2016/BTTTT (demo dùng mã mô phỏng đúng cấu trúc, ghi chú rõ);
+  - `ma_dvhc` **(chuẩn tỉnh)**: mã đơn vị hành chính xã/phường theo danh mục
+    hành chính quốc gia (demo: mã mô phỏng 5 chữ số, TODO thay mã thật);
+  - `loai_dvhc` **(chuẩn tỉnh)**: phân loại I/II/III (trường DGHC19);
+  - `trang_thai` ∈ {`dang_hieu_luc`, `het_hieu_luc`} + `ngay_cap_nhat`
+    **(chuẩn tỉnh)**: mẫu quản trị dữ liệu chủ/tham chiếu.
+- `linh_vuc(id, ma, ten, trang_thai, ngay_cap_nhat)` — 3 bản ghi: `DTC`, `TTHC`,
+  `ASXH`.
 - `chi_tieu(id, ma, ten, linh_vuc_id, don_vi_tinh, tan_suat, co_quan_chu_chi_tieu,
-  dinh_nghia, cong_khai)` — `tan_suat` ∈ {`thang`, `quy`}; `cong_khai` bool
-  (được hiện ở trang công khai hay không).
+  nguon_du_lieu, muc_chia_se, cong_thuc, rang_buoc, dinh_nghia, cong_khai,
+  trang_thai, ngay_cap_nhat)` — `tan_suat` ∈ {`thang`, `quy`, `nam`};
+  `cong_khai` bool (thuộc Danh mục dữ liệu mở → hiện ở trang công khai).
+  - `nguon_du_lieu` **(chuẩn tỉnh)**: tên CSDL nguồn theo đúng Danh mục trong
+    `2053.pdf` (ví dụ "CSDL Hệ thống thông tin giải quyết TTHC tỉnh Thanh Hóa");
+    hiển thị ở tooltip nguồn trên dashboard và chân bảng công khai;
+  - `muc_chia_se` **(chuẩn tỉnh)** ∈ {`chuyen_nganh`, `dung_chung`, `mo`} —
+    3 lớp dữ liệu đúng theo quyết định danh mục;
+  - `cong_thuc` **(chuẩn tỉnh)**: công thức tính chỉ tiêu dẫn xuất, mô phỏng
+    trường `Formula` của Hệ thống thông tin báo cáo tỉnh (ví dụ DTC03 =
+    `DTC02/DTC01*100`); hệ thống tự tính, không cho nhập tay chỉ tiêu dẫn xuất;
+  - `rang_buoc` **(chuẩn tỉnh)**: quy tắc kiểm tra dữ liệu, mô phỏng
+    `Content.Rule.Formula` (ví dụ `0 <= gia_tri <= 100`; `DTC02 không giảm
+    so kỳ trước`).
 - `gia_tri_chi_tieu(id, chi_tieu_id, don_vi_id, nam, thang, gia_tri, nguon,
   nguoi_cap_nhat_id, thoi_diem_cap_nhat)` — `nguon` ∈ {`he_thong`, `nhap_tay`};
   ràng buộc UNIQUE(chi_tieu_id, don_vi_id, nam, thang) — đúng tinh thần
-  "một số liệu chỉ có một bản ghi".
+  "một số liệu chỉ có một bản ghi". Đây là lớp **dữ liệu gốc** (nhập một lần
+  tại nguồn). Kỳ hiển thị/xuất dữ liệu dùng định dạng chuẩn **`YYYYMM`**
+  (tháng), `YYYYQ` (quý), `YYYY` (năm) theo Hệ thống thông tin báo cáo tỉnh.
 - `mau_bao_cao(id, ma, ten, linh_vuc_id, mo_ta)` + cấu trúc mẫu đặt trong code
   (`report_builder.py`), không cần bảng JSON phức tạp ở bản demo.
-- `nguoi_dung(id, ten_dang_nhap, mat_khau_hash, ho_ten, vai_tro, don_vi_id)` —
-  `vai_tro` ∈ {`quan_tri`, `lanh_dao`, `chuyen_vien_xa`, `dai_bieu_hdnd`}.
+- `nguoi_dung(id, ten_dang_nhap, mat_khau_hash, ho_ten, email, vai_tro,
+  don_vi_id)` — `vai_tro` ∈ {`quan_tri`, `lanh_dao`, `chuyen_vien_xa`,
+  `dai_bieu_hdnd`}; `email` **(chuẩn tỉnh)** dạng `ten@thanhhoa.gov.vn`
+  (mô phỏng — nguồn chuẩn thực tế là CSDL cán bộ, công chức, viên chức tỉnh).
 - `nhat_ky(id, nguoi_dung_id, hanh_dong, chi_tiet, thoi_diem)` — ghi mọi lần
   đăng nhập, nhập/sửa số liệu, sinh báo cáo, câu hỏi AI.
 - `nghi_quyet_theo_doi(id, so_ky_hieu, trich_yeu, chi_tieu_id, gia_tri_muc_tieu,
@@ -139,6 +179,22 @@ Bảng chính (SQLAlchemy; tên bảng snake_case):
 
 Tạo thêm **view chỉ đọc** cho AI truy vấn (8.5): `v_so_lieu` (join đủ tên chỉ tiêu,
 tên đơn vị, kỳ, giá trị, nguồn, thời điểm cập nhật) và `v_don_vi`, `v_chi_tieu`.
+
+**Chuẩn trường thông tin áp dụng toàn hệ thống** (theo `2176.pdf`):
+
+- Ngày: hiển thị/lưu trao đổi theo **`YYYY-MM-DD`**; thời điểm:
+  **`YYYY-MM-DD HH:MM:SS`** (giao diện tiếng Việt có thể hiển thị kèm dạng
+  `dd/mm/yyyy` cho thân thiện, nhưng dữ liệu xuất API/Excel dùng chuẩn ISO).
+- Kỳ báo cáo: `YYYYMM` / `YYYYQ` / `YYYY`.
+- Số tiền: kiểu số thập phân (Float/Decimal), đơn vị tính ghi rõ trong
+  `chi_tieu.don_vi_tinh` (tương ứng `Content.Indicator.Unit`).
+- Phân lớp dữ liệu dùng đúng thuật ngữ của tỉnh: **dữ liệu gốc**
+  (`gia_tri_chi_tieu`), **dữ liệu chủ/tham chiếu** (`don_vi`, `linh_vuc`,
+  `chi_tieu`), lớp **chia sẻ** (các view `v_*` — tinh thần kết nối qua nền
+  tảng trung gian LGSP, chỉ đọc, có kiểm soát).
+- Bảng danh mục mới (nếu phát sinh) theo mẫu danh mục tham chiếu chuẩn:
+  `ma` (bất biến), `ten`, `ma_cha`, `mo_ta`, `thu_tu`, `ngay_hl`, `ngay_hhl`,
+  `trang_thai`.
 
 ## 7. Danh mục chỉ tiêu và dữ liệu mẫu (seed)
 
@@ -148,8 +204,11 @@ tên đơn vị, kỳ, giá trị, nguồn, thời điểm cập nhật) và `v_
 1686/NQ-UBTVQH15, ví dụ: phường Hạc Thành, xã Các Sơn, xã Nga Sơn, xã Tân Thành,
 xã Thắng Lộc… (5 tên này đã đối chiếu; **11 tên còn lại lấy placeholder
 `Xã Demo 06`…`Xã Demo 15` và ghi TODO để người dùng thay bằng tên thật** — không
-tự bịa tên xã). Phân bổ đủ 3 vùng. Thêm 3 `so_nganh`: Sở Tài chính, Sở Nội vụ,
-Văn phòng UBND tỉnh; 1 bản ghi `tinh`.
+tự bịa tên xã). Phân bổ đủ 3 vùng. Thêm 5 `so_nganh` (đúng cơ quan chủ quản
+theo Danh mục dữ liệu `2053.pdf`): **Sở Tài chính, Sở Nội vụ, Sở Nông nghiệp
+và Môi trường, Trung tâm Phục vụ hành chính công tỉnh, Văn phòng UBND tỉnh**;
+1 bản ghi `tinh`. Mỗi đơn vị có `ma_dinh_danh` (mô phỏng cấu trúc QCVN
+102:2016/BTTTT) và xã/phường có `ma_dvhc` (mô phỏng 5 chữ số, TODO thay mã thật).
 
 **Chỉ tiêu** (mã gợi ý — có thể tinh chỉnh):
 
@@ -163,6 +222,23 @@ Văn phòng UBND tỉnh; 1 bản ghi `tinh`.
 - ASXH: `AS01` số hộ nghèo; `AS02` số hộ cận nghèo; `AS03` đối tượng bảo trợ xã
   hội hưởng trợ cấp; `AS04` kinh phí chi trả tháng (triệu đồng); `AS05` tỷ lệ chi
   trả không dùng tiền mặt (%).
+
+**Cơ quan chủ chỉ tiêu và CSDL nguồn** (bắt buộc bám Danh mục `2053.pdf` —
+đây là giá trị các cột `co_quan_chu_chi_tieu` và `nguon_du_lieu`):
+
+| Nhóm chỉ tiêu | Cơ quan chủ chỉ tiêu | CSDL nguồn (`nguon_du_lieu`) |
+|---|---|---|
+| DTC01–DTC05 | Sở Tài chính | CSDL thông tin Dự án Đầu tư công (vốn ngân sách tỉnh); CSDL quản lý ngân sách dự án đầu tư |
+| TTHC01–TTHC06 | Trung tâm Phục vụ hành chính công tỉnh | CSDL Hệ thống thông tin giải quyết TTHC tỉnh Thanh Hóa |
+| AS01, AS02 | Sở Nông nghiệp và Môi trường | CSDL quản lý hộ nghèo, hộ cận nghèo toàn tỉnh (dữ liệu mở do UBND cấp xã cung cấp) |
+| AS03–AS05 | Sở Nội vụ | CSDL về Bảo trợ xã hội (chi trả trợ cấp) |
+
+Ghi chú định nghĩa theo Bộ trường thông tin `2176.pdf` (đưa vào
+`chi_tieu.dinh_nghia`): TTHC05/TTHC06 đếm hồ sơ theo hình thức nộp/trả kết quả
+∈ {trực tuyến, trực tiếp, bưu chính} (trường `HTTKQ`); AS05 "không dùng tiền
+mặt" = kỳ chi trả có hình thức chi trả qua tài khoản (các trường `KyChiTra`,
+`MaHinhThucChiTra`, `SoTaiKhoanNguoiNhan`, `MaNganHang`); DTC03 khai báo bằng
+`cong_thuc` = `DTC02/DTC01*100` (hệ thống tự tính).
 
 **Giá trị**: sinh ngẫu nhiên có chủ đích cho tháng 01–07/2026, hợp lý về nghiệp vụ
 (giải ngân lũy kế tăng dần, không vượt kế hoạch; tỷ lệ 0–100%; quy mô xã đô thị >
@@ -187,15 +263,26 @@ phường Hạc Thành), `daibieu/Demo@2026`, `admin/Demo@2026`.
 - Trang "Nhập số liệu kỳ tháng M/2026": bảng các chỉ tiêu thuộc xã của người dùng,
   ô nào đã có giá trị thì hiển thị kèm thời điểm cập nhật; sửa thì ghi đè + log.
 - Kiểm tra dữ liệu: đúng kiểu số, % trong [0;100], cảnh báo nếu giải ngân lũy kế
-  giảm so tháng trước (cho phép lưu nhưng gắn cờ).
+  giảm so tháng trước (cho phép lưu nhưng gắn cờ). Quy tắc kiểm tra đọc từ
+  `chi_tieu.rang_buoc` (cơ chế mô phỏng `Content.Rule` của Hệ thống thông tin
+  báo cáo tỉnh) — không hard-code rải rác trong view.
+- Chỉ tiêu dẫn xuất (có `cong_thuc`, ví dụ DTC03, TTHC04, TTHC06) **khóa ô nhập
+  tay** và hệ thống tự tính lại ngay khi lưu chỉ tiêu gốc — thể hiện đúng nguyên
+  tắc mỗi số liệu chỉ có một nguồn sự thật.
 - Thông điệp chủ đạo hiển thị trên trang: "*Anh/chị chỉ phải nhập MỘT LẦN — mọi
   báo cáo, bảng biểu sẽ được hệ thống tự tổng hợp từ số liệu này.*"
+- Chân trang khu nhập liệu hiển thị nguyên tắc chất lượng dữ liệu của tỉnh:
+  "*Đúng - Đủ - Sạch - Sống - Liên thông - Thống nhất - Dùng chung*"
+  (đủ 7 vế, đúng thứ tự).
 
 ### 8.3 Dashboard điều hành
 - Trang tỉnh: thẻ tổng hợp 3 lĩnh vực (kỳ mới nhất), biểu đồ cột xếp hạng tỷ lệ
   giải ngân theo xã, biểu đồ đường diễn biến 7 tháng, bảng "điểm nóng" (từ 8.6).
 - Trang chi tiết đơn vị: mọi chỉ tiêu 7 tháng, biểu đồ, nút "Tạo báo cáo" (8.4).
-- Bộ lọc kỳ, lĩnh vực, vùng. Mọi con số kèm tooltip: nguồn + thời điểm cập nhật.
+- Bộ lọc kỳ, lĩnh vực, vùng. Mọi con số kèm tooltip: **CSDL nguồn theo Danh mục
+  của tỉnh** (`chi_tieu.nguon_du_lieu`) + nguồn bản ghi (`he_thong`/`nhap_tay`)
+  + thời điểm cập nhật — người xem luôn trả lời được "số này từ đâu ra".
+- Kỳ hiển thị kèm mã kỳ chuẩn (ví dụ "Tháng 7/2026 — kỳ 202607").
 
 ### 8.4 Máy soạn báo cáo — lõi thể thức Nghị định 30/2020/NĐ-CP
 - `services/nd30.py`: module dựng file .docx đúng thể thức văn bản hành chính.
@@ -245,10 +332,20 @@ phường Hạc Thành), `daibieu/Demo@2026`, `admin/Demo@2026`.
   giảm so kỳ trước (nghi sai số liệu). Hiện thành bảng "Điểm nóng" trên dashboard,
   mỗi dòng ghi rõ đơn vị – chỉ tiêu – giá trị – luật cảnh báo.
 
-### 8.7 Trang công khai
+### 8.7 Trang công khai — mô hình "Cổng dữ liệu mở thu nhỏ"
 - `/cong-khai`, không đăng nhập: các chỉ tiêu có `cong_khai=true` (tỷ lệ giải
-  ngân, tỷ lệ đúng hạn TTHC, tỷ lệ chi trả không tiền mặt) theo xã, kỳ mới nhất,
-  kèm biểu đồ; banner "Dân biết – dân giám sát" + dòng dữ liệu mô phỏng.
+  ngân, tỷ lệ đúng hạn TTHC, tỷ lệ hồ sơ trực tuyến, tỷ lệ chi trả không tiền
+  mặt) theo xã, kỳ mới nhất, kèm biểu đồ; banner "Dân biết – dân giám sát" +
+  dòng dữ liệu mô phỏng.
+- Trình bày theo đúng cấu trúc Danh mục dữ liệu mở của tỉnh (Phụ lục 3,
+  `2053.pdf`): mỗi tập số liệu ghi rõ **Cơ quan chủ trì cung cấp – Kỳ nhập
+  liệu – Định dạng, hình thức chia sẻ – Thời điểm cập nhật**.
+- Nút **tải xuống Excel (.xlsx) và JSON** cho từng bảng số liệu công khai —
+  tương ứng cột "Định dạng, hình thức chia sẻ: API, Excel" của danh mục
+  (JSON đóng vai trò minh họa API; không cần xây API công khai riêng ở demo).
+- Khối "**Góp ý nhu cầu dữ liệu mở**": form đơn giản (nội dung + email tùy
+  chọn, lưu vào `nhat_ky`, không cần xử lý) — thể hiện quy định tiếp nhận
+  phản hồi của tổ chức, cá nhân để ưu tiên công bố dữ liệu mở.
 
 ### 8.8 (Tùy chọn — chỉ làm khi M1–M5 xong) Kiểm kê báo cáo
 - Form khai báo: tên báo cáo, cơ quan yêu cầu, tần suất, căn cứ; trang thống kê
@@ -259,7 +356,7 @@ phường Hạc Thành), `daibieu/Demo@2026`, `admin/Demo@2026`.
 | MS | Nội dung | Hoàn thành khi (DoD) |
 |---|---|---|
 | M1 | Khung dự án: cấu trúc thư mục, config, models, `scripts/seed.py`, auth cơ bản | `python scripts/seed.py` tạo DB đầy đủ; đăng nhập được 4 tài khoản; `pytest` xanh |
-| M2 | Nhập liệu tại nguồn + nhật ký | Tài khoản xã nhập/sửa được số liệu, ràng buộc UNIQUE hoạt động, log ghi đủ |
+| M2 | **Cập nhật schema/seed theo chuẩn tỉnh (Mục 6, 7 bản mới)** + Nhập liệu tại nguồn + nhật ký | Models/seed có đủ trường (chuẩn tỉnh); tài khoản xã nhập/sửa được số liệu, chỉ tiêu dẫn xuất tự tính, ràng buộc UNIQUE hoạt động, log ghi đủ |
 | M3 | Dashboard + trang chi tiết + trang công khai + cảnh báo | Biểu đồ chạy offline; bảng điểm nóng đúng với dữ liệu cài sẵn |
 | M4 | Máy soạn báo cáo NĐ30 | Sinh 2 mẫu báo cáo .docx đúng thể thức; nút sinh loạt 15 xã kèm đo thời gian |
 | M5 | Hỏi – đáp AI: offline trước, online sau | 20 câu mẫu chạy đúng ở chế độ offline; chế độ online qua validator sqlglot; test cho validator (chặn UPDATE/DELETE/bảng ngoài allowlist) |
@@ -318,8 +415,47 @@ SECRET_KEY=doi-chuoi-nay-khi-chay-that
 ## 14. Việc KHÔNG được làm
 
 - Không dùng dữ liệu thật, tên người thật, số liệu thống kê chính thức.
+- **Không commit 2 file `2053.pdf`, `2176.pdf`** (bản dự thảo văn bản của tỉnh,
+  chỉ dùng tham khảo cục bộ) — `*.pdf` phải nằm trong `.gitignore`.
 - Không tự bịa tên xã/phường ngoài 5 tên đã nêu — dùng placeholder + TODO.
 - Không gọi API AI ở chế độ offline; không để lỗi API làm sập trang.
 - Không commit `.env`, file `.db`, file .docx sinh ra.
 - Không đổi stack công nghệ, không thêm docker/k8s/microservice — demo một máy.
 - Không dùng CDN, không yêu cầu Internet cho bất kỳ trang nào (trừ AI online).
+
+## 15. Đối chiếu tuân thủ hai quyết định của tỉnh Thanh Hóa
+
+Bảng tra nhanh khi lập trình — chi tiết nằm trong 2 file PDF ở thư mục gốc:
+
+### 15.1 Theo Quyết định Danh mục dữ liệu (`2053.pdf`)
+
+| Quy định của tỉnh | Demo thể hiện tại |
+|---|---|
+| 3 lớp: dữ liệu chủ chuyên ngành (PL1) / dùng chung (PL2) / mở (PL3) | `chi_tieu.muc_chia_se`; `cong_khai` ⇔ thuộc Danh mục dữ liệu mở |
+| Điều 3.3.f: phân quyền cấp xã cập nhật dữ liệu, "không yêu cầu báo cáo thủ công" | Thông điệp trung tâm của demo; trích dẫn ở trang giới thiệu/README |
+| Nguyên tắc "Đúng - Đủ - Sạch - Sống - Liên thông - Thống nhất - Dùng chung" | Hiển thị ở khu nhập liệu (8.2); tiêu chí phần cảnh báo (8.6) |
+| Kết nối qua LGSP, không kết nối riêng lẻ; chia sẻ có kiểm soát | AI chỉ truy vấn view `v_*` chỉ đọc, allowlist (8.5) |
+| Cột PL3: Cơ quan chủ trì – Kỳ nhập liệu – Định dạng, hình thức chia sẻ | Cấu trúc trang công khai (8.7); metadata chỉ tiêu (Mục 6) |
+| Cơ quan chủ quản đúng danh mục: TTHC → Trung tâm Phục vụ hành chính công tỉnh; hộ nghèo/cận nghèo → Sở NN&MT; bảo trợ xã hội → Sở Nội vụ; đầu tư công/ngân sách → Sở Tài chính | Bảng cơ quan chủ chỉ tiêu (Mục 7) |
+| CSDL về chỉ tiêu kinh tế - xã hội (VP UBND tỉnh, PL2) phục vụ chỉ đạo điều hành | Chính là "kho chỉ tiêu dùng chung" mà demo mô phỏng |
+| Tiếp nhận phản hồi dân về nhu cầu dữ liệu mở (Điều 3.3.g) | Form góp ý trên trang công khai (8.7) |
+
+### 15.2 Theo Quyết định Bộ trường thông tin (`2176.pdf`)
+
+| Chuẩn của tỉnh | Demo áp dụng |
+|---|---|
+| Mã cơ quan theo QCVN 102:2016/BTTTT | `don_vi.ma_dinh_danh` (mã mô phỏng đúng cấu trúc) |
+| Mã xã/phường theo danh mục hành chính quốc gia (DGHC12, `ma_dvhc`) | `don_vi.ma_dvhc` (TODO thay mã thật) |
+| Phân loại ĐVHC I/II/III (DGHC19); thuộc vùng miền (DGHC20) | `don_vi.loai_dvhc`, `don_vi.vung` |
+| Ngày `YYYY-MM-DD`; thời điểm `YYYY-MM-DD HH:MM:SS` | Mọi API/Excel xuất ra; hiển thị thân thiện dd/mm/yyyy |
+| Kỳ báo cáo `YYYYMM`/`YYYYQ`/`YYYY` (HTTT báo cáo cấp tỉnh) | Mã kỳ trên dashboard, tên file báo cáo, dữ liệu xuất |
+| Chỉ tiêu có công thức (`Formula`) và ràng buộc (`Content.Rule`) | `chi_tieu.cong_thuc`, `chi_tieu.rang_buoc`; chỉ tiêu dẫn xuất khóa nhập tay |
+| Danh mục tham chiếu chuẩn: ma, ten, ma_cha, thu_tu, ngay_hl, ngay_hhl, trang_thai | Mẫu cho mọi bảng danh mục mới; `trang_thai`+`ngay_cap_nhat` trên bảng dữ liệu chủ |
+| Hồ sơ TTHC: mã TTHC theo CSDL quốc gia; hình thức trả kết quả {trực tuyến, trực tiếp, bưu chính} | Định nghĩa TTHC05/TTHC06 trong `chi_tieu.dinh_nghia` |
+| Chi trả trợ cấp: `KyChiTra`, `MaHinhThucChiTra`, tài khoản/ngân hàng | Định nghĩa AS04/AS05 ("không tiền mặt" = chi trả qua tài khoản) |
+| Email công vụ `@thanhhoa.gov.vn`; nguồn chuẩn là CSDL CBCCVC tỉnh | `nguoi_dung.email` (mô phỏng) |
+
+**Ghi chú triển khai**: M1 đã hoàn thành trước khi bổ sung chuẩn này — phần đầu
+M2 phải cập nhật `models.py`, `scripts/seed.py`, view `v_*` và test theo Mục 6,
+Mục 7 bản mới rồi mới làm phân hệ nhập liệu. Hai PDF là bản dự thảo (số/ngày để
+trống): khi tỉnh ban hành chính thức, cập nhật số hiệu vào README và Mục 1.
