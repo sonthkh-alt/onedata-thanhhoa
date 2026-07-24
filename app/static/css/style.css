@@ -208,6 +208,51 @@ h1 { color: var(--mau-chinh-dam); margin-top: 0; }
 .thanh-tien-do__day { background: #d4a017; height: 100%; }
 .thanh-tien-do--dat { background: #27ae60; }
 
+/* Hỏi đáp AI */
+.form-hoi-dap { display: flex; gap: 0.6rem; margin: 1rem 0; flex-wrap: wrap; }
+.form-hoi-dap input[type="text"] {
+  flex: 1;
+  min-width: 280px;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--mau-vien);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.form-hoi-dap input[type="text"]:focus { outline: 2px solid var(--mau-chinh); border-color: transparent; }
+.goi-y { margin: 0.8rem 0; }
+.goi-y summary { cursor: pointer; color: var(--mau-chinh-dam); font-weight: 600; }
+.goi-y ul { columns: 2; margin: 0.6rem 0; }
+.nut-lien-ket {
+  background: none;
+  border: none;
+  color: #2e6da4;
+  cursor: pointer;
+  padding: 0.1rem 0;
+  font-size: 0.92rem;
+  text-align: left;
+  text-decoration: underline;
+}
+.nut-lien-ket:hover { color: var(--mau-chinh-dam); }
+.khoi-tra-loi {
+  background: #fff;
+  border: 1px solid var(--mau-vien);
+  border-left: 4px solid var(--mau-chinh);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+}
+.khoi-tra-loi h2 { margin-top: 0; font-size: 1.05rem; color: var(--mau-chinh-dam); }
+.tra-loi { font-size: 1.02rem; }
+.khoi-sql {
+  background: #f6f3ee;
+  border: 1px solid var(--mau-vien);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+}
+
 /* Chân trang */
 .chan-trang {
   text-align: center;

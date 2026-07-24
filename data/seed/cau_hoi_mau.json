@@ -1,0 +1,128 @@
+[
+  {
+    "cau_hoi": "Những xã nào giải ngân dưới 30% trong tháng 7?",
+    "tu_khoa": ["giai ngan", "duoi 30"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan, thoi_diem_cap_nhat FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 AND gia_tri < 30 ORDER BY gia_tri",
+    "tra_loi": "Danh sách các xã, phường có tỷ lệ giải ngân vốn đầu tư công tháng 7/2026 dưới 30% — đây là các điểm nóng cần đôn đốc."
+  },
+  {
+    "cau_hoi": "Xếp hạng tỷ lệ giải ngân của các xã trong tháng 7",
+    "tu_khoa": ["xep hang", "giai ngan"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 ORDER BY gia_tri DESC",
+    "tra_loi": "Bảng xếp hạng tỷ lệ giải ngân vốn đầu tư công tháng 7/2026 của các xã, phường (cao xuống thấp)."
+  },
+  {
+    "cau_hoi": "So sánh tỷ lệ đúng hạn TTHC của phường Hạc Thành 3 tháng gần nhất",
+    "tu_khoa": ["hac thanh", "dung han"],
+    "sql": "SELECT thang, gia_tri AS ty_le_dung_han FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC04' AND ten_don_vi LIKE '%Hạc Thành%' AND thang IN (5, 6, 7) ORDER BY thang",
+    "tra_loi": "Diễn biến tỷ lệ giải quyết TTHC đúng hạn của phường Hạc Thành trong 3 tháng gần nhất (tháng 5, 6, 7/2026)."
+  },
+  {
+    "cau_hoi": "Xã nào có tỷ lệ giải quyết TTHC đúng hạn dưới 90% trong tháng 7?",
+    "tu_khoa": ["dung han", "duoi 90"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_dung_han FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC04' AND thang = 7 AND gia_tri < 90 ORDER BY gia_tri",
+    "tra_loi": "Các xã, phường chưa đạt ngưỡng 90% hồ sơ TTHC giải quyết đúng hạn trong tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Tổng kế hoạch vốn đầu tư công toàn tỉnh là bao nhiêu?",
+    "tu_khoa": ["tong", "ke hoach von"],
+    "sql": "SELECT SUM(gia_tri) AS tong_ke_hoach_von_trieu_dong FROM v_so_lieu WHERE ma_chi_tieu = 'DTC01' AND thang = 7",
+    "tra_loi": "Tổng kế hoạch vốn đầu tư công năm 2026 của 15 xã, phường demo (triệu đồng)."
+  },
+  {
+    "cau_hoi": "Tổng giải ngân toàn tỉnh đến hết tháng 7 là bao nhiêu?",
+    "tu_khoa": ["tong", "giai ngan"],
+    "sql": "SELECT SUM(gia_tri) AS tong_giai_ngan_trieu_dong FROM v_so_lieu WHERE ma_chi_tieu = 'DTC02' AND thang = 7",
+    "tra_loi": "Tổng giải ngân lũy kế vốn đầu tư công đến hết tháng 7/2026 của các xã, phường (triệu đồng)."
+  },
+  {
+    "cau_hoi": "Xã nào giải ngân cao nhất tháng 7?",
+    "tu_khoa": ["giai ngan", "cao nhat"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 ORDER BY gia_tri DESC LIMIT 5",
+    "tra_loi": "Nhóm 5 xã, phường dẫn đầu về tỷ lệ giải ngân vốn đầu tư công tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Xã nào giải ngân thấp nhất tháng 7?",
+    "tu_khoa": ["giai ngan", "thap nhat"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 ORDER BY gia_tri ASC LIMIT 5",
+    "tra_loi": "Nhóm 5 xã, phường có tỷ lệ giải ngân thấp nhất tháng 7/2026 — cần tập trung chỉ đạo."
+  },
+  {
+    "cau_hoi": "Số hộ nghèo của từng xã hiện nay?",
+    "tu_khoa": ["ho ngheo", "tung xa"],
+    "sql": "SELECT ten_don_vi, vung, gia_tri AS so_ho_ngheo FROM v_so_lieu WHERE ma_chi_tieu = 'AS01' AND thang = 7 ORDER BY gia_tri DESC",
+    "tra_loi": "Số hộ nghèo tháng 7/2026 của từng xã, phường (miền núi thường cao hơn đô thị)."
+  },
+  {
+    "cau_hoi": "Tổng số hộ nghèo toàn tỉnh là bao nhiêu?",
+    "tu_khoa": ["tong", "ho ngheo"],
+    "sql": "SELECT SUM(gia_tri) AS tong_ho_ngheo FROM v_so_lieu WHERE ma_chi_tieu = 'AS01' AND thang = 7",
+    "tra_loi": "Tổng số hộ nghèo của 15 xã, phường demo trong kỳ tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Toàn tỉnh có bao nhiêu đối tượng bảo trợ xã hội đang hưởng trợ cấp?",
+    "tu_khoa": ["bao tro", "tro cap"],
+    "sql": "SELECT SUM(gia_tri) AS tong_doi_tuong_btxh FROM v_so_lieu WHERE ma_chi_tieu = 'AS03' AND thang = 7",
+    "tra_loi": "Tổng số đối tượng bảo trợ xã hội đang hưởng trợ cấp hằng tháng, kỳ tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Xã nào chi trả không tiền mặt cao nhất?",
+    "tu_khoa": ["khong tien mat", "cao nhat"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_khong_tien_mat FROM v_so_lieu WHERE ma_chi_tieu = 'AS05' AND thang = 7 ORDER BY gia_tri DESC LIMIT 5",
+    "tra_loi": "Nhóm 5 xã, phường dẫn đầu về tỷ lệ chi trả an sinh xã hội không dùng tiền mặt tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Những xã chi trả không tiền mặt còn thấp (dưới 30%)?",
+    "tu_khoa": ["khong tien mat", "duoi 30"],
+    "sql": "SELECT ten_don_vi, vung, gia_tri AS ty_le_khong_tien_mat FROM v_so_lieu WHERE ma_chi_tieu = 'AS05' AND thang = 7 AND gia_tri < 30 ORDER BY gia_tri",
+    "tra_loi": "Các xã có tỷ lệ chi trả không dùng tiền mặt dưới 30% — cần đẩy mạnh tài khoản an sinh."
+  },
+  {
+    "cau_hoi": "Tỷ lệ hồ sơ trực tuyến của các xã trong tháng 7?",
+    "tu_khoa": ["truc tuyen", "ty le"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_truc_tuyen FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC06' AND thang = 7 ORDER BY gia_tri DESC",
+    "tra_loi": "Tỷ lệ hồ sơ TTHC nộp trực tuyến tháng 7/2026 theo từng xã, phường."
+  },
+  {
+    "cau_hoi": "Tổng số hồ sơ TTHC tiếp nhận toàn tỉnh tháng 7?",
+    "tu_khoa": ["tong", "ho so", "tiep nhan"],
+    "sql": "SELECT SUM(gia_tri) AS tong_ho_so_tiep_nhan FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC01' AND thang = 7",
+    "tra_loi": "Tổng số hồ sơ thủ tục hành chính các xã, phường tiếp nhận trong tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Xã nào còn hồ sơ quá hạn trong tháng 7?",
+    "tu_khoa": ["qua han", "ho so"],
+    "sql": "SELECT ten_don_vi, gia_tri AS so_ho_so_qua_han FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC03' AND thang = 7 AND gia_tri > 0 ORDER BY gia_tri DESC",
+    "tra_loi": "Các xã, phường còn hồ sơ TTHC quá hạn trong tháng 7/2026, xếp theo số lượng giảm dần."
+  },
+  {
+    "cau_hoi": "Xã nào có dự án chậm tiến độ?",
+    "tu_khoa": ["du an", "cham tien do"],
+    "sql": "SELECT ten_don_vi, gia_tri AS so_du_an_cham FROM v_so_lieu WHERE ma_chi_tieu = 'DTC05' AND thang = 7 AND gia_tri > 0 ORDER BY gia_tri DESC",
+    "tra_loi": "Danh sách xã, phường có dự án đầu tư công chậm tiến độ trong kỳ tháng 7/2026."
+  },
+  {
+    "cau_hoi": "Diễn biến giải ngân của phường Hạc Thành 7 tháng đầu năm?",
+    "tu_khoa": ["hac thanh", "giai ngan"],
+    "sql": "SELECT thang, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND ten_don_vi LIKE '%Hạc Thành%' ORDER BY thang",
+    "tra_loi": "Diễn biến tỷ lệ giải ngân của phường Hạc Thành theo từng tháng năm 2026."
+  },
+  {
+    "cau_hoi": "Tình hình giải ngân của các xã miền núi tháng 7?",
+    "tu_khoa": ["mien nui", "giai ngan"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 AND vung = 'mien_nui' ORDER BY gia_tri DESC",
+    "tra_loi": "Tỷ lệ giải ngân tháng 7/2026 của các xã vùng miền núi."
+  },
+  {
+    "cau_hoi": "Đơn vị nào chưa nhập đủ số liệu tháng 7?",
+    "tu_khoa": ["chua nhap", "so lieu"],
+    "sql": "SELECT ten_don_vi, COUNT(*) AS so_chi_tieu_da_nhap FROM v_so_lieu WHERE thang = 7 GROUP BY ten_don_vi HAVING COUNT(*) < 16 ORDER BY so_chi_tieu_da_nhap",
+    "tra_loi": "Các đơn vị chưa nhập đủ 16 chỉ tiêu của kỳ tháng 7/2026 — hệ thống sẽ tự nhắc, không cần công văn đôn đốc."
+  },
+  {
+    "cau_hoi": "Số liệu nào được cập nhật gần đây nhất?",
+    "tu_khoa": ["cap nhat", "gan day"],
+    "sql": "SELECT ten_don_vi, ten_chi_tieu, thang, gia_tri, nguon, thoi_diem_cap_nhat FROM v_so_lieu ORDER BY thoi_diem_cap_nhat DESC LIMIT 10",
+    "tra_loi": "10 bản ghi số liệu được cập nhật mới nhất trên Kho dữ liệu dùng chung (kèm nguồn hệ thống/nhập tay)."
+  }
+]

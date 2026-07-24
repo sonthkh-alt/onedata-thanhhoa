@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Hỏi – đáp dữ liệu AI — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>💬 Hỏi – đáp dữ liệu AI
+  <span class="ma-ky">{{ "chế độ offline (câu hỏi mẫu)" if che_do_offline else "chế độ online (Claude API)" }}</span>
+</h1>
+<p class="mo-ta">Lãnh đạo hỏi bằng tiếng Việt — trợ lý CHỈ trả lời từ số liệu trong
+  Kho dữ liệu dùng chung, kèm bảng kết quả, câu SQL đã chạy và thời điểm cập nhật.
+  Không truy vấn được thì trả lời rõ là không có dữ liệu, tuyệt đối không bịa.</p>
+
+<form method="post" action="/hoi-dap" class="form-hoi-dap">
+  <input type="text" name="cau_hoi" required
+         value="{{ ket_qua.cau_hoi if ket_qua else '' }}"
+         placeholder="Ví dụ: Những xã nào giải ngân dưới 30% trong tháng 7?">
+  <button type="submit" class="nut">Hỏi Kho dữ liệu</button>
+</form>
+
+<details class="goi-y" {{ "open" if not ket_qua else "" }}>
+  <summary>Câu hỏi gợi ý ({{ cau_hoi_goi_y | length }} câu)</summary>
+  <ul>
+    {% for ch in cau_hoi_goi_y %}
+    <li>
+      <form method="post" action="/hoi-dap" style="display:inline">
+        <input type="hidden" name="cau_hoi" value="{{ ch }}">
+        <button type="submit" class="nut-lien-ket">{{ ch }}</button>
+      </form>
+    </li>
+    {% endfor %}
+  </ul>
+</details>
+
+{% if ket_qua %}
+<div class="khoi-tra-loi">
+  <h2>Trả lời</h2>
+  <p class="tra-loi">{{ ket_qua.tra_loi }}</p>
+  {% if ket_qua.loi %}
+  <p class="canh-bao canh-bao--nhe">Ghi chú kỹ thuật: {{ ket_qua.loi }}</p>
+  {% endif %}
+
+  {% if ket_qua.dong %}
+  <table class="bang-nhap">
+    <thead>
+      <tr>{% for c in ket_qua.cot %}<th>{{ c }}</th>{% endfor %}</tr>
+    </thead>
+    <tbody>
+      {% for d in ket_qua.dong %}
+      <tr>{% for gia_tri in d %}<td>{{ gia_tri }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="ghi-chu">Nguồn: Kho dữ liệu dùng chung (view chỉ đọc v_so_lieu) —
+    {{ ket_qua.so_dong }} dòng — dữ liệu mô phỏng phục vụ trình diễn.</p>
+  {% endif %}
+
+  {% if ket_qua.sql %}
+  <details>
+    <summary>Câu SQL đã chạy (đã qua bộ kiểm soát allowlist)</summary>
+    <pre class="khoi-sql">{{ ket_qua.sql }}</pre>
+  </details>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}
