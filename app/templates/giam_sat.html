@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Giám sát nghị quyết HĐND — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>Giám sát thực hiện nghị quyết HĐND tỉnh
+  <span class="ma-ky">Số liệu kỳ {{ ky }} (tháng {{ thang }}/{{ nam }})</span></h1>
+<p class="mo-ta">Đại biểu theo dõi trực tiếp trên Kho dữ liệu dùng chung —
+  không cần yêu cầu UBND báo cáo lại.</p>
+
+<table class="bang-nhap">
+  <thead>
+    <tr>
+      <th>Nghị quyết</th>
+      <th>Nội dung theo dõi</th>
+      <th>Chỉ tiêu</th>
+      <th class="so">Mục tiêu</th>
+      <th class="so">Toàn tỉnh hiện nay</th>
+      <th>Tiến độ so mục tiêu</th>
+      <th>Hạn hoàn thành</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for dong in bang %}
+    <tr>
+      <td><strong>{{ dong.nq.so_ky_hieu }}</strong></td>
+      <td>{{ dong.nq.trich_yeu }}</td>
+      <td>{{ dong.nq.chi_tieu.ma }} — {{ dong.nq.chi_tieu.ten }}</td>
+      <td class="so">≥ {{ "%.0f"|format(dong.nq.gia_tri_muc_tieu) }}%</td>
+      <td class="so">{{ "%.1f"|format(dong.hien_tai) if dong.hien_tai is not none else "—" }}%</td>
+      <td>
+        {% if dong.tien_do is not none %}
+        <div class="thanh-tien-do" title="{{ dong.tien_do }}% so với mục tiêu">
+          <div class="thanh-tien-do__day {{ 'thanh-tien-do--dat' if dong.dat else '' }}"
+               style="width: {{ dong.tien_do }}%"></div>
+        </div>
+        {{ "✅ Đạt" if dong.dat else "⏳ Chưa đạt" }}
+        {% else %}—{% endif %}
+      </td>
+      <td>{{ dong.nq.han_hoan_thanh.strftime("%Y-%m-%d") }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="ghi-chu">Giá trị toàn tỉnh được gộp đúng công thức chỉ tiêu
+  (tổng tử số / tổng mẫu số), không phải trung bình cộng đơn thuần
+  (riêng tỷ lệ chi trả không tiền mặt lấy trung bình theo xã).</p>
+{% endblock %}

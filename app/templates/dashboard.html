@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard điều hành — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>Dashboard điều hành tỉnh <span class="ma-ky">Tháng {{ thang }}/{{ nam }} — kỳ {{ ky }}</span></h1>
+
+<form method="get" action="/dashboard" class="chon-ky">
+  <label for="thang">Kỳ:</label>
+  <select name="thang" id="thang" onchange="this.form.submit()">
+    {% for t in cac_thang %}
+    <option value="{{ t }}" {% if t == thang %}selected{% endif %}>Tháng {{ t }}/{{ nam }}</option>
+    {% endfor %}
+  </select>
+  <label for="vung">Vùng (biểu đồ xếp hạng):</label>
+  <select name="vung" id="vung" onchange="this.form.submit()">
+    <option value="">Tất cả các vùng</option>
+    {% for ma_v, ten_v in ten_vung.items() %}
+    <option value="{{ ma_v }}" {% if ma_v == vung %}selected{% endif %}>{{ ten_v }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<div class="luoi-the luoi-the--3">
+  <div class="the the--linhvuc">
+    <h2>💰 Giải ngân đầu tư công</h2>
+    <p class="so-lon">{{ "%.1f"|format(the_dtc.ty_le) if the_dtc.ty_le is not none else "—" }}%</p>
+    <p>Giải ngân {{ "{:,.0f}".format(the_dtc.giai_ngan or 0) }} / KH {{ "{:,.0f}".format(the_dtc.ke_hoach or 0) }} triệu đồng</p>
+    <p class="ghi-chu">{{ "%.0f"|format(the_dtc.du_an_cham or 0) }} dự án chậm tiến độ toàn tỉnh</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>🗂️ Thủ tục hành chính</h2>
+    <p class="so-lon">{{ "%.1f"|format(the_tthc.ty_le_dung_han) if the_tthc.ty_le_dung_han is not none else "—" }}%</p>
+    <p>đúng hạn trên {{ "{:,.0f}".format(the_tthc.tiep_nhan or 0) }} hồ sơ tiếp nhận</p>
+    <p class="ghi-chu">Tỷ lệ nộp trực tuyến: {{ "%.1f"|format(the_tthc.ty_le_truc_tuyen) if the_tthc.ty_le_truc_tuyen is not none else "—" }}%</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>🤝 An sinh xã hội</h2>
+    <p class="so-lon">{{ "{:,.0f}".format(the_asxh.doi_tuong_btxh or 0) }}</p>
+    <p>đối tượng BTXH; kinh phí {{ "{:,.0f}".format(the_asxh.kinh_phi or 0) }} tr.đ/tháng</p>
+    <p class="ghi-chu">Hộ nghèo: {{ "{:,.0f}".format(the_asxh.ho_ngheo or 0) }} — Chi trả không tiền mặt (TB xã): {{ "%.1f"|format(the_asxh.ty_le_ktm) if the_asxh.ty_le_ktm is not none else "—" }}%</p>
+  </div>
+</div>
+
+<div class="khoi-bieu-do">
+  <h2>Xếp hạng tỷ lệ giải ngân theo xã — tháng {{ thang }}/{{ nam }}</h2>
+  <p class="ghi-chu">Nguồn: {{ ds_chi_tieu[2].nguon_du_lieu }} — bấm tên xã trong bảng dưới để xem chi tiết.</p>
+  <canvas id="bieuDoXepHang" height="110"></canvas>
+</div>
+
+<div class="khoi-bieu-do">
+  <h2>Diễn biến toàn tỉnh 7 tháng đầu năm {{ nam }}</h2>
+  <canvas id="bieuDoDienBien" height="90"></canvas>
+</div>
+
+<h2>🔥 Bảng điểm nóng (cảnh báo sớm theo ngưỡng)</h2>
+{% if diem_nong %}
+<table class="bang-nhap bang-diem-nong">
+  <thead>
+    <tr><th>Đơn vị</th><th>Chỉ tiêu</th><th>Giá trị</th><th>Luật cảnh báo</th><th>Mức độ</th></tr>
+  </thead>
+  <tbody>
+    {% for dn in diem_nong %}
+    <tr class="{{ 'dong-canh-bao-cao' if dn.muc_do == 'cao' else '' }}">
+      <td><a href="/don-vi/{{ dn.ma_don_vi }}">{{ dn.don_vi }}</a></td>
+      <td>{{ dn.chi_tieu }}</td>
+      <td class="so">{{ dn.gia_tri }}</td>
+      <td>{{ dn.luat }}</td>
+      <td>{{ "CAO" if dn.muc_do == "cao" else "Trung bình" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Không có điểm nóng nào trong kỳ này.</p>
+{% endif %}
+
+<h2>Danh sách đơn vị theo tỷ lệ giải ngân</h2>
+<table class="bang-nhap">
+  <thead>
+    <tr><th>#</th><th>Đơn vị</th><th>Vùng</th><th>Tỷ lệ giải ngân (%)</th><th>Nguồn / cập nhật</th></tr>
+  </thead>
+  <tbody>
+    {% for d in xep_hang %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td><a href="/don-vi/{{ d.ma }}">{{ d.ten }}</a></td>
+      <td>{{ ten_vung.get(d.vung, d.vung) }}</td>
+      <td class="so">{{ "%.1f"|format(d.gia_tri) }}</td>
+      <td class="thoi-diem" title="Nguồn: {{ ds_chi_tieu[2].nguon_du_lieu }}">
+        {{ "hệ thống" if d.nguon == "he_thong" else "nhập tay" }} — {{ d.thoi_diem }}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script src="/static/js/chart.umd.js"></script>
+<script>
+  const duLieuXepHang = {{ xep_hang | tojson }};
+  new Chart(document.getElementById("bieuDoXepHang"), {
+    type: "bar",
+    data: {
+      labels: duLieuXepHang.map(d => d.ten),
+      datasets: [{
+        label: "Tỷ lệ giải ngân (%)",
+        data: duLieuXepHang.map(d => d.gia_tri),
+        backgroundColor: duLieuXepHang.map(d => d.gia_tri < 30 ? "#c0392b" : "#2e6da4"),
+      }]
+    },
+    options: {
+      scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: "%" } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  const dienBien = {{ dien_bien | tojson }};
+  new Chart(document.getElementById("bieuDoDienBien"), {
+    type: "line",
+    data: {
+      labels: dienBien.nhan,
+      datasets: [
+        { label: "Tỷ lệ giải ngân (%)", data: dienBien.giai_ngan, borderColor: "#2e6da4", tension: 0.25 },
+        { label: "TTHC đúng hạn (%)", data: dienBien.dung_han, borderColor: "#27ae60", tension: 0.25 },
+        { label: "Hồ sơ trực tuyến (%)", data: dienBien.truc_tuyen, borderColor: "#d4a017", tension: 0.25 }
+      ]
+    },
+    options: { scales: { y: { beginAtZero: true, max: 100 } } }
+  });
+</script>
+{% endblock %}

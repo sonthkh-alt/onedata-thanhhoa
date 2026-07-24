@@ -21,7 +21,7 @@
   <div class="the">
     <h2>📊 Dashboard điều hành</h2>
     <p>Tổng hợp 3 lĩnh vực, xếp hạng, diễn biến 7 tháng, điểm nóng.</p>
-    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+    <p><a class="nut" href="/dashboard">Mở dashboard</a></p>
   </div>
   {% endif %}
 
@@ -38,18 +38,18 @@
   </div>
   {% endif %}
 
-  {% if nguoi_dung.vai_tro in ["dai_bieu_hdnd", "quan_tri"] %}
+  {% if nguoi_dung.vai_tro in ["dai_bieu_hdnd", "lanh_dao", "quan_tri"] %}
   <div class="the">
     <h2>🏛️ Giám sát nghị quyết HĐND</h2>
     <p>Theo dõi chỉ tiêu theo nghị quyết, tiến độ thực hiện.</p>
-    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+    <p><a class="nut" href="/giam-sat">Mở trang giám sát</a></p>
   </div>
   {% endif %}
 
   <div class="the">
     <h2>🌐 Trang công khai</h2>
     <p>“Dân biết – dân giám sát”: chỉ tiêu công khai theo xã, không cần đăng nhập.</p>
-    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+    <p><a class="nut" href="/cong-khai">Mở trang công khai</a></p>
   </div>
 </div>
 {% endblock %}

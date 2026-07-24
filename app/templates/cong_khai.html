@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Công khai dữ liệu — Dân biết – dân giám sát{% endblock %}
+{% block content %}
+<div class="banner-cong-khai">
+  <h1>🏛️ DÂN BIẾT – DÂN GIÁM SÁT</h1>
+  <p>Dữ liệu mở của chính quyền — công khai theo Danh mục dữ liệu mở tỉnh Thanh Hóa
+    (Quyết định số 2053/QĐ-UBND ngày 07/7/2026). Kỳ số liệu: tháng {{ thang }}/{{ nam }} (kỳ {{ ky }}).</p>
+  <p>
+    <a class="nut" href="/cong-khai/tai-xuong?dinh_dang=xlsx">⬇ Tải Excel (.xlsx)</a>
+    <a class="nut nut--xam" href="/cong-khai/tai-xuong?dinh_dang=json">⬇ Tải JSON (API)</a>
+  </p>
+</div>
+
+{% if da_gop_y %}
+<div class="canh-bao canh-bao--ok">Cảm ơn anh/chị đã góp ý! Ý kiến đã được ghi nhận
+  để cơ quan chức năng ưu tiên công bố dữ liệu mở phù hợp nhu cầu.</div>
+{% endif %}
+
+<div class="khoi-bieu-do">
+  <h2>Tỷ lệ giải ngân vốn đầu tư công theo xã, phường (%)</h2>
+  <canvas id="bieuDoCongKhai" height="110"></canvas>
+</div>
+
+{% for tap in du_lieu %}
+<div class="tap-du-lieu">
+  <h2>{{ tap.chi_tieu.ma }} — {{ tap.chi_tieu.ten }} ({{ tap.chi_tieu.don_vi_tinh }})</h2>
+  <p class="ghi-chu">
+    Cơ quan chủ trì cung cấp: <strong>{{ tap.chi_tieu.co_quan_chu_chi_tieu }}</strong>
+    — Kỳ nhập liệu: {{ "Tháng" if tap.chi_tieu.tan_suat == "thang" else tap.chi_tieu.tan_suat }}
+    — Định dạng, hình thức chia sẻ: API, Excel
+    — Cập nhật: {{ tap.cap_nhat }}
+    — Nguồn: {{ tap.chi_tieu.nguon_du_lieu }}
+  </p>
+  <table class="bang-nhap">
+    <thead><tr><th>Đơn vị hành chính</th><th>Mã ĐVHC</th><th class="so">Giá trị</th></tr></thead>
+    <tbody>
+      {% for d in tap.so_lieu %}
+      <tr>
+        <td>{{ d.ten_don_vi }}</td>
+        <td>{{ d.ma_dvhc }}</td>
+        <td class="so">{{ "%.6g"|format(d.gia_tri) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endfor %}
+
+<div class="tap-du-lieu">
+  <h2>📨 Góp ý nhu cầu dữ liệu mở</h2>
+  <p class="ghi-chu">Anh/chị muốn chính quyền công khai thêm dữ liệu gì? Ý kiến của
+    người dân là căn cứ xác định mức độ ưu tiên công bố dữ liệu mở.</p>
+  <form method="post" action="/cong-khai/gop-y" class="form-gop-y">
+    <textarea name="noi_dung" rows="3" required
+      placeholder="Ví dụ: đề nghị công khai tiến độ các dự án đầu tư tại xã tôi..."></textarea>
+    <input type="email" name="email" placeholder="Email liên hệ (không bắt buộc)">
+    <button type="submit" class="nut">Gửi góp ý</button>
+  </form>
+</div>
+
+<script src="/static/js/chart.umd.js"></script>
+<script>
+  const duLieu = {{ bieu_do | tojson }};
+  new Chart(document.getElementById("bieuDoCongKhai"), {
+    type: "bar",
+    data: {
+      labels: duLieu.map(d => d.ten),
+      datasets: [{
+        label: "Tỷ lệ giải ngân (%)",
+        data: duLieu.map(d => d.gia_tri),
+        backgroundColor: duLieu.map(d => d.gia_tri < 30 ? "#c0392b" : "#2e6da4"),
+      }]
+    },
+    options: {
+      scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: "%" } } },
+      plugins: { legend: { display: false } }
+    }
+  });
+</script>
+{% endblock %}

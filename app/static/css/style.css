@@ -151,6 +151,63 @@ h1 { color: var(--mau-chinh-dam); margin-top: 0; }
 .nut--xam:hover { background: #6f6f6f; }
 .nguyen-tac { color: #7a5c1e; font-size: 0.88rem; margin-top: 1rem; }
 
+/* Dashboard */
+.luoi-the--3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.the--linhvuc { border-top: 3px solid var(--mau-chinh); }
+.so-lon { font-size: 2rem; font-weight: 700; color: var(--mau-chinh-dam); margin: 0.2rem 0; }
+.khoi-bieu-do {
+  background: #fff;
+  border: 1px solid var(--mau-vien);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1.2rem 0;
+}
+.khoi-bieu-do h2 { margin-top: 0; font-size: 1.05rem; color: var(--mau-chinh-dam); }
+.bang-diem-nong .dong-canh-bao-cao { background: #fdecea; }
+
+/* Trang công khai */
+.banner-cong-khai {
+  background: linear-gradient(135deg, var(--mau-chinh) 0%, var(--mau-chinh-dam) 100%);
+  color: #fff;
+  border-radius: 8px;
+  padding: 1.2rem 1.5rem;
+  margin-bottom: 1.2rem;
+}
+.banner-cong-khai h1 { color: #ffd700; margin: 0 0 0.4rem; }
+.banner-cong-khai .nut { background: #ffd700; color: #5a3c00; }
+.banner-cong-khai .nut:hover { background: #f3c800; }
+.tap-du-lieu {
+  background: #fff;
+  border: 1px solid var(--mau-vien);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin: 1rem 0;
+}
+.tap-du-lieu h2 { margin-top: 0; font-size: 1.05rem; color: var(--mau-chinh-dam); }
+.form-gop-y { display: flex; flex-direction: column; gap: 0.6rem; max-width: 560px; }
+.form-gop-y textarea, .form-gop-y input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--mau-vien);
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+.form-gop-y .nut { align-self: flex-start; }
+
+/* Giám sát HĐND */
+.thanh-tien-do {
+  background: #eee;
+  border-radius: 6px;
+  height: 10px;
+  width: 140px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+  overflow: hidden;
+}
+.thanh-tien-do__day { background: #d4a017; height: 100%; }
+.thanh-tien-do--dat { background: #27ae60; }
+
 /* Chân trang */
 .chan-trang {
   text-align: center;
