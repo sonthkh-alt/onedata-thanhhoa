@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Một dữ liệu – Không báo cáo lại | Demo cải cách hành chính Thanh Hóa 2026</title>
+<meta name="description" content="Bản demo mô hình Một dữ liệu – Không báo cáo lại: nhập số liệu một lần tại nguồn, kho dữ liệu dùng chung, máy soạn báo cáo NĐ30, hỏi đáp AI có kiểm soát.">
+<style>
+  :root {
+    --do: #a51c1c; --do-dam: #7f1414; --vang: #ffd700;
+    --nen: #f5f4f0; --chu: #222; --vien: #ddd8d0;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: var(--nen); color: var(--chu); line-height: 1.6; }
+  .hero { background: linear-gradient(135deg, var(--do) 0%, var(--do-dam) 100%); color: #fff; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+  .hero h1 { color: var(--vang); font-size: clamp(1.6rem, 4vw, 2.6rem); letter-spacing: 0.5px; }
+  .hero .phu { margin-top: 0.6rem; font-size: 1.05rem; opacity: 0.95; }
+  .hero .khau-hieu { margin-top: 1rem; font-style: italic; font-size: 1.15rem; }
+  .nut-dai { display: inline-block; margin: 1.4rem 0.4rem 0; padding: 0.7rem 1.5rem; border-radius: 6px; text-decoration: none; font-weight: 600; }
+  .nut-vang { background: var(--vang); color: #5a3c00; }
+  .nut-trang { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.5); }
+  .nut-dai:hover { filter: brightness(1.08); }
+  main { max-width: 980px; margin: 0 auto; padding: 2rem 1.2rem; }
+  h2 { color: var(--do-dam); margin: 2.2rem 0 0.8rem; }
+  .luoi { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .the { background: #fff; border: 1px solid var(--vien); border-top: 3px solid var(--do); border-radius: 8px; padding: 1rem 1.2rem; }
+  .the h3 { font-size: 1rem; color: var(--do-dam); margin-bottom: 0.4rem; }
+  .the p { font-size: 0.92rem; }
+  ol.kich-ban li, ul li { margin: 0.4rem 0 0.4rem 1.2rem; }
+  pre { background: #2b2622; color: #f5efe5; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; font-size: 0.88rem; margin: 0.8rem 0; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--vien); margin: 0.8rem 0; font-size: 0.93rem; }
+  th, td { border: 1px solid var(--vien); padding: 0.5rem 0.8rem; text-align: left; }
+  th { background: #f3efe8; }
+  code { background: #eee7db; border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.9em; }
+  pre code { background: none; padding: 0; }
+  .canh-bao { background: #fff8e6; border: 1px solid #e8d9a0; border-left: 4px solid #d4a017; border-radius: 6px; padding: 0.8rem 1rem; margin: 1.2rem 0; }
+  .anh-khung { background: #fff; border: 1px dashed var(--vien); border-radius: 8px; padding: 2.2rem 1rem; text-align: center; color: #888; font-style: italic; }
+  footer { border-top: 1px solid var(--vien); background: #fbfaf7; text-align: center; font-size: 0.85rem; color: #666; padding: 1.2rem 1rem; margin-top: 2.5rem; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>MỘT DỮ LIỆU – KHÔNG BÁO CÁO LẠI</h1>
+  <p class="phu">Kho dữ liệu dùng chung cấp xã – tỉnh Thanh Hóa · Bản demo dự thi
+    Cuộc thi "Tìm kiếm ý tưởng, giải pháp cải cách hành chính tỉnh Thanh Hóa năm 2026"</p>
+  <p class="khau-hieu">"Mỗi số liệu chỉ nhập một lần — mọi báo cáo do máy soạn thảo."</p>
+  <a class="nut-dai nut-vang" href="https://github.com/sonthkh-alt/onedata-thanhhoa">📦 Mã nguồn trên GitHub</a>
+  <a class="nut-dai nut-trang" href="https://onedata-thanhhoa.onrender.com">🚀 Chạy thử bản online</a>
+</div>
+
+<main>
+
+<div class="canh-bao">⚠️ <strong>Toàn bộ số liệu là DỮ LIỆU MÔ PHỎNG phục vụ trình diễn</strong> —
+không phải số liệu thống kê chính thức. 15 xã/phường demo dùng tên và mã đơn vị hành chính
+thật (danh mục 166 đơn vị theo Nghị quyết 1686/NQ-UBTVQH15) nhưng mọi con số đều được sinh giả lập.</div>
+
+<h2>Vấn đề và giải pháp</h2>
+<p>Từ 01/7/2025, Thanh Hóa vận hành chính quyền địa phương 2 cấp: <strong>166 xã/phường báo cáo
+trực tiếp các sở, ngành</strong> — cùng một số liệu phải nhập đi nhập lại nhiều biểu, nhiều nơi.
+Mô hình <strong>"Một dữ liệu – Không báo cáo lại"</strong> cắt gánh nặng đó: số liệu nhập
+<strong>một lần tại nguồn</strong> vào Kho dữ liệu dùng chung; báo cáo thể thức chuẩn do máy tự
+soạn; lãnh đạo hỏi – đáp trực tiếp trên dữ liệu. Căn cứ trực tiếp: Quyết định số
+<strong>2053/QĐ-UBND ngày 07/7/2026</strong> và số <strong>2176/QĐ-UBND ngày 20/7/2026</strong>
+của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND cấp xã cập nhật dữ liệu,
+<em>"không yêu cầu báo cáo thủ công"</em>.</p>
+
+<h2>7 phân hệ của bản demo</h2>
+<div class="luoi">
+  <div class="the"><h3>📝 Nhập liệu tại nguồn</h3><p>Chuyên viên xã nhập MỘT LẦN; chỉ tiêu dẫn xuất
+    (tỷ lệ %) hệ thống tự tính theo công thức; kiểm tra dữ liệu theo quy tắc, cảnh báo số liệu bất thường.</p></div>
+  <div class="the"><h3>📊 Dashboard điều hành</h3><p>Thẻ tổng hợp 3 lĩnh vực, xếp hạng giải ngân theo xã,
+    diễn biến 7 tháng, lọc theo kỳ và vùng — mọi con số kèm nguồn CSDL và thời điểm cập nhật.</p></div>
+  <div class="the"><h3>📄 Máy soạn báo cáo NĐ30</h3><p>Sinh file .docx đúng thể thức Nghị định
+    30/2020/NĐ-CP; <strong>15 báo cáo cho 15 xã trong chưa đầy 1 giây</strong>, nhận định tự động so sánh kỳ trước, xếp hạng.</p></div>
+  <div class="the"><h3>💬 Hỏi – đáp dữ liệu AI</h3><p>Hỏi bằng tiếng Việt, trả lời kèm bảng số liệu +
+    câu SQL đã kiểm soát (allowlist, chỉ SELECT) + nguồn. AI không được bịa số liệu.</p></div>
+  <div class="the"><h3>🔥 Cảnh báo sớm</h3><p>Bảng "điểm nóng" theo ngưỡng: giải ngân dưới 30%, TTHC đúng hạn
+    dưới 90%, chưa nhập đủ số liệu, số liệu nghi sai — lãnh đạo nhìn thấy ngay.</p></div>
+  <div class="the"><h3>🏛️ Giám sát HĐND</h3><p>Đại biểu theo dõi chỉ tiêu theo nghị quyết với thanh tiến độ
+    đạt/chưa đạt — không cần yêu cầu UBND báo cáo lại.</p></div>
+  <div class="the"><h3>🌐 Công khai "Dân biết – dân giám sát"</h3><p>Trang dữ liệu mở không cần đăng nhập,
+    theo đúng cấu trúc Danh mục dữ liệu mở của tỉnh; tải Excel/JSON; góp ý nhu cầu dữ liệu.</p></div>
+</div>
+
+<h2>Ảnh chụp màn hình</h2>
+<!-- TODO: thay các khung dưới bằng ảnh thật: <img src="anh/dashboard.png" alt="..." style="width:100%;border-radius:8px;border:1px solid #ddd"> -->
+<div class="luoi">
+  <div class="anh-khung">Dashboard điều hành (sẽ bổ sung ảnh)</div>
+  <div class="anh-khung">Báo cáo .docx thể thức NĐ30 (sẽ bổ sung ảnh)</div>
+  <div class="anh-khung">Hỏi – đáp dữ liệu AI (sẽ bổ sung ảnh)</div>
+</div>
+
+<h2>Kịch bản demo 5 phút</h2>
+<ol class="kich-ban">
+  <li>Chuyên viên xã đăng nhập, <strong>nhập 2 số liệu tháng 7</strong> — hệ thống tự tính tỷ lệ giải ngân.</li>
+  <li>Lãnh đạo mở dashboard: <strong>thấy ngay số vừa nhập</strong>; bảng điểm nóng nêu 2 xã giải ngân dưới 30%.</li>
+  <li>Hỏi AI: <em>"Những xã nào giải ngân dưới 30% trong tháng 7?"</em> → trả lời + bảng + SQL + nguồn.</li>
+  <li>Bấm <strong>"Tạo báo cáo tháng 7 cho tất cả 15 xã"</strong> → mở file .docx thể thức chuẩn → "15 báo cáo trong chưa đầy 1 giây".</li>
+  <li>Đại biểu HĐND xem trang giám sát; người dân mở trang công khai <strong>không cần đăng nhập</strong>.</li>
+</ol>
+
+<h2>Tự chạy trên máy (≈ 5 phút, offline hoàn toàn)</h2>
+<pre><code>git clone https://github.com/sonthkh-alt/onedata-thanhhoa.git
+cd onedata-thanhhoa
+python -m venv .venv
+.venv\Scripts\activate        # Windows (Linux/macOS: source .venv/bin/activate)
+pip install -r requirements.txt
+python scripts/seed.py        # tạo CSDL + dữ liệu mô phỏng
+uvicorn app.main:app --reload # mở http://127.0.0.1:8000</code></pre>
+
+<table>
+  <tr><th>Tài khoản demo</th><th>Mật khẩu</th><th>Vai trò</th></tr>
+  <tr><td><code>lanhdao</code></td><td><code>Demo@2026</code></td><td>Lãnh đạo — dashboard, hỏi đáp AI, sinh báo cáo</td></tr>
+  <tr><td><code>xa.hacthanh</code></td><td><code>Demo@2026</code></td><td>Chuyên viên phường Hạc Thành — nhập liệu</td></tr>
+  <tr><td><code>daibieu</code></td><td><code>Demo@2026</code></td><td>Đại biểu HĐND — giám sát</td></tr>
+  <tr><td><code>admin</code></td><td><code>Demo@2026</code></td><td>Quản trị hệ thống</td></tr>
+</table>
+
+<h2>Công nghệ và chuẩn tuân thủ</h2>
+<ul>
+  <li>Python · FastAPI · SQLite · Jinja2 · Chart.js (đóng gói offline, không CDN) · python-docx · sqlglot.</li>
+  <li>Thể thức văn bản: <strong>Nghị định 30/2020/NĐ-CP</strong>; danh mục dữ liệu và bộ trường thông tin theo
+    <strong>QĐ 2053/QĐ-UBND</strong> và <strong>QĐ 2176/QĐ-UBND</strong> của tỉnh Thanh Hóa.</li>
+  <li>Chất lượng dữ liệu: <em>"Đúng - Đủ - Sạch - Sống - Liên thông - Thống nhất - Dùng chung"</em>; 69 test tự động.</li>
+</ul>
+
+</main>
+
+<footer>
+  <em>Dữ liệu mô phỏng phục vụ trình diễn — không phải số liệu thống kê chính thức.</em><br>
+  © 2026 Hà Ngọc Sơn · Giấy phép MIT ·
+  <a href="https://github.com/sonthkh-alt/onedata-thanhhoa">github.com/sonthkh-alt/onedata-thanhhoa</a>
+</footer>
+
+</body>
+</html>

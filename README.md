@@ -15,6 +15,17 @@ quyền cho UBND cấp xã cập nhật dữ liệu, **"không yêu cầu báo c
 > ⚠️ **Toàn bộ số liệu trong demo là DỮ LIỆU MÔ PHỎNG phục vụ trình diễn —
 > không phải số liệu thống kê chính thức.**
 
+**Xem nhanh không cần cài đặt:**
+
+- 🌐 Trang giới thiệu (GitHub Pages): <https://sonthkh-alt.github.io/onedata-thanhhoa/>
+- 🚀 Bản chạy thử online (Render, gói miễn phí — lần mở đầu chậm ~30–60 giây
+  do dịch vụ "ngủ"): <https://onedata-thanhhoa.onrender.com>
+
+Cách deploy bản online: đăng nhập [render.com](https://render.com) bằng tài
+khoản GitHub → **New + → Blueprint** → chọn repo này → **Apply** (cấu hình đã
+có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi lần khởi
+động).
+
 ## Ảnh chụp màn hình
 
 <!-- TODO: chụp và chèn ảnh trước khi nộp bài:

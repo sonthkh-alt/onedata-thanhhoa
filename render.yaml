@@ -1,0 +1,21 @@
+# Cấu hình deploy bản chạy thử online lên Render.com (gói Free).
+#
+# Cách dùng: đăng nhập render.com → New + → Blueprint → chọn repo này → Apply.
+# Lưu ý gói Free: dịch vụ "ngủ" sau ~15 phút không truy cập (lần mở đầu chậm
+# ~30-60 giây); ổ đĩa không bền vững nên CSDL SQLite được seed lại mỗi lần
+# khởi động — chấp nhận được vì toàn bộ là dữ liệu mô phỏng.
+
+services:
+  - type: web
+    name: onedata-thanhhoa
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python scripts/seed.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.12.6"
+      - key: OFFLINE
+        value: "1"
+      - key: SECRET_KEY
+        generateValue: true # không dùng khóa mặc định khi chạy công khai
