@@ -1,0 +1,45 @@
+# Tự động triển khai trang giới thiệu (docs/) lên GitHub Pages.
+# Workflow tự BẬT Pages cho repo (enablement: true) — không cần vào Settings.
+
+name: Trien khai GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Lay ma nguon
+        uses: actions/checkout@v4
+
+      - name: Cau hinh Pages (tu bat neu chua bat)
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Dong goi thu muc docs/
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - name: Trien khai
+        id: deployment
+        uses: actions/deploy-pages@v4
