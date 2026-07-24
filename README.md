@@ -28,6 +28,10 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 
 ## Ảnh chụp màn hình
 
+| 🆕 Phòng lab chính sách What-if | 🆕 AI điều tra nguyên nhân |
+|---|---|
+| ![Phòng lab chính sách](docs/anh/lab.png) | ![AI điều tra nguyên nhân](docs/anh/dieu-tra.png) |
+
 | 🆕 Bản tin điều hành (máy tham mưu) | 🆕 Hộ chiếu số liệu |
 |---|---|
 | ![Bản tin điều hành](docs/anh/ban-tin.png) | ![Hộ chiếu số liệu](docs/anh/so-lieu.png) |
@@ -64,6 +68,10 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 | 9 | **Bản tin điều hành chủ động** — dự báo giải ngân 31/12 (hồi quy trên chuỗi 7 tháng), phát hiện biến động bất thường, 3 việc cần chỉ đạo hôm nay + **dự thảo công văn NĐ30 sẵn để ký** | `/ban-tin` |
 | 10 | **Hộ chiếu số liệu** — bấm vào bất kỳ con số nào: ai nhập, lúc nào, CSDL nguồn nào theo QĐ 2053, công thức tính, lịch sử, cờ cảnh báo | `/so-lieu/{id}` |
 | 11 | **Đồng hồ tiết kiệm** — đếm số lượt báo cáo/giờ công đã thay thế, hiện trên trang chủ và trang công khai | `/` , `/cong-khai` |
+| 12 | **AI điều tra nguyên nhân** — bấm "Vì sao?" ở điểm nóng, hệ thống tự đặt giả thuyết, tự truy vấn nhiều bước và viết chuỗi lập luận + khuyến nghị (minh bạch, không hộp đen) | `/dieu-tra` |
+| 13 | **Phòng lab chính sách What-if** — kéo thanh trượt "tăng tốc xã hụt / điều chuyển vốn", mô phỏng ngay kết cục giải ngân 31/12 toàn tỉnh — *thử quyết định trước khi ký* | `/lab` |
+| 14 | **Nhật ký chống sửa lén** — mỗi bản ghi khóa hash SHA-256 với bản ghi trước (sổ cái kiểu blockchain, không cần blockchain); nút kiểm chứng toàn vẹn toàn Kho | `/kiem-chung` |
+| 15 | **Phân tích tức thì** — vừa lưu số liệu, hệ thống lập tức so kỳ trước, xếp hạng lại và cập nhật dự báo cả năm của chính xã đó | trong `/nhap-lieu` |
 
 Ba lĩnh vực dữ liệu demo: **giải ngân đầu tư công**, **thủ tục hành chính**,
 **an sinh xã hội** — 15 xã/phường, kỳ tháng 01–07/2026.

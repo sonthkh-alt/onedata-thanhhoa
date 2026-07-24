@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Điều tra nguyên nhân — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<p><a href="/dashboard">← Về dashboard</a> · <a href="/ban-tin">Bản tin điều hành</a></p>
+<h1>🔍 {{ kq.tieu_de }}</h1>
+<p class="mo-ta">Hệ thống tự đặt giả thuyết, tự truy vấn Kho dữ liệu và loại trừ
+  từng khả năng — như một chuyên viên phân tích, nhưng trong 1 giây và minh bạch
+  từng bước (không hộp đen).</p>
+
+<h2>Chuỗi điều tra</h2>
+{% for buoc in kq.cac_buoc %}
+<div class="the buoc-dieu-tra {{ 'buoc-dieu-tra--trung' if buoc.la_nguyen_nhan else '' }}">
+  <h2>Bước {{ loop.index }}: {{ buoc.gia_thuyet }}</h2>
+  <p class="ghi-chu">📊 Đối chiếu: {{ buoc.truy_van }}</p>
+  <p>{{ buoc.phat_hien }}</p>
+  <p><strong>{{ "🎯 CÓ — đây là một nguyên nhân" if buoc.la_nguyen_nhan else "✔️ Loại trừ / ghi nhận" }}</strong></p>
+</div>
+{% endfor %}
+
+<div class="khoi-tra-loi">
+  <h2>Kết luận</h2>
+  <p class="tra-loi">{{ kq.ket_luan }}</p>
+  <p>{{ kq.khuyen_nghi }}</p>
+  <p class="ghi-chu">Toàn bộ kết luận dựng từ số liệu trong Kho dữ liệu dùng chung —
+    bấm vào từng con số trên <a href="/don-vi/{{ kq.don_vi.ma }}">trang đơn vị</a>
+    để xem hộ chiếu số liệu.</p>
+</div>
+{% endblock %}
