@@ -125,9 +125,13 @@ black --check .
 
 ## Tuyên bố dữ liệu
 
-Đây là sản phẩm demo. Toàn bộ số liệu, 10/15 tên xã (`Xã Demo 06`…`15`), mã
-ĐVHC, mã định danh, họ tên người ký báo cáo… đều là **mô phỏng/giả định**.
-Không sử dụng dữ liệu thật, tên người thật hay số liệu thống kê chính thức.
+Đây là sản phẩm demo. **15 xã/phường demo là đơn vị thật** (tên và mã ĐVHC
+5 chữ số lấy từ danh mục 166 xã, phường theo Nghị quyết 1686/NQ-UBTVQH15 —
+file `data/seed/donvi_hanhchinh_thanhhoa_166.json`, seed tự đối chiếu khi
+chạy). Tuy nhiên **toàn bộ SỐ LIỆU, mã định danh cơ quan, phân vùng
+đô thị/đồng bằng/miền núi, phân loại I/II/III và họ tên người ký báo cáo đều
+là mô phỏng/giả định** — không phải số liệu thống kê chính thức của bất kỳ
+đơn vị nào.
 
 ## Giấy phép và liên hệ
 

@@ -75,7 +75,7 @@ def test_cau_hoi_diem_nong_giai_ngan(csdl_demo):
     ket_qua = ai_query.hoi_offline("Những xã nào giải ngân dưới 30% trong tháng 7?")
     ten_cac_xa = " ".join(str(d[0]) for d in ket_qua.dong)
     assert "Các Sơn" in ten_cac_xa
-    assert "Demo 12" in ten_cac_xa
+    assert "Mường Lát" in ten_cac_xa
     assert all(d[1] < 30 for d in ket_qua.dong)
 
 

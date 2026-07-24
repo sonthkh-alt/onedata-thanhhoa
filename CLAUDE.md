@@ -202,11 +202,14 @@ tên đơn vị, kỳ, giá trị, nguồn, thời điểm cập nhật) và `v_
 
 `scripts/seed.py` phải tạo:
 
-**15 đơn vị cấp xã** — dùng tên thật sau sắp xếp theo Nghị quyết
-1686/NQ-UBTVQH15, ví dụ: phường Hạc Thành, xã Các Sơn, xã Nga Sơn, xã Tân Thành,
-xã Thắng Lộc… (5 tên này đã đối chiếu; **11 tên còn lại lấy placeholder
-`Xã Demo 06`…`Xã Demo 15` và ghi TODO để người dùng thay bằng tên thật** — không
-tự bịa tên xã). Phân bổ đủ 3 vùng. Thêm 5 `so_nganh` (đúng cơ quan chủ quản
+**15 đơn vị cấp xã** — dùng **tên thật + mã ĐVHC 5 chữ số thật**, chọn từ danh
+mục 166 xã/phường theo Nghị quyết 1686/NQ-UBTVQH15 trong file
+`data/seed/donvi_hanhchinh_thanhhoa_166.json` (người dùng cung cấp, seed phải
+tự đối chiếu mã + tên với file này khi chạy — hàm `kiem_tra_danh_muc_dvhc`).
+15 đơn vị đã chốt: phường Hạc Thành, Bỉm Sơn, Hàm Rồng, Sầm Sơn; xã Các Sơn,
+Nga Sơn, Hoằng Hoá, Hậu Lộc, Thọ Xuân, Nông Cống, Tân Thành, Thắng Lộc,
+Mường Lát, Bá Thước, Ngọc Lặc. Phân bổ đủ 3 vùng (phân vùng là gán tạm cho
+demo; trường `vung` trong file JSON để trống). Thêm 5 `so_nganh` (đúng cơ quan chủ quản
 theo Danh mục dữ liệu `2053.pdf`): **Sở Tài chính, Sở Nội vụ, Sở Nông nghiệp
 và Môi trường, Trung tâm Phục vụ hành chính công tỉnh, Văn phòng UBND tỉnh**;
 1 bản ghi `tinh`. Mỗi đơn vị có `ma_dinh_danh` (mô phỏng cấu trúc QCVN

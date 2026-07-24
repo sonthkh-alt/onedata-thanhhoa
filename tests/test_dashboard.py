@@ -27,19 +27,19 @@ def test_canh_bao_dung_diem_nong_cai_san(db):
 
     # Luật 1: 2 xã giải ngân dưới 30%
     xa_giai_ngan = {dn.ma_don_vi for dn in diem_nong if "Tỷ lệ giải ngân" in dn.luat}
-    assert {"CACSON", "DEMO12"} <= xa_giai_ngan
+    assert {"CACSON", "MUONGLAT"} <= xa_giai_ngan
 
     # Luật 2: 2 xã TTHC đúng hạn dưới 90%
     xa_tthc = {dn.ma_don_vi for dn in diem_nong if "đúng hạn TTHC" in dn.luat}
-    assert {"TANTHANH", "DEMO09"} <= xa_tthc
+    assert {"TANTHANH", "NONGCONG"} <= xa_tthc
 
-    # Luật 3: Hạc Thành và Demo 15 chưa nhập đủ kỳ tháng 7
+    # Luật 3: Hạc Thành và Bá Thước chưa nhập đủ kỳ tháng 7
     xa_thieu = {dn.ma_don_vi for dn in diem_nong if "Chưa nhập đủ" in dn.luat}
-    assert {"HACTHANH", "DEMO15"} <= xa_thieu
+    assert {"HACTHANH", "BATHUOC"} <= xa_thieu
 
-    # Luật 4: Demo 11 lũy kế tháng 6 giảm so tháng 5
+    # Luật 4: Hậu Lộc lũy kế tháng 6 giảm so tháng 5
     xa_giam = {dn.ma_don_vi for dn in diem_nong if "nghi sai số liệu" in dn.luat}
-    assert "DEMO11" in xa_giam
+    assert "HAULOC" in xa_giam
 
 
 # ------------------------- Dashboard -------------------------

@@ -13,6 +13,7 @@ Trường thông tin, cơ quan chủ chỉ tiêu và CSDL nguồn bám theo:
   gốc, dữ liệu chủ, dữ liệu tham chiếu tỉnh Thanh Hóa).
 """
 
+import json
 import random
 import sys
 from datetime import date, datetime
@@ -46,28 +47,27 @@ rng = random.Random(2026)  # seed cố định để dữ liệu tái lập đư
 # ---------------------------------------------------------------------------
 # Danh mục đơn vị (lớp dữ liệu chủ)
 # ---------------------------------------------------------------------------
-# 5 tên xã/phường thật đã đối chiếu theo Nghị quyết 1686/NQ-UBTVQH15.
-# TODO: thay 10 tên placeholder "Xã Demo 06"…"Xã Demo 15" bằng tên xã/phường
-# thật do người dùng cung cấp — KHÔNG tự bịa tên xã.
-# TODO: ma_dvhc là MÃ MÔ PHỎNG (5 chữ số) — thay bằng mã đơn vị hành chính
-# thật theo danh mục hành chính quốc gia khi người dùng cung cấp.
+# 15 xã/phường THẬT (chọn từ danh sách 166 đơn vị theo Nghị quyết
+# 1686/NQ-UBTVQH15) với mã ĐVHC 5 chữ số thật theo danh mục Tổng cục Thống kê
+# — nguồn: data/seed/donvi_hanhchinh_thanhhoa_166.json (seed tự đối chiếu).
+# Trường `vung` (do_thi/dong_bang/mien_nui) là PHÂN LOẠI TẠM cho demo.
 DS_XA = [
-    # (mã nội bộ, tên, loại, vùng, mã ĐVHC mô phỏng)
-    ("HACTHANH", "Phường Hạc Thành", "phuong", "do_thi", "15001"),
-    ("CACSON", "Xã Các Sơn", "xa", "mien_nui", "15002"),
-    ("NGASON", "Xã Nga Sơn", "xa", "dong_bang", "15003"),
-    ("TANTHANH", "Xã Tân Thành", "xa", "dong_bang", "15004"),
-    ("THANGLOC", "Xã Thắng Lộc", "xa", "mien_nui", "15005"),
-    ("DEMO06", "Xã Demo 06", "phuong", "do_thi", "15006"),
-    ("DEMO07", "Xã Demo 07", "phuong", "do_thi", "15007"),
-    ("DEMO08", "Xã Demo 08", "xa", "dong_bang", "15008"),
-    ("DEMO09", "Xã Demo 09", "xa", "dong_bang", "15009"),
-    ("DEMO10", "Xã Demo 10", "xa", "dong_bang", "15010"),
-    ("DEMO11", "Xã Demo 11", "xa", "dong_bang", "15011"),
-    ("DEMO12", "Xã Demo 12", "xa", "mien_nui", "15012"),
-    ("DEMO13", "Xã Demo 13", "xa", "mien_nui", "15013"),
-    ("DEMO14", "Xã Demo 14", "xa", "mien_nui", "15014"),
-    ("DEMO15", "Xã Demo 15", "xa", "mien_nui", "15015"),
+    # (mã nội bộ, tên, loại, vùng, mã ĐVHC thật)
+    ("HACTHANH", "Phường Hạc Thành", "phuong", "do_thi", "14797"),
+    ("CACSON", "Xã Các Sơn", "xa", "dong_bang", "16591"),
+    ("NGASON", "Xã Nga Sơn", "xa", "dong_bang", "16093"),
+    ("TANTHANH", "Xã Tân Thành", "xa", "mien_nui", "15661"),
+    ("THANGLOC", "Xã Thắng Lộc", "xa", "mien_nui", "15643"),
+    ("BIMSON", "Phường Bỉm Sơn", "phuong", "do_thi", "14812"),
+    ("HAMRONG", "Phường Hàm Rồng", "phuong", "do_thi", "14758"),
+    ("SAMSON", "Phường Sầm Sơn", "phuong", "do_thi", "16531"),
+    ("HOANGHOA", "Xã Hoằng Hoá", "xa", "dong_bang", "15865"),
+    ("HAULOC", "Xã Hậu Lộc", "xa", "dong_bang", "16012"),
+    ("THOXUAN", "Xã Thọ Xuân", "xa", "dong_bang", "15499"),
+    ("NONGCONG", "Xã Nông Cống", "xa", "dong_bang", "16279"),
+    ("MUONGLAT", "Xã Mường Lát", "xa", "mien_nui", "14845"),
+    ("BATHUOC", "Xã Bá Thước", "xa", "mien_nui", "14923"),
+    ("NGOCLAC", "Xã Ngọc Lặc", "xa", "mien_nui", "15061"),
 ]
 
 # 5 sở ngành đúng cơ quan chủ quản CSDL theo Danh mục QĐ 2053/QĐ-UBND
@@ -83,20 +83,20 @@ DS_SO_NGANH = [
 HE_SO_VUNG = {"do_thi": 1.6, "dong_bang": 1.0, "mien_nui": 0.65}
 
 # Điểm nóng cài sẵn phục vụ demo (CLAUDE.md Mục 7)
-XA_GIAI_NGAN_THAP = {"CACSON", "DEMO12"}  # tỷ lệ giải ngân tháng 7 < 30%
-XA_TTHC_THAP = {"DEMO09", "TANTHANH"}  # tỷ lệ đúng hạn TTHC tháng 7 < 90%
-XA_MAU_THUAN_T6 = "DEMO11"  # lũy kế tháng 6 giảm nhẹ so tháng 5
+XA_GIAI_NGAN_THAP = {"CACSON", "MUONGLAT"}  # tỷ lệ giải ngân tháng 7 < 30%
+XA_TTHC_THAP = {"NONGCONG", "TANTHANH"}  # tỷ lệ đúng hạn TTHC tháng 7 < 90%
+XA_MAU_THUAN_T6 = "HAULOC"  # lũy kế tháng 6 giảm nhẹ so tháng 5
 XA_NHAP_DEMO = "HACTHANH"  # để trống vài ô tháng 7 cho kịch bản nhập liệu
-XA_THIEU_SO_LIEU = "DEMO15"  # thiếu vài chỉ tiêu tháng 7 → cảnh báo
+XA_THIEU_SO_LIEU = "BATHUOC"  # thiếu vài chỉ tiêu tháng 7 → cảnh báo
 
 # Ô để trống tháng 7 (chỉ tiêu, mã xã): người demo sẽ nhập tay
 O_TRONG_THANG_7 = {
     ("DTC02", "HACTHANH"),
     ("DTC03", "HACTHANH"),  # tỷ lệ tính từ DTC02 nên trống theo
     ("AS04", "HACTHANH"),
-    ("TTHC05", "DEMO15"),
-    ("TTHC06", "DEMO15"),
-    ("AS05", "DEMO15"),
+    ("TTHC05", "BATHUOC"),
+    ("TTHC06", "BATHUOC"),
+    ("AS05", "BATHUOC"),
 }
 
 # ---------------------------------------------------------------------------
@@ -327,6 +327,32 @@ DS_CHI_TIEU = [
         "(các trường MaHinhThucChiTra, SoTaiKhoanNguoiNhan, MaNganHang).",
     ),
 ]
+
+
+DUONG_DAN_DANH_MUC_DVHC = (
+    Path(__file__).resolve().parent.parent
+    / "data"
+    / "seed"
+    / "donvi_hanhchinh_thanhhoa_166.json"
+)
+
+
+def kiem_tra_danh_muc_dvhc() -> None:
+    """Đối chiếu 15 đơn vị demo với danh mục 166 xã/phường thật của tỉnh
+    (mã ĐVHC 5 chữ số + tên phải khớp tuyệt đối) — chặn sai sót thủ công."""
+    with open(DUONG_DAN_DANH_MUC_DVHC, encoding="utf-8") as f:
+        danh_muc = {d["ma_dvhc"]: d["ten_day_du"] for d in json.load(f)["don_vi"]}
+    for _ma, ten, _loai, _vung, ma_dvhc in DS_XA:
+        if ma_dvhc not in danh_muc:
+            raise SystemExit(
+                f"Seed lỗi: mã ĐVHC {ma_dvhc} ({ten}) không có trong danh mục "
+                "166 đơn vị hành chính."
+            )
+        if danh_muc[ma_dvhc] != ten:
+            raise SystemExit(
+                f"Seed lỗi: tên không khớp danh mục — '{ten}' ≠ "
+                f"'{danh_muc[ma_dvhc]}' (mã {ma_dvhc})."
+            )
 
 
 def _ma_dinh_danh(so_thu_tu: int) -> str:
@@ -727,6 +753,7 @@ def seed_nghi_quyet(db: Session, map_ct: dict[str, ChiTieu]) -> None:
 
 def seed_all(db: Session) -> dict[str, int]:
     """Chạy toàn bộ các bước seed trên một phiên CSDL; trả về thống kê."""
+    kiem_tra_danh_muc_dvhc()
     map_dv = seed_don_vi(db)
     map_ct = seed_danh_muc(db)
     map_nd = seed_nguoi_dung(db, map_dv)

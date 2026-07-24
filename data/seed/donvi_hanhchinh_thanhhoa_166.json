@@ -1,0 +1,1503 @@
+{
+  "ma_tinh": "38",
+  "ten_tinh": "Tỉnh Thanh Hoá",
+  "tong_so": 166,
+  "nguon": "Mã đơn vị hành chính cấp xã (5 chữ số) theo danh mục của Tổng cục Thống kê; danh sách 166 xã, phường theo Nghị quyết 1686/NQ-UBTVQH15 ngày 16/6/2025",
+  "ghi_chu": "Cột vung để trống - người dùng tự phân loại do_thi/dong_bang/mien_nui khi seed dữ liệu demo",
+  "don_vi": [
+    {
+      "ma_dvhc": "14812",
+      "ten": "Bỉm Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Bỉm Sơn",
+      "ma_tinh": "38",
+      "slug": "bim_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14758",
+      "ten": "Hàm Rồng",
+      "loai": "Phường",
+      "ten_day_du": "Phường Hàm Rồng",
+      "ma_tinh": "38",
+      "slug": "ham_rong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14797",
+      "ten": "Hạc Thành",
+      "loai": "Phường",
+      "ten_day_du": "Phường Hạc Thành",
+      "ma_tinh": "38",
+      "slug": "hac_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16645",
+      "ten": "Hải Bình",
+      "loai": "Phường",
+      "ten_day_du": "Phường Hải Bình",
+      "ma_tinh": "38",
+      "slug": "hai_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16597",
+      "ten": "Hải Lĩnh",
+      "loai": "Phường",
+      "ten_day_du": "Phường Hải Lĩnh",
+      "ma_tinh": "38",
+      "slug": "hai_linh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16516",
+      "ten": "Nam Sầm Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Nam Sầm Sơn",
+      "ma_tinh": "38",
+      "slug": "nam_sam_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16654",
+      "ten": "Nghi Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Nghi Sơn",
+      "ma_tinh": "38",
+      "slug": "nghi_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15925",
+      "ten": "Nguyệt Viên",
+      "loai": "Phường",
+      "ten_day_du": "Phường Nguyệt Viên",
+      "ma_tinh": "38",
+      "slug": "nguyet_vien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16576",
+      "ten": "Ngọc Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Ngọc Sơn",
+      "ma_tinh": "38",
+      "slug": "ngoc_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14818",
+      "ten": "Quang Trung",
+      "loai": "Phường",
+      "ten_day_du": "Phường Quang Trung",
+      "ma_tinh": "38",
+      "slug": "quang_trung",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16522",
+      "ten": "Quảng Phú",
+      "loai": "Phường",
+      "ten_day_du": "Phường Quảng Phú",
+      "ma_tinh": "38",
+      "slug": "quang_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16531",
+      "ten": "Sầm Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Sầm Sơn",
+      "ma_tinh": "38",
+      "slug": "sam_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16624",
+      "ten": "Trúc Lâm",
+      "loai": "Phường",
+      "ten_day_du": "Phường Trúc Lâm",
+      "ma_tinh": "38",
+      "slug": "truc_lam",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16594",
+      "ten": "Tân Dân",
+      "loai": "Phường",
+      "ten_day_du": "Phường Tân Dân",
+      "ma_tinh": "38",
+      "slug": "tan_dan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16561",
+      "ten": "Tĩnh Gia",
+      "loai": "Phường",
+      "ten_day_du": "Phường Tĩnh Gia",
+      "ma_tinh": "38",
+      "slug": "tinh_gia",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16609",
+      "ten": "Đào Duy Từ",
+      "loai": "Phường",
+      "ten_day_du": "Phường Đào Duy Từ",
+      "ma_tinh": "38",
+      "slug": "dao_duy_tu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16417",
+      "ten": "Đông Quang",
+      "loai": "Phường",
+      "ten_day_du": "Phường Đông Quang",
+      "ma_tinh": "38",
+      "slug": "dong_quang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16378",
+      "ten": "Đông Sơn",
+      "loai": "Phường",
+      "ten_day_du": "Phường Đông Sơn",
+      "ma_tinh": "38",
+      "slug": "dong_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15853",
+      "ten": "Đông Tiến",
+      "loai": "Phường",
+      "ten_day_du": "Phường Đông Tiến",
+      "ma_tinh": "38",
+      "slug": "dong_tien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15766",
+      "ten": "An Nông",
+      "loai": "Xã",
+      "ten_day_du": "Xã An Nông",
+      "ma_tinh": "38",
+      "slug": "an_nong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16171",
+      "ten": "Ba Đình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Ba Đình",
+      "ma_tinh": "38",
+      "slug": "ba_dinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15382",
+      "ten": "Biện Thượng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Biện Thượng",
+      "ma_tinh": "38",
+      "slug": "bien_thuong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14923",
+      "ten": "Bá Thước",
+      "loai": "Xã",
+      "ten_day_du": "Xã Bá Thước",
+      "ma_tinh": "38",
+      "slug": "ba_thuoc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15607",
+      "ten": "Bát Mọt",
+      "loai": "Xã",
+      "ten_day_du": "Xã Bát Mọt",
+      "ma_tinh": "38",
+      "slug": "bat_mot",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16591",
+      "ten": "Các Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Các Sơn",
+      "ma_tinh": "38",
+      "slug": "cac_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16369",
+      "ten": "Công Chính",
+      "loai": "Xã",
+      "ten_day_du": "Xã Công Chính",
+      "ma_tinh": "38",
+      "slug": "cong_chinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15127",
+      "ten": "Cẩm Thuỷ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cẩm Thuỷ",
+      "ma_tinh": "38",
+      "slug": "cam_thuy",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15142",
+      "ten": "Cẩm Thạch",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cẩm Thạch",
+      "ma_tinh": "38",
+      "slug": "cam_thach",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15178",
+      "ten": "Cẩm Tân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cẩm Tân",
+      "ma_tinh": "38",
+      "slug": "cam_tan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15148",
+      "ten": "Cẩm Tú",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cẩm Tú",
+      "ma_tinh": "38",
+      "slug": "cam_tu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15163",
+      "ten": "Cẩm Vân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cẩm Vân",
+      "ma_tinh": "38",
+      "slug": "cam_van",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14959",
+      "ten": "Cổ Lũng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Cổ Lũng",
+      "ma_tinh": "38",
+      "slug": "co_lung",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15043",
+      "ten": "Giao An",
+      "loai": "Xã",
+      "ten_day_du": "Xã Giao An",
+      "ma_tinh": "38",
+      "slug": "giao_an",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14896",
+      "ten": "Hiền Kiệt",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hiền Kiệt",
+      "ma_tinh": "38",
+      "slug": "hien_kiet",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16072",
+      "ten": "Hoa Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoa Lộc",
+      "ma_tinh": "38",
+      "slug": "hoa_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16186",
+      "ten": "Hoá Quỳ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoá Quỳ",
+      "ma_tinh": "38",
+      "slug": "hoa_quy",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15286",
+      "ten": "Hoạt Giang",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoạt Giang",
+      "ma_tinh": "38",
+      "slug": "hoat_giang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15976",
+      "ten": "Hoằng Châu",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Châu",
+      "ma_tinh": "38",
+      "slug": "hoang_chau",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15880",
+      "ten": "Hoằng Giang",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Giang",
+      "ma_tinh": "38",
+      "slug": "hoang_giang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15865",
+      "ten": "Hoằng Hoá",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Hoá",
+      "ma_tinh": "38",
+      "slug": "hoang_hoa",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15961",
+      "ten": "Hoằng Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Lộc",
+      "ma_tinh": "38",
+      "slug": "hoang_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15889",
+      "ten": "Hoằng Phú",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Phú",
+      "ma_tinh": "38",
+      "slug": "hoang_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15910",
+      "ten": "Hoằng Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Sơn",
+      "ma_tinh": "38",
+      "slug": "hoang_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16000",
+      "ten": "Hoằng Thanh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Thanh",
+      "ma_tinh": "38",
+      "slug": "hoang_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15991",
+      "ten": "Hoằng Tiến",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hoằng Tiến",
+      "ma_tinh": "38",
+      "slug": "hoang_tien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15274",
+      "ten": "Hà Long",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hà Long",
+      "ma_tinh": "38",
+      "slug": "ha_long",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15271",
+      "ten": "Hà Trung",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hà Trung",
+      "ma_tinh": "38",
+      "slug": "ha_trung",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16012",
+      "ten": "Hậu Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hậu Lộc",
+      "ma_tinh": "38",
+      "slug": "hau_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16138",
+      "ten": "Hồ Vương",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hồ Vương",
+      "ma_tinh": "38",
+      "slug": "ho_vuong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14869",
+      "ten": "Hồi Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hồi Xuân",
+      "ma_tinh": "38",
+      "slug": "hoi_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15682",
+      "ten": "Hợp Tiến",
+      "loai": "Xã",
+      "ten_day_du": "Xã Hợp Tiến",
+      "ma_tinh": "38",
+      "slug": "hop_tien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15187",
+      "ten": "Kim Tân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Kim Tân",
+      "ma_tinh": "38",
+      "slug": "kim_tan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15112",
+      "ten": "Kiên Thọ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Kiên Thọ",
+      "ma_tinh": "38",
+      "slug": "kien_tho",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15544",
+      "ten": "Lam Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Lam Sơn",
+      "ma_tinh": "38",
+      "slug": "lam_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15055",
+      "ten": "Linh Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Linh Sơn",
+      "ma_tinh": "38",
+      "slug": "linh_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15634",
+      "ten": "Luận Thành",
+      "loai": "Xã",
+      "ten_day_du": "Xã Luận Thành",
+      "ma_tinh": "38",
+      "slug": "luan_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15298",
+      "ten": "Lĩnh Toại",
+      "loai": "Xã",
+      "ten_day_du": "Xã Lĩnh Toại",
+      "ma_tinh": "38",
+      "slug": "linh_toai",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16438",
+      "ten": "Lưu Vệ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Lưu Vệ",
+      "ma_tinh": "38",
+      "slug": "luu_ve",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15628",
+      "ten": "Lương Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Lương Sơn",
+      "ma_tinh": "38",
+      "slug": "luong_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15124",
+      "ten": "Minh Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Minh Sơn",
+      "ma_tinh": "38",
+      "slug": "minh_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14866",
+      "ten": "Mường Chanh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Mường Chanh",
+      "ma_tinh": "38",
+      "slug": "muong_chanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14845",
+      "ten": "Mường Lát",
+      "loai": "Xã",
+      "ten_day_du": "Xã Mường Lát",
+      "ma_tinh": "38",
+      "slug": "muong_lat",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14854",
+      "ten": "Mường Lý",
+      "loai": "Xã",
+      "ten_day_du": "Xã Mường Lý",
+      "ma_tinh": "38",
+      "slug": "muong_ly",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15025",
+      "ten": "Mường Mìn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Mường Mìn",
+      "ma_tinh": "38",
+      "slug": "muong_min",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16249",
+      "ten": "Mậu Lâm",
+      "loai": "Xã",
+      "ten_day_du": "Xã Mậu Lâm",
+      "ma_tinh": "38",
+      "slug": "mau_lam",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15013",
+      "ten": "Na Mèo",
+      "loai": "Xã",
+      "ten_day_du": "Xã Na Mèo",
+      "ma_tinh": "38",
+      "slug": "na_meo",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14902",
+      "ten": "Nam Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nam Xuân",
+      "ma_tinh": "38",
+      "slug": "nam_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16144",
+      "ten": "Nga An",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nga An",
+      "ma_tinh": "38",
+      "slug": "nga_an",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16093",
+      "ten": "Nga Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nga Sơn",
+      "ma_tinh": "38",
+      "slug": "nga_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16114",
+      "ten": "Nga Thắng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nga Thắng",
+      "ma_tinh": "38",
+      "slug": "nga_thang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15106",
+      "ten": "Nguyệt Ấn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nguyệt Ấn",
+      "ma_tinh": "38",
+      "slug": "nguyet_an",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15091",
+      "ten": "Ngọc Liên",
+      "loai": "Xã",
+      "ten_day_du": "Xã Ngọc Liên",
+      "ma_tinh": "38",
+      "slug": "ngoc_lien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15061",
+      "ten": "Ngọc Lặc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Ngọc Lặc",
+      "ma_tinh": "38",
+      "slug": "ngoc_lac",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15250",
+      "ten": "Ngọc Trạo",
+      "loai": "Xã",
+      "ten_day_du": "Xã Ngọc Trạo",
+      "ma_tinh": "38",
+      "slug": "ngoc_trao",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14864",
+      "ten": "Nhi Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nhi Sơn",
+      "ma_tinh": "38",
+      "slug": "nhi_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16228",
+      "ten": "Như Thanh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Như Thanh",
+      "ma_tinh": "38",
+      "slug": "nhu_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16174",
+      "ten": "Như Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Như Xuân",
+      "ma_tinh": "38",
+      "slug": "nhu_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16279",
+      "ten": "Nông Cống",
+      "loai": "Xã",
+      "ten_day_du": "Xã Nông Cống",
+      "ma_tinh": "38",
+      "slug": "nong_cong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14878",
+      "ten": "Phú Lệ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Phú Lệ",
+      "ma_tinh": "38",
+      "slug": "phu_le",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14890",
+      "ten": "Phú Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Phú Xuân",
+      "ma_tinh": "38",
+      "slug": "phu_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14956",
+      "ten": "Pù Luông",
+      "loai": "Xã",
+      "ten_day_du": "Xã Pù Luông",
+      "ma_tinh": "38",
+      "slug": "pu_luong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14863",
+      "ten": "Pù Nhi",
+      "loai": "Xã",
+      "ten_day_du": "Xã Pù Nhi",
+      "ma_tinh": "38",
+      "slug": "pu_nhi",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15016",
+      "ten": "Quan Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quan Sơn",
+      "ma_tinh": "38",
+      "slug": "quan_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14860",
+      "ten": "Quang Chiểu",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quang Chiểu",
+      "ma_tinh": "38",
+      "slug": "quang_chieu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14953",
+      "ten": "Quý Lương",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quý Lương",
+      "ma_tinh": "38",
+      "slug": "quy_luong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15412",
+      "ten": "Quý Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quý Lộc",
+      "ma_tinh": "38",
+      "slug": "quy_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16543",
+      "ten": "Quảng Bình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quảng Bình",
+      "ma_tinh": "38",
+      "slug": "quang_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16489",
+      "ten": "Quảng Chính",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quảng Chính",
+      "ma_tinh": "38",
+      "slug": "quang_chinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16498",
+      "ten": "Quảng Ngọc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quảng Ngọc",
+      "ma_tinh": "38",
+      "slug": "quang_ngoc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16540",
+      "ten": "Quảng Ninh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quảng Ninh",
+      "ma_tinh": "38",
+      "slug": "quang_ninh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16480",
+      "ten": "Quảng Yên",
+      "loai": "Xã",
+      "ten_day_du": "Xã Quảng Yên",
+      "ma_tinh": "38",
+      "slug": "quang_yen",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15553",
+      "ten": "Sao Vàng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Sao Vàng",
+      "ma_tinh": "38",
+      "slug": "sao_vang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15010",
+      "ten": "Sơn Thuỷ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Sơn Thuỷ",
+      "ma_tinh": "38",
+      "slug": "son_thuy",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15022",
+      "ten": "Sơn Điện",
+      "loai": "Xã",
+      "ten_day_du": "Xã Sơn Điện",
+      "ma_tinh": "38",
+      "slug": "son_dien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14848",
+      "ten": "Tam Chung",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tam Chung",
+      "ma_tinh": "38",
+      "slug": "tam_chung",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15019",
+      "ten": "Tam Lư",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tam Lư",
+      "ma_tinh": "38",
+      "slug": "tam_lu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15007",
+      "ten": "Tam Thanh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tam Thanh",
+      "ma_tinh": "38",
+      "slug": "tam_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16273",
+      "ten": "Thanh Kỳ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thanh Kỳ",
+      "ma_tinh": "38",
+      "slug": "thanh_ky",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16213",
+      "ten": "Thanh Phong",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thanh Phong",
+      "ma_tinh": "38",
+      "slug": "thanh_phong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16222",
+      "ten": "Thanh Quân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thanh Quân",
+      "ma_tinh": "38",
+      "slug": "thanh_quan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14908",
+      "ten": "Thiên Phủ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiên Phủ",
+      "ma_tinh": "38",
+      "slug": "thien_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14980",
+      "ten": "Thiết Ống",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiết Ống",
+      "ma_tinh": "38",
+      "slug": "thiet_ong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15772",
+      "ten": "Thiệu Hoá",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiệu Hoá",
+      "ma_tinh": "38",
+      "slug": "thieu_hoa",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15796",
+      "ten": "Thiệu Quang",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiệu Quang",
+      "ma_tinh": "38",
+      "slug": "thieu_quang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15778",
+      "ten": "Thiệu Tiến",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiệu Tiến",
+      "ma_tinh": "38",
+      "slug": "thieu_tien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15820",
+      "ten": "Thiệu Toán",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiệu Toán",
+      "ma_tinh": "38",
+      "slug": "thieu_toan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15835",
+      "ten": "Thiệu Trung",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thiệu Trung",
+      "ma_tinh": "38",
+      "slug": "thieu_trung",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15229",
+      "ten": "Thành Vinh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thành Vinh",
+      "ma_tinh": "38",
+      "slug": "thanh_vinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16342",
+      "ten": "Thăng Bình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thăng Bình",
+      "ma_tinh": "38",
+      "slug": "thang_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15646",
+      "ten": "Thường Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thường Xuân",
+      "ma_tinh": "38",
+      "slug": "thuong_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16225",
+      "ten": "Thượng Ninh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thượng Ninh",
+      "ma_tinh": "38",
+      "slug": "thuong_ninh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15211",
+      "ten": "Thạch Bình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thạch Bình",
+      "ma_tinh": "38",
+      "slug": "thach_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15085",
+      "ten": "Thạch Lập",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thạch Lập",
+      "ma_tinh": "38",
+      "slug": "thach_lap",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15199",
+      "ten": "Thạch Quảng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thạch Quảng",
+      "ma_tinh": "38",
+      "slug": "thach_quang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15643",
+      "ten": "Thắng Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thắng Lộc",
+      "ma_tinh": "38",
+      "slug": "thang_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16309",
+      "ten": "Thắng Lợi",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thắng Lợi",
+      "ma_tinh": "38",
+      "slug": "thang_loi",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15667",
+      "ten": "Thọ Bình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Bình",
+      "ma_tinh": "38",
+      "slug": "tho_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15505",
+      "ten": "Thọ Long",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Long",
+      "ma_tinh": "38",
+      "slug": "tho_long",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15568",
+      "ten": "Thọ Lập",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Lập",
+      "ma_tinh": "38",
+      "slug": "tho_lap",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15754",
+      "ten": "Thọ Ngọc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Ngọc",
+      "ma_tinh": "38",
+      "slug": "tho_ngoc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15763",
+      "ten": "Thọ Phú",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Phú",
+      "ma_tinh": "38",
+      "slug": "tho_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15499",
+      "ten": "Thọ Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Thọ Xuân",
+      "ma_tinh": "38",
+      "slug": "tho_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16549",
+      "ten": "Tiên Trang",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tiên Trang",
+      "ma_tinh": "38",
+      "slug": "tien_trang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16021",
+      "ten": "Triệu Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Triệu Lộc",
+      "ma_tinh": "38",
+      "slug": "trieu_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15664",
+      "ten": "Triệu Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Triệu Sơn",
+      "ma_tinh": "38",
+      "slug": "trieu_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16297",
+      "ten": "Trung Chính",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trung Chính",
+      "ma_tinh": "38",
+      "slug": "trung_chinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15001",
+      "ten": "Trung Hạ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trung Hạ",
+      "ma_tinh": "38",
+      "slug": "trung_ha",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14857",
+      "ten": "Trung Lý",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trung Lý",
+      "ma_tinh": "38",
+      "slug": "trung_ly",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14875",
+      "ten": "Trung Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trung Sơn",
+      "ma_tinh": "38",
+      "slug": "trung_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14872",
+      "ten": "Trung Thành",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trung Thành",
+      "ma_tinh": "38",
+      "slug": "trung_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16636",
+      "ten": "Trường Lâm",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trường Lâm",
+      "ma_tinh": "38",
+      "slug": "truong_lam",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16348",
+      "ten": "Trường Văn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Trường Văn",
+      "ma_tinh": "38",
+      "slug": "truong_van",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15715",
+      "ten": "Tân Ninh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tân Ninh",
+      "ma_tinh": "38",
+      "slug": "tan_ninh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15661",
+      "ten": "Tân Thành",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tân Thành",
+      "ma_tinh": "38",
+      "slug": "tan_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16108",
+      "ten": "Tân Tiến",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tân Tiến",
+      "ma_tinh": "38",
+      "slug": "tan_tien",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15361",
+      "ten": "Tây Đô",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tây Đô",
+      "ma_tinh": "38",
+      "slug": "tay_do",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16363",
+      "ten": "Tượng Lĩnh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tượng Lĩnh",
+      "ma_tinh": "38",
+      "slug": "tuong_linh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15316",
+      "ten": "Tống Sơn",
+      "loai": "Xã",
+      "ten_day_du": "Xã Tống Sơn",
+      "ma_tinh": "38",
+      "slug": "tong_son",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15190",
+      "ten": "Vân Du",
+      "loai": "Xã",
+      "ten_day_du": "Xã Vân Du",
+      "ma_tinh": "38",
+      "slug": "van_du",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14974",
+      "ten": "Văn Nho",
+      "loai": "Xã",
+      "ten_day_du": "Xã Văn Nho",
+      "ma_tinh": "38",
+      "slug": "van_nho",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15049",
+      "ten": "Văn Phú",
+      "loai": "Xã",
+      "ten_day_du": "Xã Văn Phú",
+      "ma_tinh": "38",
+      "slug": "van_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15349",
+      "ten": "Vĩnh Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Vĩnh Lộc",
+      "ma_tinh": "38",
+      "slug": "vinh_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16078",
+      "ten": "Vạn Lộc",
+      "loai": "Xã",
+      "ten_day_du": "Xã Vạn Lộc",
+      "ma_tinh": "38",
+      "slug": "van_loc",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15622",
+      "ten": "Vạn Xuân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Vạn Xuân",
+      "ma_tinh": "38",
+      "slug": "van_xuan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16177",
+      "ten": "Xuân Bình",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Bình",
+      "ma_tinh": "38",
+      "slug": "xuan_binh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15658",
+      "ten": "Xuân Chinh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Chinh",
+      "ma_tinh": "38",
+      "slug": "xuan_chinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16234",
+      "ten": "Xuân Du",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Du",
+      "ma_tinh": "38",
+      "slug": "xuan_du",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15520",
+      "ten": "Xuân Hoà",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Hoà",
+      "ma_tinh": "38",
+      "slug": "xuan_hoa",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15592",
+      "ten": "Xuân Lập",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Lập",
+      "ma_tinh": "38",
+      "slug": "xuan_lap",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16258",
+      "ten": "Xuân Thái",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Thái",
+      "ma_tinh": "38",
+      "slug": "xuan_thai",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15574",
+      "ten": "Xuân Tín",
+      "loai": "Xã",
+      "ten_day_du": "Xã Xuân Tín",
+      "ma_tinh": "38",
+      "slug": "xuan_tin",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15031",
+      "ten": "Yên Khương",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Khương",
+      "ma_tinh": "38",
+      "slug": "yen_khuong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15610",
+      "ten": "Yên Nhân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Nhân",
+      "ma_tinh": "38",
+      "slug": "yen_nhan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15442",
+      "ten": "Yên Ninh",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Ninh",
+      "ma_tinh": "38",
+      "slug": "yen_ninh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15409",
+      "ten": "Yên Phú",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Phú",
+      "ma_tinh": "38",
+      "slug": "yen_phu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15034",
+      "ten": "Yên Thắng",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Thắng",
+      "ma_tinh": "38",
+      "slug": "yen_thang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16264",
+      "ten": "Yên Thọ",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Thọ",
+      "ma_tinh": "38",
+      "slug": "yen_tho",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15421",
+      "ten": "Yên Trường",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Trường",
+      "ma_tinh": "38",
+      "slug": "yen_truong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15469",
+      "ten": "Yên Định",
+      "loai": "Xã",
+      "ten_day_du": "Xã Yên Định",
+      "ma_tinh": "38",
+      "slug": "yen_dinh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14950",
+      "ten": "Điền Lư",
+      "loai": "Xã",
+      "ten_day_du": "Xã Điền Lư",
+      "ma_tinh": "38",
+      "slug": "dien_lu",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "14932",
+      "ten": "Điền Quang",
+      "loai": "Xã",
+      "ten_day_du": "Xã Điền Quang",
+      "ma_tinh": "38",
+      "slug": "dien_quang",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "16033",
+      "ten": "Đông Thành",
+      "loai": "Xã",
+      "ten_day_du": "Xã Đông Thành",
+      "ma_tinh": "38",
+      "slug": "dong_thanh",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15448",
+      "ten": "Định Hoà",
+      "loai": "Xã",
+      "ten_day_du": "Xã Định Hoà",
+      "ma_tinh": "38",
+      "slug": "dinh_hoa",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15457",
+      "ten": "Định Tân",
+      "loai": "Xã",
+      "ten_day_du": "Xã Định Tân",
+      "ma_tinh": "38",
+      "slug": "dinh_tan",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15058",
+      "ten": "Đồng Lương",
+      "loai": "Xã",
+      "ten_day_du": "Xã Đồng Lương",
+      "ma_tinh": "38",
+      "slug": "dong_luong",
+      "vung": ""
+    },
+    {
+      "ma_dvhc": "15724",
+      "ten": "Đồng Tiến",
+      "loai": "Xã",
+      "ten_day_du": "Xã Đồng Tiến",
+      "ma_tinh": "38",
+      "slug": "dong_tien",
+      "vung": ""
+    }
+  ]
+}
