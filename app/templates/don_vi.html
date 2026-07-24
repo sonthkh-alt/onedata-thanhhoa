@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}{{ don_vi.ten }} — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<p><a href="/dashboard">← Về dashboard tỉnh</a></p>
+<h1>{{ don_vi.ten }}</h1>
+<p class="mo-ta">
+  Mã ĐVHC: {{ don_vi.ma_dvhc or "—" }} — Mã định danh: {{ don_vi.ma_dinh_danh or "—" }}
+  — Phân loại: {{ don_vi.loai_dvhc or "—" }}
+</p>
+
+<p>
+  <a class="nut" href="#" title="Máy soạn báo cáo sẽ mở ở Milestone 4">📄 Tạo báo cáo tháng (M4)</a>
+</p>
+
+<div class="khoi-bieu-do">
+  <h2>Diễn biến các tỷ lệ chính 7 tháng đầu năm {{ nam }}</h2>
+  <canvas id="bieuDoDonVi" height="90"></canvas>
+</div>
+
+<h2>Toàn bộ chỉ tiêu 7 tháng đầu năm {{ nam }}</h2>
+<div style="overflow-x:auto">
+<table class="bang-nhap">
+  <thead>
+    <tr>
+      <th>Mã</th><th>Chỉ tiêu</th><th>ĐVT</th>
+      {% for t in cac_thang %}<th class="so">T{{ t }}</th>{% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for dong in bang_so_lieu %}
+    <tr>
+      <td><span title="Nguồn: {{ dong.chi_tieu.nguon_du_lieu }} — Cơ quan chủ chỉ tiêu: {{ dong.chi_tieu.co_quan_chu_chi_tieu }}">{{ dong.chi_tieu.ma }}</span></td>
+      <td>{{ dong.chi_tieu.ten }}</td>
+      <td>{{ dong.chi_tieu.don_vi_tinh }}</td>
+      {% for gt in dong.gia_tri %}
+      <td class="so">{{ "%.6g"|format(gt) if gt is not none else "—" }}</td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script src="/static/js/chart.umd.js"></script>
+<script>
+  const bieuDo = {{ bieu_do | tojson }};
+  new Chart(document.getElementById("bieuDoDonVi"), {
+    type: "line",
+    data: {
+      labels: bieuDo.nhan,
+      datasets: [
+        { label: "Tỷ lệ giải ngân (%)", data: bieuDo.giai_ngan, borderColor: "#2e6da4", tension: 0.25 },
+        { label: "TTHC đúng hạn (%)", data: bieuDo.dung_han, borderColor: "#27ae60", tension: 0.25 },
+        { label: "Chi trả không tiền mặt (%)", data: bieuDo.khong_tien_mat, borderColor: "#8e44ad", tension: 0.25 }
+      ]
+    },
+    options: { scales: { y: { beginAtZero: true, max: 100 } } }
+  });
+</script>
+{% endblock %}
