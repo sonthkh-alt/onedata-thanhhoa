@@ -103,7 +103,8 @@
       <td>{{ loop.index }}</td>
       <td><a href="/don-vi/{{ d.ma }}">{{ d.ten }}</a></td>
       <td>{{ ten_vung.get(d.vung, d.vung) }}</td>
-      <td class="so">{{ "%.1f"|format(d.gia_tri) }}</td>
+      <td class="so"><a class="lien-ket-so-lieu" href="/so-lieu/{{ d.id }}"
+        title="Bấm để xem hộ chiếu số liệu">{{ "%.1f"|format(d.gia_tri) }}</a></td>
       <td class="thoi-diem" title="Nguồn: {{ nguon_dtc03 }}">
         {{ "hệ thống" if d.nguon == "he_thong" else "nhập tay" }} — {{ d.thoi_diem }}
       </td>

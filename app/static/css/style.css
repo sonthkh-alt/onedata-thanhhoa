@@ -253,6 +253,19 @@ h1 { color: var(--mau-chinh-dam); margin-top: 0; }
   white-space: pre-wrap;
 }
 
+/* Máy tham mưu & hộ chiếu số liệu */
+.dong-ho-tiet-kiem {
+  background: #e8f5e9;
+  border: 1px solid #b7dfb9;
+  border-left: 4px solid #27ae60;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin: 1rem 0;
+}
+.dong-ho-tiet-kiem strong { color: #1b5e20; font-size: 1.15rem; }
+.lien-ket-so-lieu { color: inherit; text-decoration: none; border-bottom: 1px dotted #a51c1c; }
+.lien-ket-so-lieu:hover { background: #fff3f0; }
+
 /* Chân trang */
 .chan-trang {
   text-align: center;

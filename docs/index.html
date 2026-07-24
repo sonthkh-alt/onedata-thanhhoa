@@ -34,6 +34,13 @@
   code { background: #eee7db; border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.9em; }
   pre code { background: none; padding: 0; }
   .canh-bao { background: #fff8e6; border: 1px solid #e8d9a0; border-left: 4px solid #d4a017; border-radius: 6px; padding: 0.8rem 1rem; margin: 1.2rem 0; }
+  .so-do { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin: 1rem 0; }
+  .so-do .cot { display: flex; flex-direction: column; gap: 0.5rem; flex: 1; min-width: 200px; }
+  .so-do .hop { border-radius: 8px; padding: 0.6rem 0.8rem; font-size: 0.88rem; text-align: center; font-weight: 600; }
+  .so-do .hop small { font-weight: 400; color: inherit; opacity: 0.8; }
+  .so-do .hop-cu { background: #eee7db; border: 1px solid var(--vien); color: #5a4a33; }
+  .so-do .hop-moi { background: var(--do); border: 1px solid var(--do-dam); color: #fff; }
+  .so-do .mui-ten { font-weight: 700; color: var(--do-dam); text-align: center; white-space: nowrap; }
   figure.anh { background: #fff; border: 1px solid var(--vien); border-radius: 8px; padding: 0.5rem; margin: 0; }
   figure.anh img { width: 100%; border-radius: 6px; display: block; }
   figure.anh figcaption { font-size: 0.85rem; color: #666; text-align: center; padding: 0.4rem 0.2rem 0.1rem; }
@@ -67,7 +74,50 @@ soạn; lãnh đạo hỏi – đáp trực tiếp trên dữ liệu. Căn cứ 
 của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND cấp xã cập nhật dữ liệu,
 <em>"không yêu cầu báo cáo thủ công"</em>.</p>
 
-<h2>8 phân hệ của bản demo</h2>
+<h2>Hơn IOC ở tầng nào?</h2>
+<p>IOC của tỉnh là <strong>màn hình hiển thị đặt trên các báo cáo thủ công</strong> — trả lời
+"chuyện gì đã xảy ra". Giải pháp này bổ sung đúng tầng IOC chưa có:</p>
+<table>
+  <tr><th></th><th>IOC hiện nay</th><th>Một dữ liệu – Không báo cáo lại</th></tr>
+  <tr><td><strong>Đầu vào</strong></td><td>Xã/sở vẫn phải lập báo cáo nộp lên</td>
+    <td>Nhập <strong>một lần</strong> tại nguồn / đồng bộ từ CSDL chuyên ngành</td></tr>
+  <tr><td><strong>Thời điểm</strong></td><td>Nhìn quá khứ, theo kỳ báo cáo</td>
+    <td><strong>Dự báo 31/12</strong>, cảnh báo trước khi hụt mục tiêu nghị quyết</td></tr>
+  <tr><td><strong>Cách dùng</strong></td><td>Lãnh đạo tự nhìn, tự luận</td>
+    <td><strong>Máy tham mưu</strong>: 3 việc cần chỉ đạo hôm nay + dự thảo công văn NĐ30 sẵn để ký</td></tr>
+  <tr><td><strong>Nguồn gốc số liệu</strong></td><td>Không truy được (số đã qua tổng hợp)</td>
+    <td><strong>Hộ chiếu số liệu</strong>: 2 giây biết ai nhập, lúc nào, từ nguồn nào</td></tr>
+  <tr><td><strong>Đo hiệu quả</strong></td><td>Không tự đo được</td>
+    <td><strong>Đồng hồ tiết kiệm</strong>: đếm lượt báo cáo/giờ công đã thay thế</td></tr>
+</table>
+
+<h2>Kế thừa 100% hạ tầng — không mua phần cứng mới</h2>
+<div class="so-do">
+  <div class="cot">
+    <div class="hop hop-cu">CSDL Dự án đầu tư công<br><small>Sở Tài chính — sẵn có</small></div>
+    <div class="hop hop-cu">HTTT giải quyết TTHC<br><small>TT PVHCC tỉnh — sẵn có</small></div>
+    <div class="hop hop-cu">CSDL hộ nghèo, BTXH<br><small>Sở NN&amp;MT, Sở Nội vụ — sẵn có</small></div>
+    <div class="hop hop-cu">166 xã, phường<br><small>nhập MỘT LẦN phần chưa có hệ thống</small></div>
+  </div>
+  <div class="mui-ten">→ LGSP →<br><small>(nền tảng chia sẻ sẵn có)</small></div>
+  <div class="cot">
+    <div class="hop hop-moi">KHO DỮ LIỆU DÙNG CHUNG<br>+ MÁY THAM MƯU<br><small>lớp phần mềm MỚI duy nhất</small></div>
+  </div>
+  <div class="mui-ten">→</div>
+  <div class="cot">
+    <div class="hop hop-cu">Màn hình IOC<br><small>phần cứng sẵn có — nguồn cấp mới</small></div>
+    <div class="hop hop-moi">Báo cáo .docx NĐ30 tự soạn</div>
+    <div class="hop hop-moi">Hỏi đáp AI + bản tin điều hành</div>
+    <div class="hop hop-moi">Trang công khai cho người dân</div>
+  </div>
+</div>
+<div class="canh-bao" style="background:#e8f5e9;border-color:#b7dfb9;border-left-color:#27ae60">
+  💡 <em>"Không mua thêm một máy chủ nào, không bỏ đi một hệ thống nào, không nhập lại
+  một số liệu nào — chỉ bổ sung một lớp phần mềm để dữ liệu chỉ nhập một lần, báo cáo
+  tự soạn, IOC biết tham mưu và mỗi con số có hộ chiếu."</em>
+</div>
+
+<h2>8 phân hệ + máy tham mưu</h2>
 <div class="luoi">
   <div class="the"><h3>📝 Nhập liệu tại nguồn</h3><p>Chuyên viên xã nhập MỘT LẦN; chỉ tiêu dẫn xuất
     (tỷ lệ %) hệ thống tự tính theo công thức; kiểm tra dữ liệu theo quy tắc, cảnh báo số liệu bất thường.</p></div>
@@ -85,10 +135,21 @@ của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND
     theo đúng cấu trúc Danh mục dữ liệu mở của tỉnh; tải Excel/JSON; góp ý nhu cầu dữ liệu.</p></div>
   <div class="the"><h3>🗺️ Kiểm kê báo cáo</h3><p>Đo gánh nặng báo cáo (lượt/xã/năm, quy đổi 166 xã),
     tự phát hiện các báo cáo trùng lặp nội dung để kiến nghị cắt giảm.</p></div>
+  <div class="the" style="border-top-color:#27ae60"><h3>🧭 Bản tin điều hành chủ động (MỚI)</h3>
+    <p>Máy tham mưu tự lập mỗi kỳ: dự báo giải ngân 31/12 từng xã, biến động bất thường,
+    3 việc cần chỉ đạo hôm nay + <strong>dự thảo công văn NĐ30 sẵn để ký</strong>.</p></div>
+  <div class="the" style="border-top-color:#27ae60"><h3>🛂 Hộ chiếu số liệu (MỚI)</h3>
+    <p>Bấm vào bất kỳ con số nào: ai nhập, lúc nào, CSDL nguồn nào theo QĐ 2053,
+    công thức tính, lịch sử sửa đổi, cờ cảnh báo.</p></div>
+  <div class="the" style="border-top-color:#27ae60"><h3>⏱️ Đồng hồ tiết kiệm (MỚI)</h3>
+    <p>Đếm công khai số lượt báo cáo và giờ công mô hình đã thay thế —
+    hệ thống duy nhất tự đo được hiệu quả của chính nó.</p></div>
 </div>
 
 <h2>Ảnh chụp màn hình</h2>
 <div class="luoi">
+  <figure class="anh"><img src="anh/ban-tin.png" alt="Bản tin điều hành chủ động với dự báo và 3 việc cần chỉ đạo" loading="lazy"><figcaption>🆕 Bản tin điều hành — dự báo 31/12, 3 việc cần chỉ đạo, dự thảo công văn</figcaption></figure>
+  <figure class="anh"><img src="anh/so-lieu.png" alt="Hộ chiếu số liệu truy xuất nguồn gốc" loading="lazy"><figcaption>🆕 Hộ chiếu số liệu — 2 giây biết ai nhập, lúc nào, từ nguồn nào</figcaption></figure>
   <figure class="anh"><img src="anh/dashboard.png" alt="Dashboard điều hành tỉnh với bảng điểm nóng" loading="lazy"><figcaption>Dashboard điều hành — xếp hạng giải ngân, điểm nóng tô đỏ</figcaption></figure>
   <figure class="anh"><img src="anh/hoi-dap.png" alt="Hỏi đáp dữ liệu AI" loading="lazy"><figcaption>Hỏi – đáp AI: trả lời + bảng số liệu + SQL đã kiểm soát</figcaption></figure>
   <figure class="anh"><img src="anh/nhap-lieu.png" alt="Trang nhập liệu tại nguồn" loading="lazy"><figcaption>Nhập liệu tại nguồn — "chỉ nhập MỘT LẦN"</figcaption></figure>

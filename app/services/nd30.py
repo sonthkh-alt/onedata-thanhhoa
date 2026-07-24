@@ -208,6 +208,24 @@ def them_ket_thuc(
     _doan_trong_o(o_phai, ho_ten, co_chu=CO_CHU_NOI_DUNG, dam=True)
 
 
+def them_kinh_gui(doc: Document, noi_nhan: str) -> None:
+    """Dòng "Kính gửi:" của công văn (đậm, canh giữa)."""
+    doan = doc.add_paragraph()
+    doan.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    _dat_phong(doan.add_run(f"Kính gửi: {noi_nhan}"), CO_CHU_NOI_DUNG, dam=True)
+    doc.add_paragraph()
+
+
+def them_trich_yeu_cong_van(doc: Document, trich_yeu: str) -> None:
+    """Trích yếu "V/v ..." của công văn — đặt dưới số ký hiệu, cỡ nhỏ hơn.
+
+    Với demo, đặt canh giữa ngay sau phần đầu 2 cột.
+    """
+    doan = doc.add_paragraph()
+    doan.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    _dat_phong(doan.add_run(trich_yeu), CO_CHU_DAU_TRANG - 1, dam=True)
+
+
 def them_dong_mo_phong(doc: Document) -> None:
     """Dòng bắt buộc ở mọi file demo: tuyên bố dữ liệu mô phỏng."""
     doan = doc.add_paragraph()

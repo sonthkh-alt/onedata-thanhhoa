@@ -3,9 +3,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
-from app.auth import require_roles
+from app.auth import require_roles, require_user
 from app.db import get_db
-from app.models import ChiTieu, DonVi, GiaTriChiTieu, NguoiDung
+from app.models import ChiTieu, DonVi, GiaTriChiTieu, NguoiDung, NhatKy
 from app.services import canh_bao, tong_hop
 
 router = APIRouter(tags=["dashboard"])
@@ -92,6 +92,63 @@ def trang_dashboard(
     )
 
 
+@router.get("/so-lieu/{so_lieu_id}")
+def ho_chieu_so_lieu(
+    request: Request,
+    so_lieu_id: int,
+    nguoi_dung: NguoiDung = Depends(require_user),
+    db: Session = Depends(get_db),
+):
+    """Hộ chiếu số liệu: một con số — đầy đủ nguồn gốc, không thể chối cãi.
+
+    Ai nhập, lúc nào, từ CSDL nguồn nào (theo QĐ 2053), tính bằng công thức
+    gì, lịch sử thay đổi và cờ cảnh báo — điều IOC không truy được vì số
+    liệu IOC đến từ báo cáo tổng hợp thủ công.
+    """
+    from app.main import templates
+
+    gt = db.get(GiaTriChiTieu, so_lieu_id)
+    if gt is None:
+        raise HTTPException(status_code=404, detail="Không tìm thấy số liệu.")
+
+    chi_tieu = db.get(ChiTieu, gt.chi_tieu_id)
+    don_vi = db.get(DonVi, gt.don_vi_id)
+    nguoi_cap_nhat = (
+        db.get(NguoiDung, gt.nguoi_cap_nhat_id) if gt.nguoi_cap_nhat_id else None
+    )
+    lich_su = (
+        db.query(NhatKy)
+        .filter(
+            NhatKy.hanh_dong.in_(
+                [
+                    "nhap_so_lieu",
+                    "sua_so_lieu",
+                    "canh_bao_du_lieu",
+                    "tinh_chi_tieu_dan_xuat",
+                ]
+            ),
+            NhatKy.chi_tiet.like(f"%{don_vi.ten}%"),
+            NhatKy.chi_tiet.like(f"%{chi_tieu.ma}%"),
+        )
+        .order_by(NhatKy.thoi_diem.desc())
+        .limit(20)
+        .all()
+    )
+    return templates.TemplateResponse(
+        request,
+        "so_lieu.html",
+        {
+            "nguoi_dung": nguoi_dung,
+            "gt": gt,
+            "chi_tieu": chi_tieu,
+            "don_vi": don_vi,
+            "nguoi_cap_nhat": nguoi_cap_nhat,
+            "lich_su": lich_su,
+            "ky": gt.nam * 100 + gt.thang,
+        },
+    )
+
+
 @router.get("/don-vi/{ma_don_vi}")
 def trang_chi_tiet_don_vi(
     request: Request,
@@ -113,13 +170,14 @@ def trang_chi_tiet_don_vi(
     ds_chi_tieu = db.query(ChiTieu).order_by(ChiTieu.ma).all()
     bang_so_lieu = []
     for ct in ds_chi_tieu:
-        gia_tri = dict(
-            db.query(GiaTriChiTieu.thang, GiaTriChiTieu.gia_tri)
+        ban_ghi = {
+            gt.thang: gt
+            for gt in db.query(GiaTriChiTieu)
             .filter_by(chi_tieu_id=ct.id, don_vi_id=don_vi.id, nam=NAM_DEMO)
             .all()
-        )
+        }
         bang_so_lieu.append(
-            {"chi_tieu": ct, "gia_tri": [gia_tri.get(t) for t in CAC_THANG]}
+            {"chi_tieu": ct, "gia_tri": [ban_ghi.get(t) for t in CAC_THANG]}
         )
 
     bieu_do = {

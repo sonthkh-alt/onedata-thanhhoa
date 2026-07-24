@@ -28,6 +28,10 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 
 ## Ảnh chụp màn hình
 
+| 🆕 Bản tin điều hành (máy tham mưu) | 🆕 Hộ chiếu số liệu |
+|---|---|
+| ![Bản tin điều hành](docs/anh/ban-tin.png) | ![Hộ chiếu số liệu](docs/anh/so-lieu.png) |
+
 | Dashboard điều hành | Hỏi – đáp dữ liệu AI |
 |---|---|
 | ![Dashboard điều hành](docs/anh/dashboard.png) | ![Hỏi đáp AI](docs/anh/hoi-dap.png) |
@@ -52,6 +56,14 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 | 6 | Cảnh báo sớm theo ngưỡng — bảng "điểm nóng" | trong `/dashboard` |
 | 7 | Trang công khai dữ liệu mở + giám sát nghị quyết HĐND | `/cong-khai`, `/giam-sat` |
 | 8 | Kiểm kê báo cáo — gánh nặng báo cáo, phát hiện trùng lặp | `/kiem-ke` |
+
+**Máy tham mưu (tầng vượt IOC):**
+
+| # | Tính năng | Đường dẫn |
+|---|-----------|-----------|
+| 9 | **Bản tin điều hành chủ động** — dự báo giải ngân 31/12 (hồi quy trên chuỗi 7 tháng), phát hiện biến động bất thường, 3 việc cần chỉ đạo hôm nay + **dự thảo công văn NĐ30 sẵn để ký** | `/ban-tin` |
+| 10 | **Hộ chiếu số liệu** — bấm vào bất kỳ con số nào: ai nhập, lúc nào, CSDL nguồn nào theo QĐ 2053, công thức tính, lịch sử, cờ cảnh báo | `/so-lieu/{id}` |
+| 11 | **Đồng hồ tiết kiệm** — đếm số lượt báo cáo/giờ công đã thay thế, hiện trên trang chủ và trang công khai | `/` , `/cong-khai` |
 
 Ba lĩnh vực dữ liệu demo: **giải ngân đầu tư công**, **thủ tục hành chính**,
 **an sinh xã hội** — 15 xã/phường, kỳ tháng 01–07/2026.
@@ -128,6 +140,47 @@ pytest            # 69 test: seed, phân quyền, UNIQUE, validator SQL, docx N�
 ruff check .
 black --check .
 ```
+
+## Hơn IOC ở tầng nào? Kế thừa hạ tầng ra sao?
+
+IOC của tỉnh là **màn hình hiển thị đặt trên các báo cáo thủ công** — trả lời
+"chuyện gì đã xảy ra". Giải pháp này bổ sung tầng IOC chưa có:
+
+| | IOC hiện nay | Một dữ liệu – Không báo cáo lại |
+|---|---|---|
+| Đầu vào | Xã/sở vẫn phải lập báo cáo nộp lên | Nhập **một lần** tại nguồn / đồng bộ từ CSDL chuyên ngành |
+| Thời điểm | Nhìn quá khứ, theo kỳ báo cáo | **Dự báo 31/12**, cảnh báo trước khi hụt mục tiêu |
+| Cách dùng | Lãnh đạo tự nhìn, tự luận | **Máy tham mưu**: 3 việc cần chỉ đạo + dự thảo công văn sẵn để ký |
+| Nguồn gốc số liệu | Không truy được (số đã tổng hợp) | **Hộ chiếu số liệu**: 2 giây biết ai nhập, lúc nào, nguồn nào |
+| Đầu ra | Biểu số liệu, ảnh dashboard | **Văn bản hành chính đúng thể thức NĐ30** ký được ngay |
+| Đo hiệu quả | Không tự đo được | **Đồng hồ tiết kiệm** lượt báo cáo/giờ công thay thế |
+
+**Không đầu tư phần cứng mới — kế thừa nguyên trạng hạ tầng và dữ liệu:**
+
+```mermaid
+flowchart LR
+    subgraph NGUON["CSDL chuyên ngành sẵn có (PL1 - QĐ 2053)"]
+        A1["CSDL Dự án đầu tư công<br>(Sở Tài chính)"]
+        A2["HTTT giải quyết TTHC<br>(TT PVHCC tỉnh)"]
+        A3["CSDL hộ nghèo, BTXH<br>(Sở NN&MT, Sở Nội vụ)"]
+    end
+    X["166 xã, phường<br>nhập MỘT LẦN phần chưa có hệ thống"]
+    LGSP["LGSP<br>(nền tảng chia sẻ sẵn có)"]
+    KHO["KHO DỮ LIỆU DÙNG CHUNG<br>+ máy tham mưu<br>(lớp phần mềm MỚI duy nhất)"]
+    NGUON --> LGSP --> KHO
+    X --> KHO
+    KHO --> IOC["Màn hình IOC<br>(phần cứng sẵn có - nguồn cấp mới)"]
+    KHO --> BC["Báo cáo .docx NĐ30<br>tự soạn"]
+    KHO --> AI["Hỏi đáp AI<br>+ bản tin điều hành"]
+    KHO --> CK["Trang công khai<br>dân biết - dân giám sát"]
+```
+
+Toàn bộ khối màu bên trái (CSDL nguồn, LGSP, màn hình IOC, máy tính cấp xã)
+**đã được đầu tư** — giải pháp chỉ thêm đúng một lớp phần mềm ở giữa. Câu chốt:
+
+> *"Không mua thêm một máy chủ nào, không bỏ đi một hệ thống nào, không nhập
+> lại một số liệu nào — chỉ bổ sung một lớp phần mềm để dữ liệu chỉ nhập một
+> lần, báo cáo tự soạn, IOC biết tham mưu và mỗi con số có hộ chiếu."*
 
 ## Chuẩn tuân thủ
 
