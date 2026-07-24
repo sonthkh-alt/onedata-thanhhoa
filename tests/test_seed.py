@@ -15,10 +15,47 @@ from app.models import (
 
 
 def test_du_don_vi(db):
-    """15 xã/phường + 3 sở ngành + 1 tỉnh."""
+    """15 xã/phường + 5 sở ngành + 1 tỉnh."""
     assert db.query(DonVi).filter(DonVi.loai.in_(["xa", "phuong"])).count() == 15
-    assert db.query(DonVi).filter(DonVi.loai == "so_nganh").count() == 3
+    assert db.query(DonVi).filter(DonVi.loai == "so_nganh").count() == 5
     assert db.query(DonVi).filter(DonVi.loai == "tinh").count() == 1
+
+
+def test_truong_chuan_tinh_cua_don_vi(db):
+    """Mọi đơn vị có mã định danh QCVN 102:2016/BTTTT; xã có mã ĐVHC."""
+    for dv in db.query(DonVi).all():
+        assert dv.ma_dinh_danh and dv.ma_dinh_danh.endswith(".H56")
+        assert dv.trang_thai == "dang_hieu_luc"
+    for dv in db.query(DonVi).filter(DonVi.loai.in_(["xa", "phuong"])).all():
+        assert dv.ma_dvhc and len(dv.ma_dvhc) == 5
+        assert dv.loai_dvhc in {"I", "II", "III"}
+
+
+def test_truong_chuan_tinh_cua_chi_tieu(db):
+    """Chỉ tiêu có nguồn CSDL, mức chia sẻ; chỉ tiêu dẫn xuất có công thức."""
+    for ct in db.query(ChiTieu).all():
+        assert ct.nguon_du_lieu
+        assert ct.muc_chia_se in {"chuyen_nganh", "dung_chung", "mo"}
+        if ct.cong_khai:
+            assert ct.muc_chia_se == "mo"
+    dan_xuat = {
+        ct.ma: ct.cong_thuc
+        for ct in db.query(ChiTieu).filter(ChiTieu.cong_thuc.isnot(None))
+    }
+    assert dan_xuat == {
+        "DTC03": "DTC02/DTC01*100",
+        "TTHC04": "TTHC02/TTHC01*100",
+        "TTHC06": "TTHC05/TTHC01*100",
+    }
+
+
+def test_co_quan_chu_chi_tieu_dung_danh_muc(db):
+    """Cơ quan chủ chỉ tiêu bám Danh mục QĐ 2053/QĐ-UBND."""
+    map_cq = {ct.ma: ct.co_quan_chu_chi_tieu for ct in db.query(ChiTieu).all()}
+    assert map_cq["DTC01"] == "Sở Tài chính"
+    assert map_cq["TTHC01"] == "Trung tâm Phục vụ hành chính công tỉnh"
+    assert map_cq["AS01"] == "Sở Nông nghiệp và Môi trường"
+    assert map_cq["AS03"] == "Sở Nội vụ"
 
 
 def test_du_ba_vung(db):
@@ -100,5 +137,8 @@ def test_view_cho_ai(db):
         text("SELECT ten_don_vi, ten_chi_tieu, gia_tri FROM v_so_lieu LIMIT 5")
     ).fetchall()
     assert len(dong) == 5
-    assert db.execute(text("SELECT COUNT(*) FROM v_don_vi")).scalar() == 19
+    assert db.execute(text("SELECT COUNT(*) FROM v_don_vi")).scalar() == 21
     assert db.execute(text("SELECT COUNT(*) FROM v_chi_tieu")).scalar() == 16
+    # View số liệu có cột kỳ chuẩn YYYYMM
+    ky = db.execute(text("SELECT DISTINCT ky FROM v_so_lieu LIMIT 1")).scalar()
+    assert 202601 <= ky <= 202607

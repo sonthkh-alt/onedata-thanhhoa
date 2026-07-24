@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Nhập số liệu — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>Nhập số liệu kỳ tháng {{ thang }}/{{ nam }} <span class="ma-ky">(kỳ {{ ky }})</span></h1>
+<p class="mo-ta">
+  Đơn vị: <strong>{{ don_vi.ten }}</strong>
+  {%- if don_vi.ma_dvhc %} — mã ĐVHC: {{ don_vi.ma_dvhc }}{% endif %}
+  {%- if don_vi.ma_dinh_danh %} — mã định danh: {{ don_vi.ma_dinh_danh }}{% endif %}
+</p>
+
+<div class="thong-diep-chinh">
+  Anh/chị chỉ phải nhập <strong>MỘT LẦN</strong> — mọi báo cáo, bảng biểu sẽ được
+  hệ thống tự tổng hợp từ số liệu này.
+</div>
+
+{% if thong_bao %}<div class="canh-bao canh-bao--ok">{{ thong_bao }}</div>{% endif %}
+{% for loi in ds_loi %}<div class="canh-bao canh-bao--loi">{{ loi }}</div>{% endfor %}
+{% for cb in ds_canh_bao %}<div class="canh-bao canh-bao--nhe">{{ cb }}</div>{% endfor %}
+
+<form method="get" action="/nhap-lieu" class="chon-ky">
+  <label for="thang">Kỳ báo cáo:</label>
+  <select name="thang" id="thang" onchange="this.form.submit()">
+    {% for t in cac_thang %}
+    <option value="{{ t }}" {% if t == thang %}selected{% endif %}>Tháng {{ t }}/{{ nam }}</option>
+    {% endfor %}
+  </select>
+  {% if ds_xa %}
+  <label for="don_vi">Đơn vị:</label>
+  <select name="don_vi" id="don_vi" onchange="this.form.submit()">
+    {% for xa in ds_xa %}
+    <option value="{{ xa.ma }}" {% if xa.id == don_vi.id %}selected{% endif %}>{{ xa.ten }}</option>
+    {% endfor %}
+  </select>
+  {% endif %}
+</form>
+
+<form method="post" action="/nhap-lieu">
+  <input type="hidden" name="thang" value="{{ thang }}">
+  <input type="hidden" name="don_vi" value="{{ don_vi.ma }}">
+  <table class="bang-nhap">
+    <thead>
+      <tr>
+        <th>Mã</th>
+        <th>Chỉ tiêu</th>
+        <th>Đơn vị tính</th>
+        <th>Giá trị hiện có</th>
+        <th>Giá trị mới</th>
+        <th>Cập nhật lần cuối</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ct in ds_chi_tieu %}
+      {% set gt = gia_tri_ky.get(ct.id) %}
+      <tr>
+        <td><span title="Nguồn: {{ ct.nguon_du_lieu }} — Cơ quan chủ chỉ tiêu: {{ ct.co_quan_chu_chi_tieu }}">{{ ct.ma }}</span></td>
+        <td>{{ ct.ten }}</td>
+        <td>{{ ct.don_vi_tinh }}</td>
+        <td class="so">{{ "%.6g"|format(gt.gia_tri) if gt else "—" }}</td>
+        <td>
+          {% if ct.cong_thuc %}
+          <span class="tu-tinh" title="Công thức: {{ ct.cong_thuc }}">Hệ thống tự tính</span>
+          {% else %}
+          <input type="text" name="gt_{{ ct.ma }}" inputmode="decimal"
+                 placeholder="{{ 'Nhập giá trị' if not gt else 'Sửa (ghi đè)' }}">
+          {% endif %}
+        </td>
+        <td class="thoi-diem">
+          {% if gt %}{{ gt.thoi_diem_cap_nhat.strftime("%Y-%m-%d %H:%M") }}
+          <span class="nguon-tag">{{ "hệ thống" if gt.nguon == "he_thong" else "nhập tay" }}</span>
+          {% else %}<em>chưa nhập</em>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <button type="submit" class="nut">Lưu số liệu</button>
+  <a class="nut nut--xam" href="/">Về trang chủ</a>
+</form>
+
+<p class="nguyen-tac">
+  Chất lượng dữ liệu theo nguyên tắc của tỉnh:
+  <em>“Đúng - Đủ - Sạch - Sống - Liên thông - Thống nhất - Dùng chung”</em>
+</p>
+{% endblock %}

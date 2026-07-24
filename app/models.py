@@ -20,39 +20,68 @@ from app.db import Base
 # Các giá trị hợp lệ (dùng chuỗi thay vì Enum để đơn giản, dễ seed/truy vấn)
 LOAI_DON_VI = ("xa", "phuong", "so_nganh", "tinh")
 VUNG = ("do_thi", "dong_bang", "mien_nui")
-TAN_SUAT = ("thang", "quy")
+TAN_SUAT = ("thang", "quy", "nam")
 NGUON = ("he_thong", "nhap_tay")
 VAI_TRO = ("quan_tri", "lanh_dao", "chuyen_vien_xa", "dai_bieu_hdnd")
+# 3 lớp chia sẻ theo QĐ 2053/QĐ-UBND ngày 07/7/2026
+MUC_CHIA_SE = ("chuyen_nganh", "dung_chung", "mo")
+TRANG_THAI = ("dang_hieu_luc", "het_hieu_luc")
 
 
 class DonVi(Base):
-    """Đơn vị hành chính: xã/phường, sở ngành, tỉnh."""
+    """Đơn vị hành chính: xã/phường, sở ngành, tỉnh (lớp dữ liệu chủ).
+
+    Trường chuẩn theo QĐ 2176/QĐ-UBND ngày 20/7/2026: ma_dinh_danh (mã định
+    danh điện tử cơ quan theo QCVN 102:2016/BTTTT), ma_dvhc (mã đơn vị hành
+    chính theo danh mục quốc gia), loai_dvhc (phân loại I/II/III — DGHC19).
+    """
 
     __tablename__ = "don_vi"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     ma: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
+    ma_dinh_danh: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    ma_dvhc: Mapped[str | None] = mapped_column(String(10), nullable=True)
     ten: Mapped[str] = mapped_column(String(200), nullable=False)
     loai: Mapped[str] = mapped_column(String(20), nullable=False)
+    loai_dvhc: Mapped[str | None] = mapped_column(String(5), nullable=True)
     vung: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    trang_thai: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="dang_hieu_luc"
+    )
+    ngay_cap_nhat: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
 
     gia_tri: Mapped[list["GiaTriChiTieu"]] = relationship(back_populates="don_vi")
 
 
 class LinhVuc(Base):
-    """Lĩnh vực dữ liệu: DTC, TTHC, ASXH."""
+    """Lĩnh vực dữ liệu: DTC, TTHC, ASXH (lớp dữ liệu tham chiếu)."""
 
     __tablename__ = "linh_vuc"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     ma: Mapped[str] = mapped_column(String(20), unique=True, nullable=False)
     ten: Mapped[str] = mapped_column(String(200), nullable=False)
+    trang_thai: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="dang_hieu_luc"
+    )
+    ngay_cap_nhat: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
 
     chi_tieu: Mapped[list["ChiTieu"]] = relationship(back_populates="linh_vuc")
 
 
 class ChiTieu(Base):
-    """Chỉ tiêu thống kê thuộc một lĩnh vực."""
+    """Chỉ tiêu thống kê thuộc một lĩnh vực (lớp dữ liệu chủ).
+
+    Trường chuẩn theo 2 quyết định của tỉnh: nguon_du_lieu (tên CSDL nguồn
+    theo Danh mục QĐ 2053), muc_chia_se (3 lớp chia sẻ), cong_thuc (mô phỏng
+    Formula của HTTT báo cáo tỉnh — chỉ tiêu dẫn xuất hệ thống tự tính),
+    rang_buoc (mô phỏng Content.Rule — quy tắc kiểm tra dữ liệu khi nhập).
+    """
 
     __tablename__ = "chi_tieu"
 
@@ -63,8 +92,20 @@ class ChiTieu(Base):
     don_vi_tinh: Mapped[str] = mapped_column(String(50), nullable=False)
     tan_suat: Mapped[str] = mapped_column(String(10), nullable=False, default="thang")
     co_quan_chu_chi_tieu: Mapped[str] = mapped_column(String(200), nullable=False)
+    nguon_du_lieu: Mapped[str] = mapped_column(String(300), default="")
+    muc_chia_se: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="dung_chung"
+    )
+    cong_thuc: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    rang_buoc: Mapped[str | None] = mapped_column(String(200), nullable=True)
     dinh_nghia: Mapped[str] = mapped_column(Text, default="")
     cong_khai: Mapped[bool] = mapped_column(Boolean, default=False)
+    trang_thai: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="dang_hieu_luc"
+    )
+    ngay_cap_nhat: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
 
     linh_vuc: Mapped["LinhVuc"] = relationship(back_populates="chi_tieu")
 
@@ -121,6 +162,9 @@ class NguoiDung(Base):
     ten_dang_nhap: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
     mat_khau_hash: Mapped[str] = mapped_column(String(200), nullable=False)
     ho_ten: Mapped[str] = mapped_column(String(200), nullable=False)
+    # Email công vụ dạng ten@thanhhoa.gov.vn (mô phỏng — nguồn chuẩn thực tế
+    # là CSDL cán bộ, công chức, viên chức tỉnh Thanh Hóa)
+    email: Mapped[str | None] = mapped_column(String(100), nullable=True)
     vai_tro: Mapped[str] = mapped_column(String(20), nullable=False)
     don_vi_id: Mapped[int | None] = mapped_column(
         ForeignKey("don_vi.id"), nullable=True
