@@ -5,6 +5,12 @@ Chạy:  python scripts/seed.py
 Toàn bộ số liệu là DỮ LIỆU MÔ PHỎNG phục vụ trình diễn, sinh ngẫu nhiên có
 chủ đích (seed cố định để tái lập được), kèm các "điểm nóng" phục vụ kịch
 bản demo 5 phút (xem CLAUDE.md Mục 7 và 13).
+
+Trường thông tin, cơ quan chủ chỉ tiêu và CSDL nguồn bám theo:
+- Quyết định số 2053/QĐ-UBND ngày 07/7/2026 (Danh mục dữ liệu chủ chuyên
+  ngành, dữ liệu dùng chung và dữ liệu mở tỉnh Thanh Hóa);
+- Quyết định số 2176/QĐ-UBND ngày 20/7/2026 (Bộ trường thông tin dữ liệu
+  gốc, dữ liệu chủ, dữ liệu tham chiếu tỉnh Thanh Hóa).
 """
 
 import random
@@ -38,33 +44,38 @@ MAT_KHAU_DEMO = "Demo@2026"
 rng = random.Random(2026)  # seed cố định để dữ liệu tái lập được
 
 # ---------------------------------------------------------------------------
-# Danh mục đơn vị
+# Danh mục đơn vị (lớp dữ liệu chủ)
 # ---------------------------------------------------------------------------
 # 5 tên xã/phường thật đã đối chiếu theo Nghị quyết 1686/NQ-UBTVQH15.
 # TODO: thay 10 tên placeholder "Xã Demo 06"…"Xã Demo 15" bằng tên xã/phường
 # thật do người dùng cung cấp — KHÔNG tự bịa tên xã.
+# TODO: ma_dvhc là MÃ MÔ PHỎNG (5 chữ số) — thay bằng mã đơn vị hành chính
+# thật theo danh mục hành chính quốc gia khi người dùng cung cấp.
 DS_XA = [
-    # (mã, tên, loại, vùng)
-    ("HACTHANH", "Phường Hạc Thành", "phuong", "do_thi"),
-    ("CACSON", "Xã Các Sơn", "xa", "mien_nui"),
-    ("NGASON", "Xã Nga Sơn", "xa", "dong_bang"),
-    ("TANTHANH", "Xã Tân Thành", "xa", "dong_bang"),
-    ("THANGLOC", "Xã Thắng Lộc", "xa", "mien_nui"),
-    ("DEMO06", "Xã Demo 06", "phuong", "do_thi"),
-    ("DEMO07", "Xã Demo 07", "phuong", "do_thi"),
-    ("DEMO08", "Xã Demo 08", "xa", "dong_bang"),
-    ("DEMO09", "Xã Demo 09", "xa", "dong_bang"),
-    ("DEMO10", "Xã Demo 10", "xa", "dong_bang"),
-    ("DEMO11", "Xã Demo 11", "xa", "dong_bang"),
-    ("DEMO12", "Xã Demo 12", "xa", "mien_nui"),
-    ("DEMO13", "Xã Demo 13", "xa", "mien_nui"),
-    ("DEMO14", "Xã Demo 14", "xa", "mien_nui"),
-    ("DEMO15", "Xã Demo 15", "xa", "mien_nui"),
+    # (mã nội bộ, tên, loại, vùng, mã ĐVHC mô phỏng)
+    ("HACTHANH", "Phường Hạc Thành", "phuong", "do_thi", "15001"),
+    ("CACSON", "Xã Các Sơn", "xa", "mien_nui", "15002"),
+    ("NGASON", "Xã Nga Sơn", "xa", "dong_bang", "15003"),
+    ("TANTHANH", "Xã Tân Thành", "xa", "dong_bang", "15004"),
+    ("THANGLOC", "Xã Thắng Lộc", "xa", "mien_nui", "15005"),
+    ("DEMO06", "Xã Demo 06", "phuong", "do_thi", "15006"),
+    ("DEMO07", "Xã Demo 07", "phuong", "do_thi", "15007"),
+    ("DEMO08", "Xã Demo 08", "xa", "dong_bang", "15008"),
+    ("DEMO09", "Xã Demo 09", "xa", "dong_bang", "15009"),
+    ("DEMO10", "Xã Demo 10", "xa", "dong_bang", "15010"),
+    ("DEMO11", "Xã Demo 11", "xa", "dong_bang", "15011"),
+    ("DEMO12", "Xã Demo 12", "xa", "mien_nui", "15012"),
+    ("DEMO13", "Xã Demo 13", "xa", "mien_nui", "15013"),
+    ("DEMO14", "Xã Demo 14", "xa", "mien_nui", "15014"),
+    ("DEMO15", "Xã Demo 15", "xa", "mien_nui", "15015"),
 ]
 
+# 5 sở ngành đúng cơ quan chủ quản CSDL theo Danh mục QĐ 2053/QĐ-UBND
 DS_SO_NGANH = [
     ("STC", "Sở Tài chính", "so_nganh"),
     ("SNV", "Sở Nội vụ", "so_nganh"),
+    ("SNNMT", "Sở Nông nghiệp và Môi trường", "so_nganh"),
+    ("TTPVHCC", "Trung tâm Phục vụ hành chính công tỉnh", "so_nganh"),
     ("VPUBND", "Văn phòng UBND tỉnh", "so_nganh"),
 ]
 
@@ -89,7 +100,7 @@ O_TRONG_THANG_7 = {
 }
 
 # ---------------------------------------------------------------------------
-# Danh mục lĩnh vực và chỉ tiêu
+# Danh mục lĩnh vực và chỉ tiêu (lớp dữ liệu chủ/tham chiếu)
 # ---------------------------------------------------------------------------
 DS_LINH_VUC = [
     ("DTC", "Giải ngân vốn đầu tư công"),
@@ -97,39 +108,235 @@ DS_LINH_VUC = [
     ("ASXH", "An sinh xã hội"),
 ]
 
-# (mã, tên, lĩnh vực, đơn vị tính, cơ quan chủ chỉ tiêu, công khai)
+# Cơ quan chủ chỉ tiêu và CSDL nguồn — bám Danh mục QĐ 2053/QĐ-UBND
+CQ_STC = "Sở Tài chính"
+CQ_TTPVHCC = "Trung tâm Phục vụ hành chính công tỉnh"
+CQ_SNNMT = "Sở Nông nghiệp và Môi trường"
+CQ_SNV = "Sở Nội vụ"
+
+NGUON_DTC = (
+    "CSDL thông tin Dự án Đầu tư công (vốn ngân sách tỉnh); "
+    "CSDL quản lý ngân sách dự án đầu tư — Sở Tài chính"
+)
+NGUON_TTHC = "CSDL Hệ thống thông tin giải quyết TTHC tỉnh Thanh Hóa"
+NGUON_HO_NGHEO = (
+    "CSDL quản lý hộ nghèo, hộ cận nghèo toàn tỉnh "
+    "(dữ liệu mở do UBND cấp xã cung cấp)"
+)
+NGUON_BTXH = "CSDL về Bảo trợ xã hội (chi trả trợ cấp)"
+
+RB_PHAN_TRAM = "0 <= gia_tri <= 100"
+RB_KHONG_AM = "gia_tri >= 0"
+RB_LUY_KE = "gia_tri >= 0; canh_bao_neu_giam_so_ky_truoc"
+
+# (mã, tên, lĩnh vực, đơn vị tính, cơ quan chủ, nguồn CSDL,
+#  công thức, ràng buộc, công khai, định nghĩa bổ sung)
 DS_CHI_TIEU = [
-    ("DTC01", "Kế hoạch vốn giao", "DTC", "triệu đồng", "Sở Tài chính", False),
-    ("DTC02", "Giải ngân lũy kế", "DTC", "triệu đồng", "Sở Tài chính", False),
-    ("DTC03", "Tỷ lệ giải ngân", "DTC", "%", "Sở Tài chính", True),
-    ("DTC04", "Số dự án đang triển khai", "DTC", "dự án", "Sở Tài chính", False),
-    ("DTC05", "Số dự án chậm tiến độ", "DTC", "dự án", "Sở Tài chính", False),
-    ("TTHC01", "Hồ sơ tiếp nhận", "TTHC", "hồ sơ", "Sở Nội vụ", False),
-    ("TTHC02", "Hồ sơ giải quyết đúng hạn", "TTHC", "hồ sơ", "Sở Nội vụ", False),
-    ("TTHC03", "Hồ sơ quá hạn", "TTHC", "hồ sơ", "Sở Nội vụ", False),
-    ("TTHC04", "Tỷ lệ giải quyết đúng hạn", "TTHC", "%", "Sở Nội vụ", True),
-    ("TTHC05", "Hồ sơ nộp trực tuyến", "TTHC", "hồ sơ", "Sở Nội vụ", False),
-    ("TTHC06", "Tỷ lệ hồ sơ trực tuyến", "TTHC", "%", "Sở Nội vụ", True),
-    ("AS01", "Số hộ nghèo", "ASXH", "hộ", "Sở Nội vụ", False),
-    ("AS02", "Số hộ cận nghèo", "ASXH", "hộ", "Sở Nội vụ", False),
+    (
+        "DTC01",
+        "Kế hoạch vốn giao",
+        "DTC",
+        "triệu đồng",
+        CQ_STC,
+        NGUON_DTC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "Kế hoạch vốn đầu tư công giao đầu năm (quy ước demo: không đổi trong năm).",
+    ),
+    (
+        "DTC02",
+        "Giải ngân lũy kế",
+        "DTC",
+        "triệu đồng",
+        CQ_STC,
+        NGUON_DTC,
+        None,
+        RB_LUY_KE,
+        False,
+        "Giải ngân lũy kế từ đầu năm đến hết kỳ báo cáo; không vượt kế hoạch vốn.",
+    ),
+    (
+        "DTC03",
+        "Tỷ lệ giải ngân",
+        "DTC",
+        "%",
+        CQ_STC,
+        NGUON_DTC,
+        "DTC02/DTC01*100",
+        RB_PHAN_TRAM,
+        True,
+        "Chỉ tiêu dẫn xuất, hệ thống tự tính theo công thức — không nhập tay.",
+    ),
+    (
+        "DTC04",
+        "Số dự án đang triển khai",
+        "DTC",
+        "dự án",
+        CQ_STC,
+        NGUON_DTC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
+    (
+        "DTC05",
+        "Số dự án chậm tiến độ",
+        "DTC",
+        "dự án",
+        CQ_STC,
+        NGUON_DTC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
+    (
+        "TTHC01",
+        "Hồ sơ tiếp nhận",
+        "TTHC",
+        "hồ sơ",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "Hồ sơ TTHC tiếp nhận trong kỳ; mã TTHC theo CSDL quốc gia về TTHC.",
+    ),
+    (
+        "TTHC02",
+        "Hồ sơ giải quyết đúng hạn",
+        "TTHC",
+        "hồ sơ",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
+    (
+        "TTHC03",
+        "Hồ sơ quá hạn",
+        "TTHC",
+        "hồ sơ",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
+    (
+        "TTHC04",
+        "Tỷ lệ giải quyết đúng hạn",
+        "TTHC",
+        "%",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        "TTHC02/TTHC01*100",
+        RB_PHAN_TRAM,
+        True,
+        "Chỉ tiêu dẫn xuất, hệ thống tự tính theo công thức — không nhập tay.",
+    ),
+    (
+        "TTHC05",
+        "Hồ sơ nộp trực tuyến",
+        "TTHC",
+        "hồ sơ",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        None,
+        RB_KHONG_AM,
+        False,
+        "Đếm hồ sơ theo hình thức nộp/trả kết quả trực tuyến "
+        "(trường HTTKQ ∈ {trực tuyến, trực tiếp, bưu chính}).",
+    ),
+    (
+        "TTHC06",
+        "Tỷ lệ hồ sơ trực tuyến",
+        "TTHC",
+        "%",
+        CQ_TTPVHCC,
+        NGUON_TTHC,
+        "TTHC05/TTHC01*100",
+        RB_PHAN_TRAM,
+        True,
+        "Chỉ tiêu dẫn xuất, hệ thống tự tính theo công thức — không nhập tay.",
+    ),
+    (
+        "AS01",
+        "Số hộ nghèo",
+        "ASXH",
+        "hộ",
+        CQ_SNNMT,
+        NGUON_HO_NGHEO,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
+    (
+        "AS02",
+        "Số hộ cận nghèo",
+        "ASXH",
+        "hộ",
+        CQ_SNNMT,
+        NGUON_HO_NGHEO,
+        None,
+        RB_KHONG_AM,
+        False,
+        "",
+    ),
     (
         "AS03",
         "Đối tượng bảo trợ xã hội hưởng trợ cấp",
         "ASXH",
         "người",
-        "Sở Nội vụ",
+        CQ_SNV,
+        NGUON_BTXH,
+        None,
+        RB_KHONG_AM,
         False,
+        "Số đối tượng đang hưởng trợ cấp xã hội hằng tháng.",
     ),
-    ("AS04", "Kinh phí chi trả tháng", "ASXH", "triệu đồng", "Sở Nội vụ", False),
+    (
+        "AS04",
+        "Kinh phí chi trả tháng",
+        "ASXH",
+        "triệu đồng",
+        CQ_SNV,
+        NGUON_BTXH,
+        None,
+        RB_KHONG_AM,
+        False,
+        "Tổng kinh phí chi trả trợ cấp trong kỳ (trường KyChiTra).",
+    ),
     (
         "AS05",
         "Tỷ lệ chi trả không dùng tiền mặt",
         "ASXH",
         "%",
-        "Sở Nội vụ",
+        CQ_SNV,
+        NGUON_BTXH,
+        None,
+        RB_PHAN_TRAM,
         True,
+        "Không dùng tiền mặt = kỳ chi trả có hình thức chi trả qua tài khoản "
+        "(các trường MaHinhThucChiTra, SoTaiKhoanNguoiNhan, MaNganHang).",
     ),
 ]
+
+
+def _ma_dinh_danh(so_thu_tu: int) -> str:
+    """Sinh mã định danh điện tử cơ quan MÔ PHỎNG theo cấu trúc
+    QCVN 102:2016/BTTTT (H56 = mã tỉnh Thanh Hóa).
+
+    TODO: thay bằng mã định danh thật theo Danh mục Mã định danh điện tử
+    của tỉnh (Sở Khoa học và Công nghệ) khi người dùng cung cấp.
+    """
+    return f"000.00.{so_thu_tu:02d}.H56"
 
 
 def reset_db() -> None:
@@ -154,6 +361,7 @@ def reset_db() -> None:
                        d.vung AS vung,
                        g.nam,
                        g.thang,
+                       (g.nam * 100 + g.thang) AS ky,
                        g.gia_tri,
                        g.nguon,
                        g.thoi_diem_cap_nhat
@@ -162,12 +370,17 @@ def reset_db() -> None:
                 JOIN linh_vuc l ON l.id = c.linh_vuc_id
                 JOIN don_vi d   ON d.id = g.don_vi_id
                 """))
-        conn.execute(
-            text("CREATE VIEW v_don_vi AS SELECT id, ma, ten, loai, vung FROM don_vi")
-        )
+        conn.execute(text("""
+                CREATE VIEW v_don_vi AS
+                SELECT id, ma, ma_dinh_danh, ma_dvhc, ten, loai, loai_dvhc,
+                       vung, trang_thai
+                FROM don_vi
+                """))
         conn.execute(text("""
                 CREATE VIEW v_chi_tieu AS
-                SELECT c.id, c.ma, c.ten, c.don_vi_tinh, c.tan_suat, c.cong_khai,
+                SELECT c.id, c.ma, c.ten, c.don_vi_tinh, c.tan_suat,
+                       c.co_quan_chu_chi_tieu, c.nguon_du_lieu, c.muc_chia_se,
+                       c.cong_thuc, c.cong_khai,
                        l.ma AS ma_linh_vuc, l.ten AS ten_linh_vuc
                 FROM chi_tieu c
                 JOIN linh_vuc l ON l.id = c.linh_vuc_id
@@ -175,17 +388,39 @@ def reset_db() -> None:
 
 
 def seed_don_vi(db: Session) -> dict[str, DonVi]:
-    """Tạo 15 xã/phường + 3 sở ngành + 1 tỉnh; trả về map mã → đơn vị."""
+    """Tạo 15 xã/phường + 5 sở ngành + 1 tỉnh; trả về map mã → đơn vị."""
     ket_qua: dict[str, DonVi] = {}
-    for ma, ten, loai, vung in DS_XA:
-        dv = DonVi(ma=ma, ten=ten, loai=loai, vung=vung)
+    so_thu_tu = 10  # phần mã cơ quan trong mã định danh mô phỏng
+    for ma, ten, loai, vung, ma_dvhc in DS_XA:
+        dv = DonVi(
+            ma=ma,
+            ma_dinh_danh=_ma_dinh_danh(so_thu_tu),
+            ma_dvhc=ma_dvhc,
+            ten=ten,
+            loai=loai,
+            loai_dvhc=rng.choice(["I", "II", "III"]),
+            vung=vung,
+        )
         db.add(dv)
         ket_qua[ma] = dv
-    for ma, ten, loai in DS_SO_NGANH:
-        dv = DonVi(ma=ma, ten=ten, loai=loai, vung=None)
+        so_thu_tu += 1
+    for i, (ma, ten, loai) in enumerate(DS_SO_NGANH, start=1):
+        dv = DonVi(
+            ma=ma,
+            ma_dinh_danh=_ma_dinh_danh(i),
+            ten=ten,
+            loai=loai,
+            vung=None,
+        )
         db.add(dv)
         ket_qua[ma] = dv
-    tinh = DonVi(ma="TINH", ten="UBND tỉnh Thanh Hóa", loai="tinh", vung=None)
+    tinh = DonVi(
+        ma="TINH",
+        ma_dinh_danh="000.00.00.H56",
+        ten="UBND tỉnh Thanh Hóa",
+        loai="tinh",
+        vung=None,
+    )
     db.add(tinh)
     ket_qua["TINH"] = tinh
     db.flush()
@@ -202,7 +437,18 @@ def seed_danh_muc(db: Session) -> dict[str, ChiTieu]:
     db.flush()
 
     map_ct: dict[str, ChiTieu] = {}
-    for ma, ten, ma_lv, dvt, co_quan, cong_khai in DS_CHI_TIEU:
+    for (
+        ma,
+        ten,
+        ma_lv,
+        dvt,
+        co_quan,
+        nguon_du_lieu,
+        cong_thuc,
+        rang_buoc,
+        cong_khai,
+        dinh_nghia,
+    ) in DS_CHI_TIEU:
         ct = ChiTieu(
             ma=ma,
             ten=ten,
@@ -210,7 +456,12 @@ def seed_danh_muc(db: Session) -> dict[str, ChiTieu]:
             don_vi_tinh=dvt,
             tan_suat="thang",
             co_quan_chu_chi_tieu=co_quan,
-            dinh_nghia=f"Chỉ tiêu {ten.lower()} theo kỳ báo cáo tháng (dữ liệu mô phỏng).",
+            nguon_du_lieu=nguon_du_lieu,
+            muc_chia_se="mo" if cong_khai else "dung_chung",
+            cong_thuc=cong_thuc,
+            rang_buoc=rang_buoc,
+            dinh_nghia=dinh_nghia
+            or f"Chỉ tiêu {ten.lower()} theo kỳ báo cáo tháng (dữ liệu mô phỏng).",
             cong_khai=cong_khai,
         )
         db.add(ct)
@@ -237,13 +488,18 @@ def seed_danh_muc(db: Session) -> dict[str, ChiTieu]:
 
 
 def seed_nguoi_dung(db: Session, map_dv: dict[str, DonVi]) -> dict[str, NguoiDung]:
-    """Tạo 4 tài khoản demo (mật khẩu ghi trong README, chỉ dùng demo)."""
+    """Tạo 4 tài khoản demo (mật khẩu ghi trong README, chỉ dùng demo).
+
+    Email công vụ dạng @thanhhoa.gov.vn là MÔ PHỎNG (nguồn chuẩn thực tế:
+    CSDL cán bộ, công chức, viên chức tỉnh Thanh Hóa).
+    """
     hash_chung = hash_mat_khau(MAT_KHAU_DEMO)
     ds = [
         NguoiDung(
             ten_dang_nhap="admin",
             mat_khau_hash=hash_chung,
             ho_ten="Quản trị hệ thống",
+            email="admin.demo@thanhhoa.gov.vn",
             vai_tro="quan_tri",
             don_vi_id=map_dv["VPUBND"].id,
         ),
@@ -251,6 +507,7 @@ def seed_nguoi_dung(db: Session, map_dv: dict[str, DonVi]) -> dict[str, NguoiDun
             ten_dang_nhap="lanhdao",
             mat_khau_hash=hash_chung,
             ho_ten="Lãnh đạo UBND tỉnh",
+            email="lanhdao.demo@thanhhoa.gov.vn",
             vai_tro="lanh_dao",
             don_vi_id=map_dv["TINH"].id,
         ),
@@ -258,6 +515,7 @@ def seed_nguoi_dung(db: Session, map_dv: dict[str, DonVi]) -> dict[str, NguoiDun
             ten_dang_nhap="xa.hacthanh",
             mat_khau_hash=hash_chung,
             ho_ten="Chuyên viên phường Hạc Thành",
+            email="hacthanh.demo@thanhhoa.gov.vn",
             vai_tro="chuyen_vien_xa",
             don_vi_id=map_dv["HACTHANH"].id,
         ),
@@ -265,6 +523,7 @@ def seed_nguoi_dung(db: Session, map_dv: dict[str, DonVi]) -> dict[str, NguoiDun
             ten_dang_nhap="daibieu",
             mat_khau_hash=hash_chung,
             ho_ten="Đại biểu HĐND tỉnh",
+            email="daibieu.demo@thanhhoa.gov.vn",
             vai_tro="dai_bieu_hdnd",
             don_vi_id=map_dv["TINH"].id,
         ),
@@ -389,7 +648,7 @@ def seed_gia_tri(
     so_ban_ghi = 0
     id_chuyen_vien_hacthanh = map_nd["xa.hacthanh"].id
 
-    for ma_xa, _ten, _loai, vung in DS_XA:
+    for ma_xa, _ten, _loai, vung, _ma_dvhc in DS_XA:
         dv = map_dv[ma_xa]
         he_so = HE_SO_VUNG[vung] * rng.uniform(0.85, 1.15)
 
@@ -501,7 +760,8 @@ def main() -> None:
     print(f"  - Đơn vị:            {thong_ke['don_vi']}")
     print(f"  - Chỉ tiêu:          {thong_ke['chi_tieu']}")
     print(
-        f"  - Người dùng:        {thong_ke['nguoi_dung']} (mật khẩu demo: {MAT_KHAU_DEMO})"
+        f"  - Người dùng:        {thong_ke['nguoi_dung']} "
+        f"(mật khẩu demo: {MAT_KHAU_DEMO})"
     )
     print(f"  - Giá trị chỉ tiêu:  {thong_ke['gia_tri']} bản ghi (tháng 01–07/{NAM})")
     print("Lưu ý: toàn bộ là DỮ LIỆU MÔ PHỎNG phục vụ trình diễn.")

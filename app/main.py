@@ -10,6 +10,7 @@ from fastapi.templating import Jinja2Templates
 from app import auth
 from app.auth import TEN_VAI_TRO, get_current_user
 from app.models import NguoiDung
+from app.routers import nhap_lieu
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -26,6 +27,7 @@ templates = Jinja2Templates(directory=APP_DIR / "templates")
 templates.env.globals["TEN_VAI_TRO"] = TEN_VAI_TRO
 
 app.include_router(auth.router)
+app.include_router(nhap_lieu.router)
 
 
 @app.get("/")
