@@ -8,9 +8,12 @@
   — Phân loại: {{ don_vi.loai_dvhc or "—" }}
 </p>
 
+{% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
 <p>
-  <a class="nut" href="#" title="Máy soạn báo cáo sẽ mở ở Milestone 4">📄 Tạo báo cáo tháng (M4)</a>
+  <a class="nut" href="/bao-cao/tao?don_vi={{ don_vi.ma }}&mau=BC-DTC&thang=7">📄 Báo cáo giải ngân tháng 7</a>
+  <a class="nut nut--xam" href="/bao-cao/tao?don_vi={{ don_vi.ma }}&mau=BC-TTHC&thang=7">📄 Báo cáo TTHC tháng 7</a>
 </p>
+{% endif %}
 
 <div class="khoi-bieu-do">
   <h2>Diễn biến các tỷ lệ chính 7 tháng đầu năm {{ nam }}</h2>
