@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<div class="khung-dang-nhap">
+  <h1>Đăng nhập hệ thống</h1>
+  <p class="mo-ta">Kho dữ liệu dùng chung — mỗi số liệu chỉ nhập một lần tại nguồn.</p>
+
+  {% if loi %}
+  <div class="canh-bao canh-bao--loi">{{ loi }}</div>
+  {% endif %}
+
+  <form method="post" action="/dang-nhap" class="form-dang-nhap">
+    <label for="ten_dang_nhap">Tên đăng nhập</label>
+    <input type="text" id="ten_dang_nhap" name="ten_dang_nhap" required autofocus
+           placeholder="ví dụ: lanhdao">
+
+    <label for="mat_khau">Mật khẩu</label>
+    <input type="password" id="mat_khau" name="mat_khau" required
+           placeholder="Nhập mật khẩu">
+
+    <button type="submit" class="nut">Đăng nhập</button>
+  </form>
+
+  <p class="ghi-chu">Tài khoản demo: <code>lanhdao</code>, <code>xa.hacthanh</code>,
+    <code>daibieu</code>, <code>admin</code> — xem README để biết mật khẩu.</p>
+</div>
+{% endblock %}

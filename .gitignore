@@ -1,0 +1,14 @@
+# Moi truong & bi mat
+.env
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# Du lieu & file sinh ra
+*.db
+data/*.db
+outputs/

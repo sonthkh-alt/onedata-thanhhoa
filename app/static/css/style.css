@@ -1,0 +1,111 @@
+/* Giao diện demo "Một dữ liệu – Không báo cáo lại" — nghiêm túc, cơ quan nhà nước */
+
+:root {
+  --mau-chinh: #a51c1c;      /* đỏ trầm */
+  --mau-chinh-dam: #7f1414;
+  --mau-nen: #f5f4f0;
+  --mau-chu: #222;
+  --mau-vien: #ddd8d0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+  background: var(--mau-nen);
+  color: var(--mau-chu);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Thanh đầu trang */
+.thanh-dau {
+  background: var(--mau-chinh);
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.thanh-dau__ten { display: flex; align-items: center; gap: 0.6rem; }
+.thanh-dau__logo { font-size: 1.6rem; color: #ffd700; }
+.thanh-dau__phu { font-size: 0.8rem; opacity: 0.9; }
+.thanh-dau__nav { display: flex; align-items: center; gap: 0.8rem; font-size: 0.9rem; }
+
+/* Nội dung chính */
+.noi-dung { flex: 1; width: 100%; max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.2rem; }
+h1 { color: var(--mau-chinh-dam); margin-top: 0; }
+.mo-ta { color: #555; }
+
+/* Nút */
+.nut {
+  display: inline-block;
+  background: var(--mau-chinh);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.55rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.nut:hover { background: var(--mau-chinh-dam); }
+.nut--phu { background: rgba(255, 255, 255, 0.15); padding: 0.35rem 0.8rem; font-size: 0.85rem; }
+.nut--phu:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* Form đăng nhập */
+.khung-dang-nhap {
+  max-width: 420px;
+  margin: 2rem auto;
+  background: #fff;
+  border: 1px solid var(--mau-vien);
+  border-radius: 8px;
+  padding: 1.5rem 2rem 1.8rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+.form-dang-nhap { display: flex; flex-direction: column; gap: 0.4rem; }
+.form-dang-nhap label { font-weight: 600; margin-top: 0.6rem; }
+.form-dang-nhap input {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--mau-vien);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.form-dang-nhap input:focus { outline: 2px solid var(--mau-chinh); border-color: transparent; }
+.form-dang-nhap .nut { margin-top: 1rem; }
+
+/* Cảnh báo */
+.canh-bao { padding: 0.6rem 0.9rem; border-radius: 4px; margin: 0.8rem 0; }
+.canh-bao--loi { background: #fdecea; color: #a12622; border: 1px solid #f2c0bd; }
+
+/* Lưới thẻ chức năng */
+.luoi-the {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+}
+.the {
+  background: #fff;
+  border: 1px solid var(--mau-vien);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+}
+.the h2 { margin: 0 0 0.4rem; font-size: 1.05rem; color: var(--mau-chinh-dam); }
+.the p { margin: 0.3rem 0; font-size: 0.92rem; }
+
+.ghi-chu { font-size: 0.82rem; color: #777; }
+
+/* Chân trang */
+.chan-trang {
+  text-align: center;
+  font-size: 0.82rem;
+  color: #666;
+  padding: 0.8rem 1rem;
+  border-top: 1px solid var(--mau-vien);
+  background: #fbfaf7;
+}

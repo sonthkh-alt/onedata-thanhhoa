@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Trang chủ — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>Xin chào, {{ nguoi_dung.ho_ten }}!</h1>
+<p class="mo-ta">
+  Anh/chị đang đăng nhập với vai trò
+  <strong>{{ TEN_VAI_TRO[nguoi_dung.vai_tro] }}</strong>
+  {%- if nguoi_dung.don_vi %} — đơn vị: <strong>{{ nguoi_dung.don_vi.ten }}</strong>{% endif %}.
+</p>
+
+<div class="luoi-the">
+  {% if nguoi_dung.vai_tro in ["chuyen_vien_xa", "quan_tri"] %}
+  <div class="the">
+    <h2>📝 Nhập số liệu tại nguồn</h2>
+    <p>Nhập MỘT LẦN — mọi báo cáo, bảng biểu được hệ thống tự tổng hợp.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 2.</p>
+  </div>
+  {% endif %}
+
+  {% if nguoi_dung.vai_tro in ["lanh_dao", "dai_bieu_hdnd", "quan_tri"] %}
+  <div class="the">
+    <h2>📊 Dashboard điều hành</h2>
+    <p>Tổng hợp 3 lĩnh vực, xếp hạng, diễn biến 7 tháng, điểm nóng.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+  </div>
+  {% endif %}
+
+  {% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
+  <div class="the">
+    <h2>📄 Máy soạn báo cáo</h2>
+    <p>Sinh báo cáo .docx đúng thể thức Nghị định 30/2020/NĐ-CP.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 4.</p>
+  </div>
+  <div class="the">
+    <h2>💬 Hỏi – đáp dữ liệu AI</h2>
+    <p>Hỏi bằng tiếng Việt, trả lời kèm bảng số liệu và nguồn.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 5.</p>
+  </div>
+  {% endif %}
+
+  {% if nguoi_dung.vai_tro in ["dai_bieu_hdnd", "quan_tri"] %}
+  <div class="the">
+    <h2>🏛️ Giám sát nghị quyết HĐND</h2>
+    <p>Theo dõi chỉ tiêu theo nghị quyết, tiến độ thực hiện.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+  </div>
+  {% endif %}
+
+  <div class="the">
+    <h2>🌐 Trang công khai</h2>
+    <p>“Dân biết – dân giám sát”: chỉ tiêu công khai theo xã, không cần đăng nhập.</p>
+    <p class="ghi-chu">Sẽ mở ở Milestone 3.</p>
+  </div>
+</div>
+{% endblock %}

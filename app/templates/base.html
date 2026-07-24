@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Một dữ liệu – Không báo cáo lại{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <header class="thanh-dau">
+    <div class="thanh-dau__ten">
+      <span class="thanh-dau__logo">★</span>
+      <div>
+        <strong>MỘT DỮ LIỆU – KHÔNG BÁO CÁO LẠI</strong>
+        <div class="thanh-dau__phu">Kho dữ liệu dùng chung tỉnh Thanh Hóa (bản demo)</div>
+      </div>
+    </div>
+    {% if nguoi_dung %}
+    <nav class="thanh-dau__nav">
+      <span>{{ nguoi_dung.ho_ten }} — {{ TEN_VAI_TRO[nguoi_dung.vai_tro] }}</span>
+      <a class="nut nut--phu" href="/dang-xuat">Đăng xuất</a>
+    </nav>
+    {% endif %}
+  </header>
+
+  <main class="noi-dung">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="chan-trang">
+    <em>Dữ liệu mô phỏng phục vụ trình diễn — không phải số liệu thống kê chính thức.</em>
+  </footer>
+</body>
+</html>

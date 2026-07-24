@@ -1,0 +1,17 @@
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "RUF"]
+ignore = [
+    "B008",   # Depends(...) trong tham số mặc định là idiom chuẩn của FastAPI
+    "E501",   # độ dài dòng do black quản lý; chuỗi tiếng Việt dài cho phép vượt
+    "RUF001", # chuỗi tiếng Việt dùng dấu gạch ngang "–" và ký tự có dấu là chủ ý
+    "RUF002",
+    "RUF003",
+]
