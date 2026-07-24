@@ -8,6 +8,24 @@
   {%- if nguoi_dung.don_vi %} — đơn vị: <strong>{{ nguoi_dung.don_vi.ten }}</strong>{% endif %}.
 </p>
 
+<div class="dong-ho-tiet-kiem">
+  ⏱️ Từ đầu năm {{ "2026" }}, mô hình "Một dữ liệu" đã thay thế
+  <strong>{{ "{:,}".format(dong_ho.luot_toan_tinh) }}</strong> lượt báo cáo thủ công
+  của 166 xã, phường ≈ <strong>{{ "{:,}".format(dong_ho.gio_cong) }}</strong> giờ công
+  (<strong>{{ "{:,}".format(dong_ho.ngay_cong) }}</strong> ngày công).
+  <span class="ghi-chu">Quy ước minh bạch: {{ dong_ho.gia_dinh_gio }} giờ công/lượt báo cáo,
+    tính trên bản kiểm kê {{ dong_ho.thang_da_van_hanh }} tháng vận hành — chi tiết tại
+    <a href="/kiem-ke">Kiểm kê báo cáo</a>.</span>
+</div>
+
+{% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri", "dai_bieu_hdnd"] %}
+<div class="thong-diep-chinh">
+  🧭 <strong><a href="/ban-tin">Bản tin điều hành hôm nay</a></strong> — máy tham mưu
+  tự lập: dự báo giải ngân 31/12, biến động bất thường, 3 việc cần chỉ đạo kèm
+  dự thảo công văn NĐ30 sẵn để ký.
+</div>
+{% endif %}
+
 <div class="luoi-the">
   {% if nguoi_dung.vai_tro in ["chuyen_vien_xa", "quan_tri"] %}
   <div class="the">

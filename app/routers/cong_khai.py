@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 from app.auth import get_current_user, ghi_nhat_ky
 from app.db import get_db
 from app.models import ChiTieu, DonVi, GiaTriChiTieu, NguoiDung
+from app.services import kiem_ke
 
 router = APIRouter(prefix="/cong-khai", tags=["cong-khai"])
 
@@ -91,6 +92,7 @@ def trang_cong_khai(
             "nam": NAM_DEMO,
             "ky": NAM_DEMO * 100 + THANG_MOI_NHAT,
             "da_gop_y": gop_y == "ok",
+            "dong_ho": kiem_ke.dong_ho_tiet_kiem(db),
         },
     )
 

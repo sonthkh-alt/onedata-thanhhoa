@@ -72,6 +72,7 @@ def gia_tri_theo_xa(
         truy_van = truy_van.filter(DonVi.vung == vung)
     ket_qua = [
         {
+            "id": gt.id,
             "ma": dv.ma,
             "ten": dv.ten,
             "vung": dv.vung,

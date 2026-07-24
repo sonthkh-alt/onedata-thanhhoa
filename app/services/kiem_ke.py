@@ -78,6 +78,27 @@ def tim_nghi_trung_lap(ds_bao_cao: list[KiemKeBaoCao]) -> list[CapTrungLap]:
     return ket_qua
 
 
+GIO_CONG_MOT_LUOT = 4  # giả định demo: một lượt lập + gửi báo cáo ≈ 4 giờ công
+THANG_DA_VAN_HANH = 7  # demo: vận hành từ tháng 01 đến tháng 07/2026
+
+
+def dong_ho_tiet_kiem(db: Session) -> dict:
+    """Đồng hồ tiết kiệm: số lượt báo cáo và giờ công mô hình đã thay thế
+    từ đầu năm (giả định minh bạch, ghi rõ trên giao diện)."""
+    ds = db.query(KiemKeBaoCao).all()
+    luot_mot_xa = sum(
+        round(SO_KY_MOT_NAM.get(bc.tan_suat, 12) * THANG_DA_VAN_HANH / 12) for bc in ds
+    )
+    luot_toan_tinh = luot_mot_xa * SO_XA_TOAN_TINH
+    return {
+        "luot_toan_tinh": luot_toan_tinh,
+        "gio_cong": luot_toan_tinh * GIO_CONG_MOT_LUOT,
+        "ngay_cong": round(luot_toan_tinh * GIO_CONG_MOT_LUOT / 8),
+        "thang_da_van_hanh": THANG_DA_VAN_HANH,
+        "gia_dinh_gio": GIO_CONG_MOT_LUOT,
+    }
+
+
 def thong_ke_ganh_nang(db: Session) -> dict:
     """Thống kê gánh nặng báo cáo của MỘT xã và quy đổi toàn tỉnh 166 xã."""
     ds = db.query(KiemKeBaoCao).order_by(KiemKeBaoCao.ten_bao_cao).all()

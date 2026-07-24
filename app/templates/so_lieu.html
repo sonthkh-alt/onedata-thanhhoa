@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Hộ chiếu số liệu — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<p><a href="/don-vi/{{ don_vi.ma }}">← Về trang {{ don_vi.ten }}</a></p>
+<h1>🛂 Hộ chiếu số liệu <span class="ma-ky">bản ghi #{{ gt.id }}</span></h1>
+<p class="mo-ta">Mỗi con số trong Kho dữ liệu dùng chung đều truy được tận gốc —
+  ai nhập, lúc nào, từ nguồn nào, tính thế nào.</p>
+
+<div class="khoi-tra-loi">
+  <p class="so-lon" style="font-size:2.6rem">
+    {{ "%.6g"|format(gt.gia_tri) }} <span style="font-size:1.1rem">{{ chi_tieu.don_vi_tinh }}</span>
+  </p>
+  <p><strong>{{ chi_tieu.ma }} — {{ chi_tieu.ten }}</strong> · {{ don_vi.ten }} · kỳ {{ ky }}
+    (tháng {{ gt.thang }}/{{ gt.nam }})</p>
+</div>
+
+<table class="bang-nhap">
+  <tbody>
+    <tr><th style="width:260px">Đơn vị cung cấp</th>
+      <td>{{ don_vi.ten }} — mã ĐVHC {{ don_vi.ma_dvhc or "—" }} — mã định danh {{ don_vi.ma_dinh_danh or "—" }}</td></tr>
+    <tr><th>Nguồn bản ghi</th>
+      <td>{{ "Đồng bộ từ hệ thống chuyên ngành" if gt.nguon == "he_thong" else "Nhập tay tại nguồn (cấp xã)" }}</td></tr>
+    <tr><th>CSDL nguồn theo Danh mục QĐ 2053/QĐ-UBND</th>
+      <td>{{ chi_tieu.nguon_du_lieu }}</td></tr>
+    <tr><th>Cơ quan chủ chỉ tiêu</th><td>{{ chi_tieu.co_quan_chu_chi_tieu }}</td></tr>
+    <tr><th>Người cập nhật gần nhất</th>
+      <td>{{ nguoi_cap_nhat.ho_ten if nguoi_cap_nhat else "Hệ thống (đồng bộ tự động)" }}</td></tr>
+    <tr><th>Thời điểm cập nhật</th>
+      <td>{{ gt.thoi_diem_cap_nhat.strftime("%Y-%m-%d %H:%M:%S") }}</td></tr>
+    {% if chi_tieu.cong_thuc %}
+    <tr><th>Công thức tính (hệ thống tự tính)</th><td><code>{{ chi_tieu.cong_thuc }}</code></td></tr>
+    {% endif %}
+    {% if chi_tieu.rang_buoc %}
+    <tr><th>Quy tắc kiểm tra khi nhập</th><td><code>{{ chi_tieu.rang_buoc }}</code></td></tr>
+    {% endif %}
+    <tr><th>Mức chia sẻ</th>
+      <td>{{ {"mo": "Dữ liệu MỞ (công khai cho người dân)", "dung_chung": "Dữ liệu dùng chung",
+              "chuyen_nganh": "Dữ liệu chủ chuyên ngành"}[chi_tieu.muc_chia_se] }}</td></tr>
+    <tr><th>Định nghĩa chỉ tiêu</th><td>{{ chi_tieu.dinh_nghia }}</td></tr>
+  </tbody>
+</table>
+
+<h2>Lịch sử liên quan (từ nhật ký hệ thống)</h2>
+{% if lich_su %}
+<table class="bang-nhap">
+  <thead><tr><th>Thời điểm</th><th>Hành động</th><th>Chi tiết</th></tr></thead>
+  <tbody>
+    {% for nk in lich_su %}
+    <tr class="{{ 'dong-canh-bao-cao' if nk.hanh_dong == 'canh_bao_du_lieu' else '' }}">
+      <td class="thoi-diem">{{ nk.thoi_diem.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      <td>{{ {"nhap_so_lieu": "Nhập mới", "sua_so_lieu": "Sửa (ghi đè)",
+              "canh_bao_du_lieu": "⚠️ Gắn cờ cảnh báo",
+              "tinh_chi_tieu_dan_xuat": "Hệ thống tự tính"}[nk.hanh_dong] }}</td>
+      <td>{{ nk.chi_tiet }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="ghi-chu">Bản ghi được tạo khi khởi tạo dữ liệu mô phỏng — chưa có thao tác
+  nhập/sửa thủ công nào sau đó.</p>
+{% endif %}
+
+<p class="nguyen-tac">Trên IOC, một con số sai phải đi tìm cả tuần.
+  Ở đây: <strong>2 giây biết sai từ ai, lúc nào.</strong></p>
+{% endblock %}

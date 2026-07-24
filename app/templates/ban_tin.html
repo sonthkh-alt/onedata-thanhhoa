@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Bản tin điều hành — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>🧭 Bản tin điều hành <span class="ma-ky">kỳ {{ bt.ky }} — máy tham mưu tự lập, không chờ hỏi</span></h1>
+<p class="mo-ta">IOC cho biết <em>chuyện gì đã xảy ra</em>. Bản tin này cho biết
+  <strong>sắp xảy ra chuyện gì</strong> và <strong>hôm nay cần chỉ đạo gì</strong> —
+  kèm dự thảo văn bản soạn sẵn.</p>
+
+<h2>1️⃣ Ba việc cần chỉ đạo hôm nay</h2>
+<div class="luoi-the luoi-the--3">
+  {% for viec in bt.viec_can_chi_dao %}
+  <div class="the {{ 'the--linhvuc' if viec.muc_do == 'cao' else '' }}">
+    <h2>{{ loop.index }}. {{ viec.tieu_de }}</h2>
+    <p>{{ viec.noi_dung }}</p>
+    <p class="ghi-chu">Mức độ: {{ "CAO" if viec.muc_do == "cao" else "Trung bình" }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
+<p>
+  <a class="nut" href="/ban-tin/du-thao-cong-van">📄 Tải dự thảo công văn đôn đốc
+    giải ngân (thể thức NĐ30, sẵn để ký)</a>
+</p>
+{% endif %}
+
+<h2>2️⃣ Dự báo giải ngân đến 31/12/{{ bt.nam }} (nếu giữ nhịp hiện tại)</h2>
+<p class="ghi-chu">Hồi quy tuyến tính trên chuỗi giải ngân lũy kế 7 tháng của từng xã —
+  đối chiếu mục tiêu ≥ {{ muc_tieu }}% theo Nghị quyết HĐND tỉnh.
+  <strong>{{ bt.xa_hut | length }}/{{ bt.du_bao | length }} xã dự báo KHÔNG đạt.</strong></p>
+<table class="bang-nhap">
+  <thead>
+    <tr><th>Đơn vị</th><th class="so">Hiện tại (%)</th><th class="so">Dự báo 31/12 (%)</th>
+      <th>Kết luận</th><th class="so">Cần thêm (tr.đ/tháng)</th></tr>
+  </thead>
+  <tbody>
+    {% for d in bt.du_bao %}
+    <tr class="{{ 'dong-canh-bao-cao' if not d.dat_muc_tieu else '' }}">
+      <td><a href="/don-vi/{{ d.ma }}">{{ d.ten }}</a></td>
+      <td class="so">{{ d.ty_le_hien_tai }}</td>
+      <td class="so"><strong>{{ d.ty_le_du_bao }}</strong></td>
+      <td>{{ "⚠️ Dự báo HỤT mục tiêu" if not d.dat_muc_tieu else "✅ Trong lộ trình" }}</td>
+      <td class="so">{{ "{:,.0f}".format(d.can_tang_toc_thang) if not d.dat_muc_tieu else "—" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2>3️⃣ Biến động bất thường kỳ này</h2>
+{% if bt.bat_thuong %}
+<table class="bang-nhap">
+  <thead>
+    <tr><th>Đơn vị</th><th>Chỉ tiêu</th><th class="so">Kỳ này</th>
+      <th class="so">TB 6 tháng</th><th class="so">Lệch</th></tr>
+  </thead>
+  <tbody>
+    {% for b in bt.bat_thuong %}
+    <tr>
+      <td><a href="/don-vi/{{ b.ma_don_vi }}">{{ b.don_vi }}</a></td>
+      <td>{{ b.chi_tieu }}</td>
+      <td class="so">{{ "%.6g"|format(b.gia_tri_ky_nay) }}</td>
+      <td class="so">{{ "%.6g"|format(b.trung_binh_6_thang) }}</td>
+      <td class="so">{{ "+" if b.lech_phan_tram > 0 else "" }}{{ b.lech_phan_tram }}%</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="ghi-chu">Lệch trên 40% so với trung bình 6 tháng đầu năm của chính đơn vị —
+  có thể là đột biến thật hoặc nhập nhầm, cần xác minh.</p>
+{% else %}
+<p>Không phát hiện biến động bất thường trong kỳ.</p>
+{% endif %}
+
+<h2>4️⃣ Điểm nóng theo ngưỡng (chi tiết tại <a href="/dashboard">dashboard</a>)</h2>
+<p>{{ bt.diem_nong | length }} cảnh báo đang mở — hệ thống tự nhắc đơn vị liên quan,
+  không cần công văn đôn đốc thủ công.</p>
+{% endblock %}

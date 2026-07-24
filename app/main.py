@@ -9,8 +9,10 @@ from fastapi.templating import Jinja2Templates
 
 from app import auth
 from app.auth import TEN_VAI_TRO, get_current_user
+from app.db import get_db
 from app.models import NguoiDung
 from app.routers import (
+    ban_tin,
     bao_cao,
     cong_khai,
     dashboard,
@@ -19,6 +21,7 @@ from app.routers import (
     kiem_ke,
     nhap_lieu,
 )
+from app.services import kiem_ke as kiem_ke_service
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -42,15 +45,20 @@ app.include_router(giam_sat.router)
 app.include_router(bao_cao.router)
 app.include_router(hoi_dap.router)
 app.include_router(kiem_ke.router)
+app.include_router(ban_tin.router)
 
 
 @app.get("/")
 def trang_chu(
-    request: Request, nguoi_dung: NguoiDung | None = Depends(get_current_user)
+    request: Request,
+    nguoi_dung: NguoiDung | None = Depends(get_current_user),
+    db=Depends(get_db),
 ):
     """Trang chủ theo vai trò; chưa đăng nhập thì chuyển về trang đăng nhập."""
     if nguoi_dung is None:
         return RedirectResponse("/dang-nhap", status_code=303)
     return templates.TemplateResponse(
-        request, "trang_chu.html", {"nguoi_dung": nguoi_dung}
+        request,
+        "trang_chu.html",
+        {"nguoi_dung": nguoi_dung, "dong_ho": kiem_ke_service.dong_ho_tiet_kiem(db)},
     )

@@ -36,7 +36,12 @@
       <td>{{ dong.chi_tieu.ten }}</td>
       <td>{{ dong.chi_tieu.don_vi_tinh }}</td>
       {% for gt in dong.gia_tri %}
-      <td class="so">{{ "%.6g"|format(gt) if gt is not none else "—" }}</td>
+      <td class="so">
+        {% if gt is not none %}
+        <a class="lien-ket-so-lieu" href="/so-lieu/{{ gt.id }}"
+           title="Bấm để xem hộ chiếu số liệu: ai nhập, lúc nào, từ nguồn nào">{{ "%.6g"|format(gt.gia_tri) }}</a>
+        {% else %}—{% endif %}
+      </td>
       {% endfor %}
     </tr>
     {% endfor %}
