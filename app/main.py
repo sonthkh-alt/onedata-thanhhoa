@@ -10,7 +10,7 @@ from fastapi.templating import Jinja2Templates
 from app import auth
 from app.auth import TEN_VAI_TRO, get_current_user
 from app.models import NguoiDung
-from app.routers import bao_cao, cong_khai, dashboard, giam_sat, nhap_lieu
+from app.routers import bao_cao, cong_khai, dashboard, giam_sat, hoi_dap, nhap_lieu
 
 APP_DIR = Path(__file__).resolve().parent
 
@@ -32,6 +32,7 @@ app.include_router(dashboard.router)
 app.include_router(cong_khai.router)
 app.include_router(giam_sat.router)
 app.include_router(bao_cao.router)
+app.include_router(hoi_dap.router)
 
 
 @app.get("/")
