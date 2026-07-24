@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Kiểm kê báo cáo — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>🗺️ Kiểm kê chế độ báo cáo cấp xã</h1>
+<p class="mo-ta">"Bản đồ báo cáo": đo gánh nặng báo cáo hiện nay và chỉ ra các báo cáo
+  trùng lặp nội dung — căn cứ để cắt giảm khi vận hành Kho dữ liệu dùng chung.</p>
+
+{% if da_khai_bao %}
+<div class="canh-bao canh-bao--ok">Đã ghi nhận chế độ báo cáo mới vào bản kiểm kê.</div>
+{% endif %}
+
+<div class="luoi-the luoi-the--3">
+  <div class="the the--linhvuc">
+    <h2>Số loại báo cáo định kỳ</h2>
+    <p class="so-lon">{{ tk.so_loai }}</p>
+    <p class="ghi-chu">mỗi xã đang phải lập cho các cơ quan cấp trên</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>Lượt báo cáo mỗi xã/năm</h2>
+    <p class="so-lon">{{ tk.luot_mot_xa_nam }}</p>
+    <p class="ghi-chu">≈ {{ tk.luot_mot_xa_thang }} lượt/tháng — quy đổi 166 xã:
+      <strong>{{ "{:,}".format(tk.luot_toan_tinh_nam) }} lượt/năm</strong> toàn tỉnh</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>Có thể cắt ngay nếu gộp báo cáo trùng</h2>
+    <p class="so-lon">{{ "{:,}".format(tk.luot_cat_duoc_toan_tinh) }}</p>
+    <p class="ghi-chu">lượt/năm toàn tỉnh — chưa kể phần thay thế hoàn toàn bằng
+      Kho dữ liệu dùng chung</p>
+  </div>
+</div>
+
+<h2>⚠️ Danh sách nghi trùng lặp (so khớp gần đúng theo tên)</h2>
+{% if tk.cap_trung %}
+<table class="bang-nhap bang-diem-nong">
+  <thead>
+    <tr><th>Báo cáo 1</th><th>Báo cáo 2</th><th>Độ giống</th></tr>
+  </thead>
+  <tbody>
+    {% for cap in tk.cap_trung %}
+    <tr class="dong-canh-bao-cao">
+      <td>{{ cap.bao_cao_1.ten_bao_cao }}<br>
+        <span class="ghi-chu">{{ cap.bao_cao_1.co_quan_yeu_cau }} — {{ ten_tan_suat[cap.bao_cao_1.tan_suat] }}</span></td>
+      <td>{{ cap.bao_cao_2.ten_bao_cao }}<br>
+        <span class="ghi-chu">{{ cap.bao_cao_2.co_quan_yeu_cau }} — {{ ten_tan_suat[cap.bao_cao_2.tan_suat] }}</span></td>
+      <td class="so">{{ (cap.do_giong * 100) | round | int }}%</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="ghi-chu">Hai cơ quan khác nhau yêu cầu cùng một nội dung → xã phải nhập
+  cùng số liệu hai lần. Với mô hình "Một dữ liệu", cả hai cùng đọc từ Kho dữ liệu dùng chung.</p>
+{% else %}
+<p>Chưa phát hiện cặp báo cáo nào nghi trùng lặp.</p>
+{% endif %}
+
+<h2>Danh sách chế độ báo cáo đã kiểm kê</h2>
+<table class="bang-nhap">
+  <thead>
+    <tr><th>#</th><th>Tên báo cáo</th><th>Cơ quan yêu cầu</th><th>Tần suất</th>
+      <th class="so">Kỳ/năm</th><th>Căn cứ</th></tr>
+  </thead>
+  <tbody>
+    {% for bc in tk.ds_bao_cao %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ bc.ten_bao_cao }}</td>
+      <td>{{ bc.co_quan_yeu_cau }}</td>
+      <td>{{ ten_tan_suat[bc.tan_suat] }}</td>
+      <td class="so">{{ so_ky[bc.tan_suat] }}</td>
+      <td class="ghi-chu">{{ bc.can_cu }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if duoc_khai_bao %}
+<div class="tap-du-lieu">
+  <h2>➕ Khai báo chế độ báo cáo mới</h2>
+  <form method="post" action="/kiem-ke" class="form-gop-y">
+    <input type="text" name="ten_bao_cao" required placeholder="Tên báo cáo (ví dụ: Báo cáo tình hình...)">
+    <input type="text" name="co_quan_yeu_cau" required placeholder="Cơ quan yêu cầu">
+    <select name="tan_suat">
+      {% for ma, ten in ten_tan_suat.items() %}
+      <option value="{{ ma }}">{{ ten }}</option>
+      {% endfor %}
+    </select>
+    <input type="text" name="can_cu" placeholder="Căn cứ yêu cầu (văn bản, kế hoạch...)">
+    <button type="submit" class="nut">Ghi vào bản kiểm kê</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

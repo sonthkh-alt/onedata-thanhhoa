@@ -31,6 +31,7 @@ from app.models import (
     ChiTieu,
     DonVi,
     GiaTriChiTieu,
+    KiemKeBaoCao,
     LinhVuc,
     MauBaoCao,
     NghiQuyetTheoDoi,
@@ -751,6 +752,95 @@ def seed_nghi_quyet(db: Session, map_ct: dict[str, ChiTieu]) -> None:
     )
 
 
+def seed_kiem_ke(db: Session) -> None:
+    """Danh sách chế độ báo cáo cấp xã đang phải làm (phân hệ 8.8) —
+    cài sẵn 3 cặp nghi trùng lặp để demo chức năng phát hiện."""
+    ds = [
+        # (tên báo cáo, cơ quan yêu cầu, tần suất, căn cứ)
+        (
+            "Báo cáo tình hình giải ngân vốn đầu tư công",
+            "Sở Tài chính",
+            "thang",
+            "Công văn đôn đốc giải ngân hằng tháng",
+        ),
+        (
+            "Báo cáo kết quả giải ngân vốn đầu tư công",
+            "Văn phòng UBND tỉnh",
+            "thang",
+            "Phục vụ họp giao ban kinh tế - xã hội",
+        ),  # trùng với trên
+        (
+            "Báo cáo kết quả giải quyết thủ tục hành chính",
+            "Trung tâm Phục vụ hành chính công tỉnh",
+            "thang",
+            "Chế độ báo cáo định kỳ về kiểm soát TTHC",
+        ),
+        (
+            "Báo cáo tình hình giải quyết thủ tục hành chính",
+            "Sở Nội vụ",
+            "quy",
+            "Phục vụ chấm chỉ số cải cách hành chính",
+        ),  # trùng với trên
+        (
+            "Báo cáo rà soát hộ nghèo, hộ cận nghèo",
+            "Sở Nông nghiệp và Môi trường",
+            "6_thang",
+            "Quy trình rà soát hộ nghèo định kỳ",
+        ),
+        (
+            "Báo cáo tình hình rà soát hộ nghèo, cận nghèo trên địa bàn",
+            "Văn phòng UBND tỉnh",
+            "nam",
+            "Tổng hợp an sinh cuối năm",
+        ),  # trùng
+        (
+            "Báo cáo chi trả trợ cấp bảo trợ xã hội",
+            "Sở Nội vụ",
+            "thang",
+            "Theo dõi chi trả trợ cấp hằng tháng",
+        ),
+        (
+            "Báo cáo tình hình kinh tế - xã hội",
+            "Văn phòng UBND tỉnh",
+            "thang",
+            "Phục vụ phiên họp thường kỳ UBND tỉnh",
+        ),
+        (
+            "Báo cáo công tác chuyển đổi số",
+            "Sở Khoa học và Công nghệ",
+            "quy",
+            "Kế hoạch chuyển đổi số của tỉnh",
+        ),
+        (
+            "Báo cáo công tác tiếp công dân, giải quyết khiếu nại, tố cáo",
+            "Thanh tra tỉnh",
+            "thang",
+            "Luật Tiếp công dân",
+        ),
+        (
+            "Báo cáo phòng, chống thiên tai và tìm kiếm cứu nạn",
+            "Sở Nông nghiệp và Môi trường",
+            "dot_xuat",
+            "Theo mùa mưa bão, khi có tình huống",
+        ),
+        (
+            "Báo cáo kết quả thực hiện chương trình nông thôn mới",
+            "Sở Nông nghiệp và Môi trường",
+            "quy",
+            "Chương trình mục tiêu quốc gia",
+        ),
+    ]
+    db.add_all(
+        KiemKeBaoCao(
+            ten_bao_cao=ten,
+            co_quan_yeu_cau=co_quan,
+            tan_suat=tan_suat,
+            can_cu=can_cu,
+        )
+        for ten, co_quan, tan_suat, can_cu in ds
+    )
+
+
 def seed_all(db: Session) -> dict[str, int]:
     """Chạy toàn bộ các bước seed trên một phiên CSDL; trả về thống kê."""
     kiem_tra_danh_muc_dvhc()
@@ -759,6 +849,7 @@ def seed_all(db: Session) -> dict[str, int]:
     map_nd = seed_nguoi_dung(db, map_dv)
     so_gia_tri = seed_gia_tri(db, map_dv, map_ct, map_nd)
     seed_nghi_quyet(db, map_ct)
+    seed_kiem_ke(db)
     db.add(
         NhatKy(
             nguoi_dung_id=map_nd["admin"].id,

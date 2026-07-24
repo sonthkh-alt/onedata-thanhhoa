@@ -67,6 +67,7 @@ def trang_dashboard(
     diem_nong = canh_bao.tim_diem_nong(db, thang, NAM_DEMO)
 
     ds_chi_tieu = db.query(ChiTieu).order_by(ChiTieu.ma).all()
+    nguon_dtc03 = next((ct.nguon_du_lieu for ct in ds_chi_tieu if ct.ma == "DTC03"), "")
 
     return templates.TemplateResponse(
         request,
@@ -86,6 +87,7 @@ def trang_dashboard(
             "dien_bien": dien_bien,
             "diem_nong": diem_nong,
             "ds_chi_tieu": ds_chi_tieu,
+            "nguon_dtc03": nguon_dtc03,
         },
     )
 

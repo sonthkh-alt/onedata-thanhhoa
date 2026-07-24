@@ -26,13 +26,26 @@ def _ngu_canh(request, nguoi_dung, ket_qua=None):
 @router.get("")
 def trang_hoi_dap(
     request: Request,
+    cau_hoi: str | None = None,
     nguoi_dung: NguoiDung = Depends(quyen_hoi_dap),
+    db: Session = Depends(get_db),
 ):
-    """Trang hỏi đáp với ô hỏi tiếng Việt + dropdown câu hỏi gợi ý."""
+    """Trang hỏi đáp; nếu có tham số ?cau_hoi= thì trả lời luôn
+    (hỏi qua liên kết chia sẻ được)."""
     from app.main import templates
 
+    ket_qua = None
+    if cau_hoi and cau_hoi.strip():
+        ket_qua = ai_query.hoi(cau_hoi)
+        ghi_nhat_ky(
+            db,
+            nguoi_dung.id,
+            "hoi_dap_ai",
+            f"[{ket_qua.che_do}] Hỏi (GET): {cau_hoi.strip()[:300]} | "
+            f"SQL: {ket_qua.sql or '(không có)'} | {ket_qua.so_dong} dòng",
+        )
     return templates.TemplateResponse(
-        request, "hoi_dap.html", _ngu_canh(request, nguoi_dung)
+        request, "hoi_dap.html", _ngu_canh(request, nguoi_dung, ket_qua)
     )
 
 

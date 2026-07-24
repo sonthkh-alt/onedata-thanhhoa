@@ -42,7 +42,7 @@
 
 <div class="khoi-bieu-do">
   <h2>Xếp hạng tỷ lệ giải ngân theo xã — tháng {{ thang }}/{{ nam }}</h2>
-  <p class="ghi-chu">Nguồn: {{ ds_chi_tieu[2].nguon_du_lieu }} — bấm tên xã trong bảng dưới để xem chi tiết.</p>
+  <p class="ghi-chu">Nguồn: {{ nguon_dtc03 }} — bấm tên xã trong bảng dưới để xem chi tiết.</p>
   <canvas id="bieuDoXepHang" height="110"></canvas>
 </div>
 
@@ -104,7 +104,7 @@
       <td><a href="/don-vi/{{ d.ma }}">{{ d.ten }}</a></td>
       <td>{{ ten_vung.get(d.vung, d.vung) }}</td>
       <td class="so">{{ "%.1f"|format(d.gia_tri) }}</td>
-      <td class="thoi-diem" title="Nguồn: {{ ds_chi_tieu[2].nguon_du_lieu }}">
+      <td class="thoi-diem" title="Nguồn: {{ nguon_dtc03 }}">
         {{ "hệ thống" if d.nguon == "he_thong" else "nhập tay" }} — {{ d.thoi_diem }}
       </td>
     </tr>
