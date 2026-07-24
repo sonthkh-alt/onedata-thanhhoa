@@ -189,6 +189,30 @@ class NhatKy(Base):
     )
 
 
+class KiemKeBaoCao(Base):
+    """Kiểm kê chế độ báo cáo cấp xã đang phải thực hiện (phân hệ 8.8).
+
+    Mỗi bản ghi = một loại báo cáo mà cơ quan cấp trên yêu cầu xã lập định
+    kỳ — dùng để thống kê "gánh nặng báo cáo" và tìm báo cáo nghi trùng lặp.
+    """
+
+    __tablename__ = "kiem_ke_bao_cao"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    ten_bao_cao: Mapped[str] = mapped_column(String(300), nullable=False)
+    co_quan_yeu_cau: Mapped[str] = mapped_column(String(200), nullable=False)
+    # Số kỳ phải nộp trong một năm quy ước theo tần suất: thang=12, quy=4,
+    # 6_thang=2, nam=1, dot_xuat=6 (ước tính demo)
+    tan_suat: Mapped[str] = mapped_column(String(20), nullable=False, default="thang")
+    can_cu: Mapped[str] = mapped_column(String(300), default="")
+    nguoi_khai_id: Mapped[int | None] = mapped_column(
+        ForeignKey("nguoi_dung.id"), nullable=True
+    )
+    thoi_diem_khai: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
+
+
 class NghiQuyetTheoDoi(Base):
     """Nghị quyết HĐND được theo dõi trên trang giám sát."""
 

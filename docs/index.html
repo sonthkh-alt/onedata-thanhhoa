@@ -34,7 +34,9 @@
   code { background: #eee7db; border-radius: 4px; padding: 0.1rem 0.4rem; font-size: 0.9em; }
   pre code { background: none; padding: 0; }
   .canh-bao { background: #fff8e6; border: 1px solid #e8d9a0; border-left: 4px solid #d4a017; border-radius: 6px; padding: 0.8rem 1rem; margin: 1.2rem 0; }
-  .anh-khung { background: #fff; border: 1px dashed var(--vien); border-radius: 8px; padding: 2.2rem 1rem; text-align: center; color: #888; font-style: italic; }
+  figure.anh { background: #fff; border: 1px solid var(--vien); border-radius: 8px; padding: 0.5rem; margin: 0; }
+  figure.anh img { width: 100%; border-radius: 6px; display: block; }
+  figure.anh figcaption { font-size: 0.85rem; color: #666; text-align: center; padding: 0.4rem 0.2rem 0.1rem; }
   footer { border-top: 1px solid var(--vien); background: #fbfaf7; text-align: center; font-size: 0.85rem; color: #666; padding: 1.2rem 1rem; margin-top: 2.5rem; }
 </style>
 </head>
@@ -65,7 +67,7 @@ soạn; lãnh đạo hỏi – đáp trực tiếp trên dữ liệu. Căn cứ 
 của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND cấp xã cập nhật dữ liệu,
 <em>"không yêu cầu báo cáo thủ công"</em>.</p>
 
-<h2>7 phân hệ của bản demo</h2>
+<h2>8 phân hệ của bản demo</h2>
 <div class="luoi">
   <div class="the"><h3>📝 Nhập liệu tại nguồn</h3><p>Chuyên viên xã nhập MỘT LẦN; chỉ tiêu dẫn xuất
     (tỷ lệ %) hệ thống tự tính theo công thức; kiểm tra dữ liệu theo quy tắc, cảnh báo số liệu bất thường.</p></div>
@@ -81,14 +83,18 @@ của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND
     đạt/chưa đạt — không cần yêu cầu UBND báo cáo lại.</p></div>
   <div class="the"><h3>🌐 Công khai "Dân biết – dân giám sát"</h3><p>Trang dữ liệu mở không cần đăng nhập,
     theo đúng cấu trúc Danh mục dữ liệu mở của tỉnh; tải Excel/JSON; góp ý nhu cầu dữ liệu.</p></div>
+  <div class="the"><h3>🗺️ Kiểm kê báo cáo</h3><p>Đo gánh nặng báo cáo (lượt/xã/năm, quy đổi 166 xã),
+    tự phát hiện các báo cáo trùng lặp nội dung để kiến nghị cắt giảm.</p></div>
 </div>
 
 <h2>Ảnh chụp màn hình</h2>
-<!-- TODO: thay các khung dưới bằng ảnh thật: <img src="anh/dashboard.png" alt="..." style="width:100%;border-radius:8px;border:1px solid #ddd"> -->
 <div class="luoi">
-  <div class="anh-khung">Dashboard điều hành (sẽ bổ sung ảnh)</div>
-  <div class="anh-khung">Báo cáo .docx thể thức NĐ30 (sẽ bổ sung ảnh)</div>
-  <div class="anh-khung">Hỏi – đáp dữ liệu AI (sẽ bổ sung ảnh)</div>
+  <figure class="anh"><img src="anh/dashboard.png" alt="Dashboard điều hành tỉnh với bảng điểm nóng" loading="lazy"><figcaption>Dashboard điều hành — xếp hạng giải ngân, điểm nóng tô đỏ</figcaption></figure>
+  <figure class="anh"><img src="anh/hoi-dap.png" alt="Hỏi đáp dữ liệu AI" loading="lazy"><figcaption>Hỏi – đáp AI: trả lời + bảng số liệu + SQL đã kiểm soát</figcaption></figure>
+  <figure class="anh"><img src="anh/nhap-lieu.png" alt="Trang nhập liệu tại nguồn" loading="lazy"><figcaption>Nhập liệu tại nguồn — "chỉ nhập MỘT LẦN"</figcaption></figure>
+  <figure class="anh"><img src="anh/bao-cao.png" alt="Sinh 15 báo cáo NĐ30" loading="lazy"><figcaption>15 báo cáo .docx thể thức NĐ30 trong chưa đầy 1 giây</figcaption></figure>
+  <figure class="anh"><img src="anh/cong-khai.png" alt="Trang công khai dữ liệu mở" loading="lazy"><figcaption>Trang công khai "Dân biết – dân giám sát"</figcaption></figure>
+  <figure class="anh"><img src="anh/kiem-ke.png" alt="Kiểm kê báo cáo" loading="lazy"><figcaption>Kiểm kê báo cáo — phát hiện báo cáo trùng lặp</figcaption></figure>
 </div>
 
 <h2>Kịch bản demo 5 phút</h2>

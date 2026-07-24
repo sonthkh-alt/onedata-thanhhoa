@@ -28,15 +28,19 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 
 ## Ảnh chụp màn hình
 
-<!-- TODO: chụp và chèn ảnh trước khi nộp bài:
-1. docs/anh/dashboard.png — Dashboard điều hành (bảng điểm nóng)
-2. docs/anh/nhap-lieu.png — Trang nhập liệu tại nguồn
-3. docs/anh/hoi-dap.png  — Hỏi đáp AI (trả lời + bảng + SQL)
-4. docs/anh/bao-cao.png  — File .docx thể thức NĐ30 mở trong Word
-5. docs/anh/cong-khai.png — Trang công khai "Dân biết – dân giám sát"
--->
+| Dashboard điều hành | Hỏi – đáp dữ liệu AI |
+|---|---|
+| ![Dashboard điều hành](docs/anh/dashboard.png) | ![Hỏi đáp AI](docs/anh/hoi-dap.png) |
 
-## Tính năng chính (7 phân hệ)
+| Nhập liệu tại nguồn | Trang công khai |
+|---|---|
+| ![Nhập liệu tại nguồn](docs/anh/nhap-lieu.png) | ![Trang công khai](docs/anh/cong-khai.png) |
+
+| Sinh 15 báo cáo NĐ30 | Giám sát HĐND | Kiểm kê báo cáo |
+|---|---|---|
+| ![Sinh báo cáo](docs/anh/bao-cao.png) | ![Giám sát HĐND](docs/anh/giam-sat.png) | ![Kiểm kê báo cáo](docs/anh/kiem-ke.png) |
+
+## Tính năng chính (8 phân hệ)
 
 | # | Phân hệ | Đường dẫn |
 |---|---------|-----------|
@@ -47,6 +51,7 @@ có sẵn trong [render.yaml](render.yaml); CSDL mô phỏng tự seed mỗi l�
 | 5 | Hỏi – đáp dữ liệu AI (offline/online, SQL có kiểm soát, không bịa số liệu) | `/hoi-dap` |
 | 6 | Cảnh báo sớm theo ngưỡng — bảng "điểm nóng" | trong `/dashboard` |
 | 7 | Trang công khai dữ liệu mở + giám sát nghị quyết HĐND | `/cong-khai`, `/giam-sat` |
+| 8 | Kiểm kê báo cáo — gánh nặng báo cáo, phát hiện trùng lặp | `/kiem-ke` |
 
 Ba lĩnh vực dữ liệu demo: **giải ngân đầu tư công**, **thủ tục hành chính**,
 **an sinh xã hội** — 15 xã/phường, kỳ tháng 01–07/2026.
