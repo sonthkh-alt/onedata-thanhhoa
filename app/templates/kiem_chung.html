@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Kiểm chứng toàn vẹn — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>🔐 Kiểm chứng toàn vẹn Kho dữ liệu</h1>
+<p class="mo-ta">Mỗi thao tác trên Kho (đăng nhập, nhập/sửa số liệu, sinh báo cáo,
+  hỏi AI) được ghi vào nhật ký và <strong>khóa hash SHA-256 với bản ghi liền
+  trước</strong> — như một sổ cái. Sửa lén hay xóa lén bất kỳ dòng nào, kể cả
+  sửa thẳng trong file CSDL, toàn bộ chuỗi phía sau sẽ không khớp.</p>
+
+{% if kq.toan_ven %}
+<div class="canh-bao canh-bao--ok" style="font-size:1.1rem">
+  ✅ <strong>Chuỗi nhật ký TOÀN VẸN</strong> — đã kiểm tra lại toàn bộ
+  {{ "{:,}".format(kq.so_ban_ghi) }} bản ghi, tất cả các mắt xích hash đều khớp.
+  Không phát hiện dấu hiệu sửa/xóa lén.
+</div>
+{% else %}
+<div class="canh-bao canh-bao--loi" style="font-size:1.1rem">
+  🚨 <strong>PHÁT HIỆN CAN THIỆP!</strong> Chuỗi bị phá vỡ tại bản ghi
+  #{{ kq.vi_tri_loi }} / {{ "{:,}".format(kq.so_ban_ghi) }} bản ghi.
+  {{ kq.mo_ta_loi }}
+</div>
+{% endif %}
+
+<h2>10 bản ghi mới nhất (kèm dấu hash)</h2>
+<table class="bang-nhap">
+  <thead>
+    <tr><th>#</th><th>Thời điểm</th><th>Hành động</th><th>Chi tiết</th><th>Hash (8 ký tự đầu)</th></tr>
+  </thead>
+  <tbody>
+    {% for nk in nhat_ky %}
+    <tr>
+      <td>{{ nk.id }}</td>
+      <td class="thoi-diem">{{ nk.thoi_diem.strftime("%Y-%m-%d %H:%M:%S") }}</td>
+      <td>{{ nk.hanh_dong }}</td>
+      <td style="max-width:420px">{{ nk.chi_tiet[:120] }}{{ "…" if nk.chi_tiet|length > 120 else "" }}</td>
+      <td><code>{{ (nk.hash_ban_ghi or "")[:8] }}</code> ← <code>{{ (nk.hash_truoc or "")[:8] }}</code></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="nguyen-tac">Tính "không thể chối bỏ" kiểu blockchain — không cần blockchain,
+  không tốn hạ tầng. IOC không có cơ chế nào tương đương.</p>
+{% endblock %}

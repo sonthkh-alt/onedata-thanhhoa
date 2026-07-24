@@ -16,12 +16,14 @@
   </div>
   {% endfor %}
 </div>
-{% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
 <p>
+  {% if nguoi_dung.vai_tro in ["lanh_dao", "quan_tri"] %}
   <a class="nut" href="/ban-tin/du-thao-cong-van">📄 Tải dự thảo công văn đôn đốc
     giải ngân (thể thức NĐ30, sẵn để ký)</a>
+  {% endif %}
+  <a class="nut nut--xam" href="/lab">🧪 Mở phòng lab chính sách — thử quyết định
+    trước khi ký</a>
 </p>
-{% endif %}
 
 <h2>2️⃣ Dự báo giải ngân đến 31/12/{{ bt.nam }} (nếu giữ nhịp hiện tại)</h2>
 <p class="ghi-chu">Hồi quy tuyến tính trên chuỗi giải ngân lũy kế 7 tháng của từng xã —
@@ -38,7 +40,11 @@
       <td><a href="/don-vi/{{ d.ma }}">{{ d.ten }}</a></td>
       <td class="so">{{ d.ty_le_hien_tai }}</td>
       <td class="so"><strong>{{ d.ty_le_du_bao }}</strong></td>
-      <td>{{ "⚠️ Dự báo HỤT mục tiêu" if not d.dat_muc_tieu else "✅ Trong lộ trình" }}</td>
+      <td>{{ "⚠️ Dự báo HỤT mục tiêu" if not d.dat_muc_tieu else "✅ Trong lộ trình" }}
+        {% if not d.dat_muc_tieu %}
+        · <a href="/dieu-tra?don_vi={{ d.ma }}&van_de=giai_ngan">🔍 Vì sao?</a>
+        {% endif %}
+      </td>
       <td class="so">{{ "{:,.0f}".format(d.can_tang_toc_thang) if not d.dat_muc_tieu else "—" }}</td>
     </tr>
     {% endfor %}

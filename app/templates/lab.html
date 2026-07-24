@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Phòng lab chính sách — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>🧪 Phòng lab chính sách <span class="ma-ky">thử quyết định trước khi ký</span></h1>
+<p class="mo-ta">Kéo hai thanh trượt — hệ thống mô phỏng NGAY kết cục giải ngân
+  31/12 của toàn tỉnh trên dữ liệu thật của Kho. IOC chỉ xem quá khứ; ở đây
+  lãnh đạo <strong>thí nghiệm tương lai</strong>.</p>
+
+<div class="luoi-the luoi-the--3">
+  <div class="the the--linhvuc">
+    <h2>Tỷ lệ giải ngân toàn tỉnh 31/12</h2>
+    <p class="so-lon" id="tyLeTinh">—</p>
+    <p class="ghi-chu">mục tiêu ≥ {{ muc_tieu }}% (Nghị quyết HĐND)</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>Số xã đạt mục tiêu</h2>
+    <p class="so-lon" id="soXaDat">—</p>
+    <p class="ghi-chu">trên tổng số {{ du_lieu_xa | length }} xã, phường</p>
+  </div>
+  <div class="the the--linhvuc">
+    <h2>Kịch bản đang thử</h2>
+    <p id="moTaKichBan">Giữ nguyên hiện trạng</p>
+  </div>
+</div>
+
+<div class="khoi-bieu-do">
+  <h2>🎛️ Núm điều khiển kịch bản</h2>
+  <p>
+    <label><strong>1. Đôn đốc tăng tốc các xã dự báo hụt:</strong>
+      tốc độ giải ngân tăng thêm <output id="raTangToc">0</output>%</label><br>
+    <input type="range" id="tangToc" min="0" max="100" value="0" step="5" style="width: 100%">
+  </p>
+  <p>
+    <label><strong>2. Điều chuyển kế hoạch vốn</strong> từ xã dự báo hụt sâu
+      (dưới 50%) sang các xã đã trong lộ trình đạt:
+      <output id="raDieuChuyen">0</output>% vốn</label><br>
+    <input type="range" id="dieuChuyen" min="0" max="20" value="0" step="1" style="width: 100%">
+  </p>
+  <p class="ghi-chu">Mô phỏng minh bạch: giữ nhịp = hồi quy tuyến tính trên chuỗi
+    7 tháng; tăng tốc áp cho 5 tháng còn lại; giải ngân không vượt kế hoạch vốn.</p>
+</div>
+
+<table class="bang-nhap">
+  <thead>
+    <tr><th>Đơn vị</th><th class="so">KH vốn (tr.đ)</th><th class="so">Dự báo 31/12 (%)</th><th>Kết cục theo kịch bản</th></tr>
+  </thead>
+  <tbody id="bangKetQua"></tbody>
+</table>
+
+<script>
+  const DU_LIEU = {{ du_lieu_xa | tojson }};
+  const MUC_TIEU = {{ muc_tieu }};
+
+  function moPhong(tangTocPct, dieuChuyenPct) {
+    // Bước 1: dự báo cơ sở để phân loại xã hụt / hụt sâu / trong lộ trình
+    const xs = DU_LIEU.map(x => {
+      const conLai = 12 - x.thang_cuoi;
+      const duBaoCoSo = Math.min(x.luy_ke + x.toc_do * conLai, x.ke_hoach);
+      return { ...x, conLai, tyLeCoSo: duBaoCoSo / x.ke_hoach * 100 };
+    });
+
+    // Bước 2: điều chuyển vốn từ xã hụt sâu (<50%) sang xã trong lộ trình
+    let vonChuyen = 0;
+    xs.forEach(x => {
+      x.keHoachMoi = x.ke_hoach;
+      if (x.tyLeCoSo < 50 && dieuChuyenPct > 0) {
+        const rut = x.ke_hoach * dieuChuyenPct / 100;
+        x.keHoachMoi -= rut;
+        vonChuyen += rut;
+      }
+    });
+    const nhomNhan = xs.filter(x => x.tyLeCoSo >= MUC_TIEU);
+    nhomNhan.forEach(x => { x.keHoachMoi += vonChuyen / Math.max(nhomNhan.length, 1); });
+
+    // Bước 3: tăng tốc các xã dự báo hụt
+    xs.forEach(x => {
+      const heSo = x.tyLeCoSo < MUC_TIEU ? 1 + tangTocPct / 100 : 1;
+      x.duBao = Math.min(x.luy_ke + x.toc_do * heSo * x.conLai, x.keHoachMoi);
+      x.tyLe = x.duBao / x.keHoachMoi * 100;
+      x.dat = x.tyLe >= MUC_TIEU;
+    });
+
+    const tongGiaiNgan = xs.reduce((s, x) => s + x.duBao, 0);
+    const tongKeHoach = xs.reduce((s, x) => s + x.keHoachMoi, 0);
+    return { xs, tyLeTinh: tongGiaiNgan / tongKeHoach * 100 };
+  }
+
+  function capNhat() {
+    const tt = parseInt(document.getElementById("tangToc").value);
+    const dc = parseInt(document.getElementById("dieuChuyen").value);
+    document.getElementById("raTangToc").textContent = tt;
+    document.getElementById("raDieuChuyen").textContent = dc;
+
+    const kq = moPhong(tt, dc);
+    const soDat = kq.xs.filter(x => x.dat).length;
+    document.getElementById("tyLeTinh").textContent = kq.tyLeTinh.toFixed(1) + "%";
+    document.getElementById("tyLeTinh").style.color = kq.tyLeTinh >= MUC_TIEU ? "#1b5e20" : "#a51c1c";
+    document.getElementById("soXaDat").textContent = soDat + "/" + kq.xs.length;
+    document.getElementById("moTaKichBan").textContent =
+      (tt === 0 && dc === 0) ? "Giữ nguyên hiện trạng"
+      : `Tăng tốc xã hụt +${tt}%` + (dc > 0 ? `, điều chuyển ${dc}% vốn xã hụt sâu` : "");
+
+    document.getElementById("bangKetQua").innerHTML = kq.xs
+      .sort((a, b) => a.tyLe - b.tyLe)
+      .map(x => `<tr class="${x.dat ? "" : "dong-canh-bao-cao"}">
+        <td>${x.ten}</td>
+        <td class="so">${Math.round(x.keHoachMoi).toLocaleString("vi")}</td>
+        <td class="so"><strong>${x.tyLe.toFixed(1)}</strong></td>
+        <td>${x.dat ? "✅ Đạt mục tiêu" : "⚠️ Vẫn hụt"}</td></tr>`)
+      .join("");
+  }
+
+  document.getElementById("tangToc").addEventListener("input", capNhat);
+  document.getElementById("dieuChuyen").addEventListener("input", capNhat);
+  capNhat();
+</script>
+{% endblock %}

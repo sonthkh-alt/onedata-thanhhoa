@@ -174,7 +174,12 @@ class NguoiDung(Base):
 
 
 class NhatKy(Base):
-    """Nhật ký hệ thống: đăng nhập, nhập/sửa số liệu, sinh báo cáo, hỏi AI."""
+    """Nhật ký hệ thống: đăng nhập, nhập/sửa số liệu, sinh báo cáo, hỏi AI.
+
+    Chống sửa lén (tamper-evident): mỗi bản ghi mang hash SHA-256 khóa với
+    hash của bản ghi liền trước — sửa/xóa lén bất kỳ dòng nào là toàn bộ
+    chuỗi phía sau không khớp, nút "Kiểm chứng toàn vẹn" phát hiện ngay.
+    """
 
     __tablename__ = "nhat_ky"
 
@@ -187,6 +192,8 @@ class NhatKy(Base):
     thoi_diem: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now
     )
+    hash_truoc: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    hash_ban_ghi: Mapped[str | None] = mapped_column(String(64), nullable=True)
 
 
 class KiemKeBaoCao(Base):

@@ -16,8 +16,10 @@ from app.routers import (
     bao_cao,
     cong_khai,
     dashboard,
+    dieu_tra,
     giam_sat,
     hoi_dap,
+    kiem_chung,
     kiem_ke,
     nhap_lieu,
 )
@@ -46,6 +48,8 @@ app.include_router(bao_cao.router)
 app.include_router(hoi_dap.router)
 app.include_router(kiem_ke.router)
 app.include_router(ban_tin.router)
+app.include_router(dieu_tra.router)
+app.include_router(kiem_chung.router)
 
 
 @app.get("/")

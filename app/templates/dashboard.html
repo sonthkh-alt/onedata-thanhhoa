@@ -83,7 +83,13 @@
       <td>{{ dn.chi_tieu }}</td>
       <td class="so">{{ dn.gia_tri }}</td>
       <td>{{ dn.luat }}</td>
-      <td>{{ "CAO" if dn.muc_do == "cao" else "Trung bình" }}</td>
+      <td>{{ "CAO" if dn.muc_do == "cao" else "Trung bình" }}
+        {% if "DTC0" in dn.chi_tieu %}
+        · <a href="/dieu-tra?don_vi={{ dn.ma_don_vi }}&van_de=giai_ngan">🔍 Vì sao?</a>
+        {% elif "TTHC" in dn.chi_tieu %}
+        · <a href="/dieu-tra?don_vi={{ dn.ma_don_vi }}&van_de=tthc">🔍 Vì sao?</a>
+        {% endif %}
+      </td>
     </tr>
     {% endfor %}
   </tbody>

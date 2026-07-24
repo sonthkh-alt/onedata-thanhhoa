@@ -1,7 +1,5 @@
 """Đăng nhập, phiên làm việc (cookie ký) và phân quyền."""
 
-from datetime import datetime
-
 from fastapi import APIRouter, Depends, Form, HTTPException, Request, status
 from fastapi.responses import RedirectResponse, Response
 from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
@@ -10,7 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.db import get_db
-from app.models import NguoiDung, NhatKy
+from app.models import NguoiDung
 
 router = APIRouter(tags=["xac-thuc"])
 
@@ -39,16 +37,10 @@ def kiem_tra_mat_khau(mat_khau: str, mat_khau_hash: str) -> bool:
 def ghi_nhat_ky(
     db: Session, nguoi_dung_id: int | None, hanh_dong: str, chi_tiet: str = ""
 ) -> None:
-    """Ghi một dòng nhật ký hệ thống."""
-    db.add(
-        NhatKy(
-            nguoi_dung_id=nguoi_dung_id,
-            hanh_dong=hanh_dong,
-            chi_tiet=chi_tiet,
-            thoi_diem=datetime.now(),
-        )
-    )
-    db.commit()
+    """Ghi một dòng nhật ký hệ thống (chuỗi hash chống sửa lén — audit.py)."""
+    from app.services.audit import ghi_nhat_ky as ghi_vao_chuoi
+
+    ghi_vao_chuoi(db, nguoi_dung_id, hanh_dong, chi_tiet)
 
 
 def tao_session_cookie(response: Response, nguoi_dung: NguoiDung) -> None:

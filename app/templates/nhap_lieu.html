@@ -14,6 +14,33 @@
 </div>
 
 {% if thong_bao %}<div class="canh-bao canh-bao--ok">{{ thong_bao }}</div>{% endif %}
+
+{% if phan_tich_nhanh %}
+<div class="khoi-tra-loi">
+  <h2>⚡ Phân tích tức thì từ Kho dữ liệu</h2>
+  <ul>
+    {% for pt in phan_tich_nhanh %}
+    <li>
+      <strong>{{ pt.ma }} — {{ pt.ten }}</strong>: {{ "%.6g"|format(pt.gia_tri) }} {{ pt.don_vi_tinh }}
+      {%- if pt.so_ky_truoc is not none %}
+      ({{ "+" if pt.so_ky_truoc >= 0 else "" }}{{ "%.6g"|format(pt.so_ky_truoc) }} so kỳ trước)
+      {%- endif %}
+      {%- if pt.hang %} — hiện xếp thứ <strong>{{ pt.hang }}/{{ pt.tong_xa }}</strong> toàn tỉnh{% endif %}.
+    </li>
+    {% endfor %}
+    {% if du_bao_moi %}
+    <li>
+      📈 <strong>Dự báo cả năm cập nhật lại ngay:</strong>
+      nếu giữ nhịp này, đơn vị đạt <strong>{{ du_bao_moi.ty_le_du_bao }}%</strong> kế hoạch
+      vào 31/12 — {{ "✅ trong lộ trình đạt mục tiêu 95%" if du_bao_moi.dat_muc_tieu
+      else "⚠️ dự báo HỤT mục tiêu 95%, cần thêm " ~ "{:,.0f}".format(du_bao_moi.can_tang_toc_thang) ~ " tr.đ/tháng" }}.
+    </li>
+    {% endif %}
+  </ul>
+  <p class="ghi-chu">Số liệu vừa nhập lập tức tham gia mọi phân tích, dự báo, báo cáo
+    của tỉnh — không cần gửi đi đâu nữa.</p>
+</div>
+{% endif %}
 {% for loi in ds_loi %}<div class="canh-bao canh-bao--loi">{{ loi }}</div>{% endfor %}
 {% for cb in ds_canh_bao %}<div class="canh-bao canh-bao--nhe">{{ cb }}</div>{% endfor %}
 

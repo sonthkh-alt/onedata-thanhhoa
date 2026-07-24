@@ -36,8 +36,8 @@ from app.models import (
     MauBaoCao,
     NghiQuyetTheoDoi,
     NguoiDung,
-    NhatKy,
 )
+from app.services import audit
 
 NAM = 2026
 CAC_THANG = list(range(1, 8))  # tháng 01–07/2026
@@ -850,15 +850,14 @@ def seed_all(db: Session) -> dict[str, int]:
     so_gia_tri = seed_gia_tri(db, map_dv, map_ct, map_nd)
     seed_nghi_quyet(db, map_ct)
     seed_kiem_ke(db)
-    db.add(
-        NhatKy(
-            nguoi_dung_id=map_nd["admin"].id,
-            hanh_dong="khoi_tao_du_lieu",
-            chi_tiet=f"Seed dữ liệu mô phỏng: {so_gia_tri} bản ghi giá trị chỉ tiêu.",
-            thoi_diem=datetime.now(),
-        )
-    )
     db.commit()
+    # Bản ghi mở đầu chuỗi nhật ký chống sửa lén (hash chain)
+    audit.ghi_nhat_ky(
+        db,
+        map_nd["admin"].id,
+        "khoi_tao_du_lieu",
+        f"Seed dữ liệu mô phỏng: {so_gia_tri} bản ghi giá trị chỉ tiêu.",
+    )
     return {
         "don_vi": len(map_dv),
         "chi_tieu": len(map_ct),

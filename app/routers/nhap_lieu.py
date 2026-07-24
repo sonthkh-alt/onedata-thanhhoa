@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 from app.auth import ghi_nhat_ky, require_roles
 from app.db import get_db
 from app.models import ChiTieu, DonVi, GiaTriChiTieu, NguoiDung
+from app.services import ban_tin, tong_hop
 
 router = APIRouter(prefix="/nhap-lieu", tags=["nhap-lieu"])
 
@@ -230,6 +231,7 @@ async def luu_nhap_lieu(
     ds_loi: list[str] = []
     ds_canh_bao: list[str] = []
     so_da_luu = 0
+    da_luu: list[tuple[ChiTieu, float, float | None]] = []
 
     for ct in ds_chi_tieu:
         if ct.cong_thuc:
@@ -270,6 +272,7 @@ async def luu_nhap_lieu(
 
         hanh_dong = _upsert_gia_tri(db, ct, dv, thang, gia_tri, "nhap_tay", nguoi_dung)
         so_da_luu += 1
+        da_luu.append((ct, gia_tri, gt_truoc.gia_tri if gt_truoc else None))
         chi_tiet = f"{dv.ten} — {ct.ma} tháng {thang}/{NAM_DEMO} = {gia_tri:g}" + (
             f" (giá trị cũ: {gia_tri_cu:g})" if gia_tri_cu is not None else ""
         )
@@ -300,6 +303,44 @@ async def luu_nhap_lieu(
     elif not ds_loi:
         thong_bao = "Không có số liệu nào thay đổi."
 
+    # PHÂN TÍCH TỨC THÌ: vừa cập nhật dữ liệu, hệ thống tự phân tích ngay —
+    # so kỳ trước, vị trí mới trong tỉnh, dự báo cả năm thay đổi thế nào.
+    phan_tich_nhanh: list[dict] = []
+    du_bao_moi = None
+    if da_luu:
+        for ct, gia_tri, gia_tri_truoc in da_luu:
+            xep_hang = tong_hop.gia_tri_theo_xa(db, ct.ma, thang)
+            hang = next(
+                (i + 1 for i, d in enumerate(xep_hang) if d["ma"] == dv.ma), None
+            )
+            phan_tich_nhanh.append(
+                {
+                    "ma": ct.ma,
+                    "ten": ct.ten,
+                    "gia_tri": gia_tri,
+                    "don_vi_tinh": ct.don_vi_tinh,
+                    "so_ky_truoc": (
+                        round(gia_tri - gia_tri_truoc, 1)
+                        if gia_tri_truoc is not None
+                        else None
+                    ),
+                    "hang": hang,
+                    "tong_xa": len(xep_hang),
+                }
+            )
+        if any(ct.ma.startswith("DTC") for ct, _, _ in da_luu):
+            du_bao_moi = next(
+                (d for d in ban_tin.du_bao_giai_ngan(db) if d.ma == dv.ma), None
+            )
+
     ctx = _du_lieu_trang(db, nguoi_dung, dv, thang)
-    ctx.update({"thong_bao": thong_bao, "ds_loi": ds_loi, "ds_canh_bao": ds_canh_bao})
+    ctx.update(
+        {
+            "thong_bao": thong_bao,
+            "ds_loi": ds_loi,
+            "ds_canh_bao": ds_canh_bao,
+            "phan_tich_nhanh": phan_tich_nhanh,
+            "du_bao_moi": du_bao_moi,
+        }
+    )
     return templates.TemplateResponse(request, "nhap_lieu.html", ctx)
