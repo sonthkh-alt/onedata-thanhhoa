@@ -25,12 +25,14 @@
   đại biểu HĐND (giám sát), người dân (trang công khai).
 - **Căn cứ chuẩn dữ liệu của tỉnh** — 2 văn bản đặt tại thư mục gốc (chỉ tham khảo
   cục bộ, KHÔNG commit lên GitHub — xem Mục 14):
-  - `2053.pdf` — Quyết định của Chủ tịch UBND tỉnh Thanh Hóa (2026) ban hành
-    **Danh mục dữ liệu chủ chuyên ngành, dữ liệu dùng chung và dữ liệu mở tỉnh
-    Thanh Hóa** (3 phụ lục; thay thế QĐ 630/QĐ-UBND 2023 và QĐ 3111/QĐ-UBND 2024).
-  - `2176.pdf` — Quyết định của Chủ tịch UBND tỉnh Thanh Hóa (2026) ban hành
-    **Bộ trường thông tin dữ liệu gốc, dữ liệu chủ, dữ liệu tham chiếu tỉnh
-    Thanh Hóa** (từ điển dữ liệu chi tiết đến mức trường).
+  - `2053.pdf` — **Quyết định số 2053/QĐ-UBND ngày 07/7/2026** của Chủ tịch
+    UBND tỉnh Thanh Hóa ban hành **Danh mục dữ liệu chủ chuyên ngành, dữ liệu
+    dùng chung và dữ liệu mở tỉnh Thanh Hóa** (3 phụ lục; thay thế QĐ
+    630/QĐ-UBND 2023 và QĐ 3111/QĐ-UBND 2024).
+  - `2176.pdf` — **Quyết định số 2176/QĐ-UBND ngày 20/7/2026** của Chủ tịch
+    UBND tỉnh Thanh Hóa ban hành **Bộ trường thông tin dữ liệu gốc, dữ liệu
+    chủ, dữ liệu tham chiếu tỉnh Thanh Hóa** (từ điển dữ liệu chi tiết đến
+    mức trường).
   Mọi trường thông tin, thuật ngữ, danh mục, cơ quan chủ quản trong demo phải
   bám theo hai văn bản này — bảng đối chiếu tuân thủ ở **Mục 15**. Thông điệp
   "Không báo cáo lại" có căn cứ trực tiếp tại Điều 3 khoản 3 điểm f của quyết
@@ -415,8 +417,8 @@ SECRET_KEY=doi-chuoi-nay-khi-chay-that
 ## 14. Việc KHÔNG được làm
 
 - Không dùng dữ liệu thật, tên người thật, số liệu thống kê chính thức.
-- **Không commit 2 file `2053.pdf`, `2176.pdf`** (bản dự thảo văn bản của tỉnh,
-  chỉ dùng tham khảo cục bộ) — `*.pdf` phải nằm trong `.gitignore`.
+- **Không commit 2 file `2053.pdf`, `2176.pdf`** (văn bản của tỉnh, chỉ dùng
+  tham khảo cục bộ) — `*.pdf` phải nằm trong `.gitignore`.
 - Không tự bịa tên xã/phường ngoài 5 tên đã nêu — dùng placeholder + TODO.
 - Không gọi API AI ở chế độ offline; không để lỗi API làm sập trang.
 - Không commit `.env`, file `.db`, file .docx sinh ra.
@@ -427,7 +429,7 @@ SECRET_KEY=doi-chuoi-nay-khi-chay-that
 
 Bảng tra nhanh khi lập trình — chi tiết nằm trong 2 file PDF ở thư mục gốc:
 
-### 15.1 Theo Quyết định Danh mục dữ liệu (`2053.pdf`)
+### 15.1 Theo Quyết định số 2053/QĐ-UBND ngày 07/7/2026 — Danh mục dữ liệu (`2053.pdf`)
 
 | Quy định của tỉnh | Demo thể hiện tại |
 |---|---|
@@ -440,7 +442,7 @@ Bảng tra nhanh khi lập trình — chi tiết nằm trong 2 file PDF ở thư
 | CSDL về chỉ tiêu kinh tế - xã hội (VP UBND tỉnh, PL2) phục vụ chỉ đạo điều hành | Chính là "kho chỉ tiêu dùng chung" mà demo mô phỏng |
 | Tiếp nhận phản hồi dân về nhu cầu dữ liệu mở (Điều 3.3.g) | Form góp ý trên trang công khai (8.7) |
 
-### 15.2 Theo Quyết định Bộ trường thông tin (`2176.pdf`)
+### 15.2 Theo Quyết định số 2176/QĐ-UBND ngày 20/7/2026 — Bộ trường thông tin (`2176.pdf`)
 
 | Chuẩn của tỉnh | Demo áp dụng |
 |---|---|
@@ -457,5 +459,7 @@ Bảng tra nhanh khi lập trình — chi tiết nằm trong 2 file PDF ở thư
 
 **Ghi chú triển khai**: M1 đã hoàn thành trước khi bổ sung chuẩn này — phần đầu
 M2 phải cập nhật `models.py`, `scripts/seed.py`, view `v_*` và test theo Mục 6,
-Mục 7 bản mới rồi mới làm phân hệ nhập liệu. Hai PDF là bản dự thảo (số/ngày để
-trống): khi tỉnh ban hành chính thức, cập nhật số hiệu vào README và Mục 1.
+Mục 7 bản mới rồi mới làm phân hệ nhập liệu. Khi trích dẫn trong giao diện,
+báo cáo hoặc README, dùng đúng số hiệu: **Quyết định số 2053/QĐ-UBND ngày
+07/7/2026** và **Quyết định số 2176/QĐ-UBND ngày 20/7/2026** của Chủ tịch
+UBND tỉnh Thanh Hóa.
