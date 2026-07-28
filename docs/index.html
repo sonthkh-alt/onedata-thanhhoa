@@ -53,7 +53,8 @@
   <h1>MỘT DỮ LIỆU – KHÔNG BÁO CÁO LẠI</h1>
   <p class="phu">Kho dữ liệu dùng chung cấp xã – tỉnh Thanh Hóa · Bản demo dự thi
     Cuộc thi "Tìm kiếm ý tưởng, giải pháp cải cách hành chính tỉnh Thanh Hóa năm 2026"</p>
-  <p class="khau-hieu">"Mỗi số liệu chỉ nhập một lần — mọi báo cáo do máy soạn thảo."</p>
+  <p class="khau-hieu">"Số liệu vào Kho một lần từ đúng nguồn — máy trích từ văn bản,
+    người chỉ xác nhận; số đã có trong Kho thì không ai được yêu cầu báo cáo lại."</p>
   <a class="nut-dai nut-vang" href="https://github.com/sonthkh-alt/onedata-thanhhoa">📦 Mã nguồn trên GitHub</a>
   <a class="nut-dai nut-trang" href="https://onedata-thanhhoa.onrender.com">🚀 Chạy thử bản online</a>
 </div>
@@ -73,6 +74,21 @@ soạn; lãnh đạo hỏi – đáp trực tiếp trên dữ liệu. Căn cứ 
 <strong>2053/QĐ-UBND ngày 07/7/2026</strong> và số <strong>2176/QĐ-UBND ngày 20/7/2026</strong>
 của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND cấp xã cập nhật dữ liệu,
 <em>"không yêu cầu báo cáo thủ công"</em>.</p>
+
+<h2>Mới ở v0.2: Kho dữ liệu HAI LỚP — BA KÊNH thu nhận</h2>
+<div class="luoi">
+  <div class="the"><h3>📚 Lớp 1 — Văn bản, tri thức số</h3>
+    <p>Toàn văn báo cáo, kế hoạch, thông báo điện tử + tìm kiếm toàn văn FTS5,
+    chạy offline. Văn bản MẬT bị chặn tự động khỏi tìm kiếm, AI và trích xuất.</p></div>
+  <div class="the" style="border-top-color:#27ae60"><h3>🤖 Kênh 2 — Máy trích xuất, người xác nhận (ĐIỂM NHẤN)</h3>
+    <p>Xã tải báo cáo vừa phát hành — máy đọc được "45.000 triệu đồng", "27,0%",
+    "1.250 hồ sơ" từ chính câu văn, kèm câu trích dẫn bôi đậm con số.
+    Công chức <strong>chỉ bấm Xác nhận</strong>, không gõ lại vào biểu mẫu nào.</p></div>
+  <div class="the"><h3>🔗 Lớp 2 — Chỉ tiêu có cấu trúc</h3>
+    <p>Mỗi con số mang đủ: kênh thu nhận (hệ thống / trích từ văn bản / nhập tay),
+    <strong>liên kết về đúng văn bản gốc</strong> và tên người xác nhận. AI hỏi đáp
+    <strong>xuyên cả hai lớp</strong>: số liệu + trích dẫn văn bản, bắt buộc dẫn nguồn.</p></div>
+</div>
 
 <h2>Hơn IOC ở tầng nào?</h2>
 <p>IOC của tỉnh là <strong>màn hình hiển thị đặt trên các báo cáo thủ công</strong> — trả lời
@@ -157,6 +173,8 @@ của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND
 
 <h2>Ảnh chụp màn hình</h2>
 <div class="luoi">
+  <figure class="anh"><img src="anh/trich-xuat.png" alt="Màn hình xác nhận số liệu máy trích từ văn bản" loading="lazy"><figcaption>🆕 Kênh 2 — máy trích số từ văn bản, công chức chỉ bấm Xác nhận</figcaption></figure>
+  <figure class="anh"><img src="anh/van-ban.png" alt="Kho văn bản tri thức số với tìm kiếm toàn văn" loading="lazy"><figcaption>🆕 Lớp 1 — Kho văn bản, tri thức số + tìm kiếm toàn văn</figcaption></figure>
   <figure class="anh"><img src="anh/lab.png" alt="Phòng lab chính sách what-if với thanh trượt mô phỏng" loading="lazy"><figcaption>🆕 Phòng lab chính sách — kéo thanh trượt, thử quyết định trước khi ký</figcaption></figure>
   <figure class="anh"><img src="anh/dieu-tra.png" alt="AI điều tra nguyên nhân với chuỗi lập luận" loading="lazy"><figcaption>🆕 AI điều tra nguyên nhân — chuỗi giả thuyết, bằng chứng, kết luận</figcaption></figure>
   <figure class="anh"><img src="anh/kiem-chung.png" alt="Kiểm chứng toàn vẹn chuỗi nhật ký hash" loading="lazy"><figcaption>🆕 Kiểm chứng toàn vẹn — nhật ký khóa chuỗi hash chống sửa lén</figcaption></figure>
@@ -170,13 +188,22 @@ của Chủ tịch UBND tỉnh — trong đó quy định phân quyền cho UBND
   <figure class="anh"><img src="anh/kiem-ke.png" alt="Kiểm kê báo cáo" loading="lazy"><figcaption>Kiểm kê báo cáo — phát hiện báo cáo trùng lặp</figcaption></figure>
 </div>
 
-<h2>Kịch bản demo 5 phút</h2>
+<h2>Kịch bản demo 6 phút (v0.2)</h2>
 <ol class="kich-ban">
-  <li>Chuyên viên xã đăng nhập, <strong>nhập 2 số liệu tháng 7</strong> — hệ thống tự tính tỷ lệ giải ngân.</li>
-  <li>Lãnh đạo mở dashboard: <strong>thấy ngay số vừa nhập</strong>; bảng điểm nóng nêu 2 xã giải ngân dưới 30%.</li>
-  <li>Hỏi AI: <em>"Những xã nào giải ngân dưới 30% trong tháng 7?"</em> → trả lời + bảng + SQL + nguồn.</li>
-  <li>Bấm <strong>"Tạo báo cáo tháng 7 cho tất cả 15 xã"</strong> → mở file .docx thể thức chuẩn → "15 báo cáo trong chưa đầy 1 giây".</li>
-  <li>Đại biểu HĐND xem trang giám sát; người dân mở trang công khai <strong>không cần đăng nhập</strong>.</li>
+  <li>Chuyên viên xã <strong>tải lên báo cáo tháng 7 vừa phát hành</strong> (.docx) —
+    việc vẫn làm hằng ngày, không thêm thao tác mới.</li>
+  <li>Hệ thống hiện ngay hàng chờ: <strong>máy đã đọc được các chỉ tiêu</strong> kèm câu
+    trích dẫn → bấm <strong>"Xác nhận tất cả dòng độ tin cậy cao"</strong> —
+    <em>"Anh/chị không phải nhập lại."</em></li>
+  <li>Lãnh đạo mở dashboard: số vừa xác nhận đã hiện; <strong>bấm vào con số → mở đúng
+    báo cáo gốc</strong> — mỗi số liệu đều truy được về nguồn.</li>
+  <li>Hỏi AI 3 câu, <strong>mỗi loại một câu</strong>: số liệu ("xã nào giải ngân dưới 30%?"),
+    văn bản ("báo cáo nào nói về nguyên nhân chậm?"), lai ("tỷ lệ đúng hạn của Hạc Thành
+    là bao nhiêu và có báo cáo giải trình chưa?").</li>
+  <li>Bấm <strong>"Tạo báo cáo tháng 7 cho tất cả 15 xã"</strong> → file .docx thể thức
+    chuẩn NĐ30 trong chưa đầy 1 giây.</li>
+  <li>Đại biểu HĐND xem trang giám sát; người dân mở trang công khai
+    <strong>không cần đăng nhập</strong> — "dân biết, dân giám sát".</li>
 </ol>
 
 <h2>Tự chạy trên máy (≈ 5 phút, offline hoàn toàn)</h2>
