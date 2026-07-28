@@ -112,7 +112,8 @@
       <td class="so"><a class="lien-ket-so-lieu" href="/so-lieu/{{ d.id }}"
         title="Bấm để xem hộ chiếu số liệu">{{ "%.1f"|format(d.gia_tri) }}</a></td>
       <td class="thoi-diem" title="Nguồn: {{ nguon_dtc03 }}">
-        {{ "hệ thống" if d.nguon == "he_thong" else "nhập tay" }} — {{ d.thoi_diem }}
+        {{ {"he_thong": "hệ thống", "van_ban": "trích từ văn bản",
+            "nhap_tay": "nhập tay"}[d.nguon] }} — {{ d.thoi_diem }}
       </td>
     </tr>
     {% endfor %}

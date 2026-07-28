@@ -123,6 +123,52 @@
     "cau_hoi": "Số liệu nào được cập nhật gần đây nhất?",
     "tu_khoa": ["cap nhat", "gan day"],
     "sql": "SELECT ten_don_vi, ten_chi_tieu, thang, gia_tri, nguon, thoi_diem_cap_nhat FROM v_so_lieu ORDER BY thoi_diem_cap_nhat DESC LIMIT 10",
-    "tra_loi": "10 bản ghi số liệu được cập nhật mới nhất trên Kho dữ liệu dùng chung (kèm nguồn hệ thống/nhập tay)."
+    "tra_loi": "10 bản ghi số liệu được cập nhật mới nhất trên Kho dữ liệu dùng chung (kèm nguồn hệ thống/văn bản/nhập tay)."
+  },
+  {
+    "cau_hoi": "Báo cáo nào nói về nguyên nhân chậm giải ngân?",
+    "loai": "van_ban",
+    "tu_khoa": ["nguyen nhan", "cham"],
+    "truy_van_fts": "nguyên nhân chậm giải ngân giải phóng mặt bằng nhà thầu"
+  },
+  {
+    "cau_hoi": "Kế hoạch đôn đốc giải ngân của Sở Tài chính có nội dung gì?",
+    "loai": "van_ban",
+    "tu_khoa": ["ke hoach", "don doc"],
+    "truy_van_fts": "kế hoạch đôn đốc giải ngân cam kết mốc từng tháng"
+  },
+  {
+    "cau_hoi": "Kết luận của Chủ tịch UBND tỉnh về việc không yêu cầu báo cáo lại?",
+    "loai": "van_ban",
+    "tu_khoa": ["ket luan", "bao cao lai"],
+    "truy_van_fts": "kết luận khai thác kho dữ liệu không yêu cầu báo cáo lại"
+  },
+  {
+    "cau_hoi": "Báo cáo tháng 7 của phường Hạc Thành nói gì về an sinh xã hội?",
+    "loai": "van_ban",
+    "tu_khoa": ["hac thanh", "noi gi"],
+    "truy_van_fts": "Hạc Thành an sinh xã hội bảo trợ chi trả trợ cấp"
+  },
+  {
+    "cau_hoi": "Văn bản nào đề cập chi trả không dùng tiền mặt?",
+    "loai": "van_ban",
+    "tu_khoa": ["van ban", "tien mat"],
+    "truy_van_fts": "chi trả không dùng tiền mặt"
+  },
+  {
+    "cau_hoi": "Tỷ lệ đúng hạn TTHC của phường Hạc Thành hiện là bao nhiêu và đã có báo cáo nào giải trình chưa?",
+    "loai": "lai",
+    "tu_khoa": ["hac thanh", "dung han", "bao nhieu"],
+    "sql": "SELECT thang, gia_tri AS ty_le_dung_han FROM v_so_lieu WHERE ma_chi_tieu = 'TTHC04' AND ten_don_vi LIKE '%Hạc Thành%' AND thang = 7",
+    "tra_loi": "Tỷ lệ giải quyết TTHC đúng hạn tháng 7/2026 của phường Hạc Thành lấy trực tiếp từ Kho dữ liệu.",
+    "truy_van_fts": "Hạc Thành thủ tục hành chính đúng hạn quá hạn"
+  },
+  {
+    "cau_hoi": "Những xã giải ngân dưới 30% đã có văn bản chỉ đạo nào chưa?",
+    "loai": "lai",
+    "tu_khoa": ["duoi 30", "van ban"],
+    "sql": "SELECT ten_don_vi, gia_tri AS ty_le_giai_ngan FROM v_so_lieu WHERE ma_chi_tieu = 'DTC03' AND thang = 7 AND gia_tri < 30 ORDER BY gia_tri",
+    "tra_loi": "Các xã có tỷ lệ giải ngân tháng 7/2026 dưới 30%.",
+    "truy_van_fts": "đôn đốc giải ngân cam kết kế hoạch chậm"
   }
 ]

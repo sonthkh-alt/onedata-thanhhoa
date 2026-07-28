@@ -36,8 +36,11 @@ from app.models import (
     MauBaoCao,
     NghiQuyetTheoDoi,
     NguoiDung,
+    TrichXuatCho,
+    VanBan,
+    VanBanDoan,
 )
-from app.services import audit
+from app.services import audit, van_ban_mau
 
 NAM = 2026
 CAC_THANG = list(range(1, 8))  # tháng 01–07/2026
@@ -129,6 +132,31 @@ NGUON_BTXH = "CSDL về Bảo trợ xã hội (chi trả trợ cấp)"
 RB_PHAN_TRAM = "0 <= gia_tri <= 100"
 RB_KHONG_AM = "gia_tri >= 0"
 RB_LUY_KE = "gia_tri >= 0; canh_bao_neu_giam_so_ky_truoc"
+
+# Kênh 2 (v0.2): cụm từ giúp máy nhận diện chỉ tiêu trong câu văn của văn bản
+# — phải khớp với mẫu câu trong app/services/van_ban_mau.py
+TU_KHOA_TRICH_XUAT = {
+    "DTC01": ["kế hoạch vốn giao", "kế hoạch vốn"],
+    "DTC02": ["giải ngân lũy kế", "đã giải ngân", "giá trị giải ngân"],
+    "DTC03": ["tỷ lệ giải ngân"],
+    "DTC04": ["dự án đang triển khai"],
+    "DTC05": ["dự án chậm tiến độ", "dự án chậm"],
+    "TTHC01": ["tiếp nhận"],
+    "TTHC02": ["giải quyết đúng hạn", "đúng hạn"],
+    "TTHC03": ["quá hạn"],
+    "TTHC04": ["tỷ lệ đúng hạn"],
+    "TTHC05": ["nộp trực tuyến"],
+    "TTHC06": ["tỷ lệ hồ sơ trực tuyến"],
+    "AS01": ["hộ nghèo"],
+    "AS02": ["hộ cận nghèo"],
+    "AS03": ["đối tượng bảo trợ", "bảo trợ xã hội đang hưởng"],
+    "AS04": ["kinh phí chi trả"],
+    "AS05": ["không dùng tiền mặt", "không tiền mặt"],
+}
+
+# Tháng có báo cáo điện tử trong Kho (nguồn kênh 2); các tháng trước lấy từ
+# hệ thống nghiệp vụ (DTC/TTHC) hoặc nhập tại nguồn (ASXH) → trộn ~40/40/20
+CAC_THANG_CO_VAN_BAN = (5, 6, 7)
 
 # (mã, tên, lĩnh vực, đơn vị tính, cơ quan chủ, nguồn CSDL,
 #  công thức, ràng buộc, công khai, định nghĩa bổ sung)
@@ -367,13 +395,22 @@ def _ma_dinh_danh(so_thu_tu: int) -> str:
 
 
 def reset_db() -> None:
-    """Xóa và tạo lại toàn bộ bảng + view chỉ đọc cho AI."""
+    """Xóa và tạo lại toàn bộ bảng + FTS5 + view chỉ đọc cho AI."""
     with engine.begin() as conn:
-        for view in ("v_so_lieu", "v_don_vi", "v_chi_tieu"):
+        for view in ("v_so_lieu", "v_don_vi", "v_chi_tieu", "v_van_ban"):
             conn.execute(text(f"DROP VIEW IF EXISTS {view}"))
+        conn.execute(text("DROP TABLE IF EXISTS van_ban_fts"))
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
     with engine.begin() as conn:
+        # Chỉ mục toàn văn FTS5 cho Lớp 1 (mỗi dòng = một đoạn văn bản)
+        conn.execute(text("""
+                CREATE VIRTUAL TABLE van_ban_fts USING fts5(
+                    noi_dung,
+                    van_ban_id UNINDEXED,
+                    doan_id UNINDEXED
+                )
+                """))
         conn.execute(text("""
                 CREATE VIEW v_so_lieu AS
                 SELECT g.id,
@@ -391,11 +428,20 @@ def reset_db() -> None:
                        (g.nam * 100 + g.thang) AS ky,
                        g.gia_tri,
                        g.nguon,
+                       g.van_ban_id,
                        g.thoi_diem_cap_nhat
                 FROM gia_tri_chi_tieu g
                 JOIN chi_tieu c ON c.id = g.chi_tieu_id
                 JOIN linh_vuc l ON l.id = c.linh_vuc_id
                 JOIN don_vi d   ON d.id = g.don_vi_id
+                """))
+        conn.execute(text("""
+                CREATE VIEW v_van_ban AS
+                SELECT v.id, v.so, v.ky_hieu, v.loai, v.trich_yeu,
+                       d.ten AS ten_co_quan, v.ngay_ban_hanh
+                FROM van_ban v
+                LEFT JOIN don_vi d ON d.id = v.co_quan_id
+                WHERE v.mat = 0
                 """))
         conn.execute(text("""
                 CREATE VIEW v_don_vi AS
@@ -487,6 +533,9 @@ def seed_danh_muc(db: Session) -> dict[str, ChiTieu]:
             muc_chia_se="mo" if cong_khai else "dung_chung",
             cong_thuc=cong_thuc,
             rang_buoc=rang_buoc,
+            tu_khoa_trich_xuat=json.dumps(
+                TU_KHOA_TRICH_XUAT.get(ma, []), ensure_ascii=False
+            ),
             dinh_nghia=dinh_nghia
             or f"Chỉ tiêu {ten.lower()} theo kỳ báo cáo tháng (dữ liệu mô phỏng).",
             cong_khai=cong_khai,
@@ -665,37 +714,168 @@ def _sinh_asxh(he_so: float, vung: str) -> dict[str, list[float]]:
     }
 
 
+def _sinh_chuoi_xa(ma_xa: str, vung: str) -> dict[str, list[float]]:
+    """Chuỗi 7 tháng của toàn bộ 16 chỉ tiêu cho một xã."""
+    he_so = HE_SO_VUNG[vung] * rng.uniform(0.85, 1.15)
+    chuoi: dict[str, list[float]] = {}
+    chuoi.update(_sinh_giai_ngan(ma_xa, he_so))
+    chuoi.update(_sinh_tthc(ma_xa, he_so, vung))
+    chuoi.update(_sinh_asxh(he_so, vung))
+    return chuoi
+
+
+def _tao_van_ban_bao_cao(
+    db: Session, dv: DonVi, thang: int, so_lieu_ky: dict[str, float]
+) -> VanBan:
+    """Tạo một báo cáo tháng ở Lớp 1 (toàn văn + đoạn + chỉ mục FTS5)."""
+    cac_doan = van_ban_mau.noi_dung_bao_cao(dv.ten, thang, NAM, so_lieu_ky)
+    vb = VanBan(
+        so=f"{rng.randint(30, 99)}",
+        ky_hieu=f"BC-UBND-{dv.ma}",
+        loai="bao_cao",
+        trich_yeu=van_ban_mau.trich_yeu_bao_cao(thang, NAM),
+        co_quan_id=dv.id,
+        ngay_ban_hanh=date(NAM, thang, min(28, rng.randint(18, 26))),
+        duong_dan_file=f"data/seed/van_ban_mau/bao-cao-{dv.ma.lower()}-{NAM}"
+        f"{thang:02d}.docx",
+        toan_van="\n\n".join(cac_doan),
+        mat=False,
+        thoi_diem_tiep_nhan=datetime(NAM, thang, min(28, rng.randint(18, 26)), 9),
+    )
+    db.add(vb)
+    db.flush()
+    for i, doan in enumerate(cac_doan):
+        db.add(VanBanDoan(van_ban_id=vb.id, thu_tu=i, noi_dung=doan))
+    db.flush()
+    for doan in vb.cac_doan:
+        db.execute(
+            text(
+                "INSERT INTO van_ban_fts (noi_dung, van_ban_id, doan_id) "
+                "VALUES (:nd, :vb, :d)"
+            ),
+            {"nd": doan.noi_dung, "vb": vb.id, "d": doan.id},
+        )
+    return vb
+
+
+def seed_van_ban_khac(db: Session, map_dv: dict[str, DonVi]) -> None:
+    """2 văn bản khác loại (kế hoạch, thông báo) + 1 văn bản MẬT minh họa."""
+    ds = [
+        VanBan(
+            so="12",
+            ky_hieu="KH-STC",
+            loai="ke_hoach",
+            trich_yeu="Kế hoạch đôn đốc giải ngân vốn đầu tư công những tháng "
+            f"cuối năm {NAM}",
+            co_quan_id=map_dv["STC"].id,
+            ngay_ban_hanh=date(NAM, 7, 10),
+            toan_van="Sở Tài chính xây dựng kế hoạch đôn đốc giải ngân vốn đầu "
+            f"tư công những tháng cuối năm {NAM}. Mục tiêu: toàn tỉnh đạt tối "
+            "thiểu 95% kế hoạch vốn; các xã có tỷ lệ giải ngân dưới 30% phải "
+            "cam kết mốc giải ngân từng tháng. Nguyên nhân chậm chủ yếu do "
+            "vướng mắc giải phóng mặt bằng và năng lực một số nhà thầu hạn "
+            "chế; yêu cầu các chủ đầu tư khẩn trương hoàn thiện hồ sơ nghiệm "
+            "thu, thanh toán ngay khi có khối lượng./.",
+            mat=False,
+            thoi_diem_tiep_nhan=datetime(NAM, 7, 10, 14),
+        ),
+        VanBan(
+            so="45",
+            ky_hieu="TB-VPUBND",
+            loai="thong_bao",
+            trich_yeu="Thông báo kết luận của Chủ tịch UBND tỉnh tại hội nghị "
+            "đẩy nhanh giải ngân và chuyển đổi số dữ liệu báo cáo",
+            co_quan_id=map_dv["VPUBND"].id,
+            ngay_ban_hanh=date(NAM, 7, 15),
+            toan_van="Chủ tịch UBND tỉnh kết luận: các sở, ngành khai thác số "
+            "liệu trực tiếp trên Kho dữ liệu dùng chung, không yêu cầu UBND "
+            "cấp xã báo cáo lại số liệu đã có trong Kho. Giao Sở Tài chính "
+            "theo dõi các xã giải ngân chậm, báo cáo Chủ tịch UBND tỉnh qua "
+            "bản tin điều hành hằng tuần./.",
+            mat=False,
+            thoi_diem_tiep_nhan=datetime(NAM, 7, 15, 16),
+        ),
+        VanBan(
+            so="07",
+            ky_hieu="CV-MAT",
+            loai="cong_van",
+            trich_yeu="Văn bản MẬT minh họa — nội dung không được đưa vào Kho",
+            co_quan_id=map_dv["VPUBND"].id,
+            ngay_ban_hanh=date(NAM, 7, 5),
+            toan_van="NỘI DUNG MẬT MÔ PHỎNG — văn bản này phải bị chặn khỏi "
+            "tìm kiếm, AI và máy trích xuất. Cụm từ nhận diện: bi-mat-demo.",
+            mat=True,
+            thoi_diem_tiep_nhan=datetime(NAM, 7, 5, 10),
+        ),
+    ]
+    db.add_all(ds)
+    db.flush()
+    # Chia đoạn + FTS cho văn bản KHÔNG mật (văn bản mật không được lập chỉ mục)
+    for vb in ds:
+        if vb.mat:
+            continue
+        for i, doan in enumerate(vb.toan_van.split("\n\n")):
+            d = VanBanDoan(van_ban_id=vb.id, thu_tu=i, noi_dung=doan)
+            db.add(d)
+            db.flush()
+            db.execute(
+                text(
+                    "INSERT INTO van_ban_fts (noi_dung, van_ban_id, doan_id) "
+                    "VALUES (:nd, :vb, :d)"
+                ),
+                {"nd": doan, "vb": vb.id, "d": d.id},
+            )
+
+
 def seed_gia_tri(
     db: Session,
     map_dv: dict[str, DonVi],
     map_ct: dict[str, ChiTieu],
     map_nd: dict[str, NguoiDung],
 ) -> int:
-    """Sinh giá trị chỉ tiêu tháng 01–07/2026 cho 15 xã; trả về số bản ghi."""
+    """Sinh giá trị tháng 01–07/2026 cho 15 xã, TRỘN ĐỦ 3 NGUỒN (v0.2):
+
+    - Tháng 1–4: DTC/TTHC từ `he_thong` (kênh 1), ASXH `nhap_tay` (kênh 3);
+    - Tháng 5–7: toàn bộ từ `van_ban` (kênh 2) — mỗi xã mỗi tháng có một
+      báo cáo điện tử ở Lớp 1, giá trị liên kết van_ban_id + người xác nhận.
+    - Riêng phường Hạc Thành KHÔNG có báo cáo tháng 7 trong Kho (file .docx
+      để người demo tải lên theo kịch bản Mục 13); các ô DTC02/DTC03/AS04
+      tháng 7 để trống chờ kênh 2.
+    """
     so_ban_ghi = 0
-    id_chuyen_vien_hacthanh = map_nd["xa.hacthanh"].id
+    id_xa_hacthanh = map_nd["xa.hacthanh"].id
+    id_admin = map_nd["admin"].id
 
     for ma_xa, _ten, _loai, vung, _ma_dvhc in DS_XA:
         dv = map_dv[ma_xa]
-        he_so = HE_SO_VUNG[vung] * rng.uniform(0.85, 1.15)
+        chuoi = _sinh_chuoi_xa(ma_xa, vung)
 
-        chuoi: dict[str, list[float]] = {}
-        chuoi.update(_sinh_giai_ngan(ma_xa, he_so))
-        chuoi.update(_sinh_tthc(ma_xa, he_so, vung))
-        chuoi.update(_sinh_asxh(he_so, vung))
+        # Văn bản báo cáo tháng 5–7 của xã (Hạc Thành: bỏ tháng 7 — chờ tải lên)
+        van_ban_theo_thang: dict[int, VanBan] = {}
+        for thang in CAC_THANG_CO_VAN_BAN:
+            if ma_xa == XA_NHAP_DEMO and thang == 7:
+                continue
+            so_lieu_ky = {ma: chuoi[ma][thang - 1] for ma in chuoi}
+            van_ban_theo_thang[thang] = _tao_van_ban_bao_cao(db, dv, thang, so_lieu_ky)
 
         for ma_ct, gia_tri_7_thang in chuoi.items():
             for i, thang in enumerate(CAC_THANG):
                 if thang == 7 and (ma_ct, ma_xa) in O_TRONG_THANG_7:
-                    continue  # để trống cho kịch bản nhập liệu / cảnh báo
-                # Nhóm ASXH nhập tay tại xã; DTC/TTHC chủ yếu từ hệ thống
-                nhap_tay = ma_ct.startswith("AS") or rng.random() < 0.15
-                nguon = "nhap_tay" if nhap_tay else "he_thong"
-                nguoi_cap_nhat = (
-                    id_chuyen_vien_hacthanh
-                    if nhap_tay and ma_xa == "HACTHANH"
-                    else None
-                )
+                    continue  # để trống cho kịch bản kênh 2 / cảnh báo
+                vb = van_ban_theo_thang.get(thang)
+                if thang in CAC_THANG_CO_VAN_BAN and vb is not None:
+                    nguon, van_ban_id = "van_ban", vb.id
+                    nguoi_xac_nhan = (
+                        id_xa_hacthanh if ma_xa == XA_NHAP_DEMO else id_admin
+                    )
+                elif thang in CAC_THANG_CO_VAN_BAN:
+                    # Hạc Thành tháng 7: chưa có văn bản → tạm từ hệ thống
+                    nguon, van_ban_id, nguoi_xac_nhan = "he_thong", None, None
+                elif ma_ct.startswith("AS"):
+                    nguon, van_ban_id = "nhap_tay", None
+                    nguoi_xac_nhan = id_xa_hacthanh if ma_xa == XA_NHAP_DEMO else None
+                else:
+                    nguon, van_ban_id, nguoi_xac_nhan = "he_thong", None, None
                 db.add(
                     GiaTriChiTieu(
                         chi_tieu_id=map_ct[ma_ct].id,
@@ -704,13 +884,61 @@ def seed_gia_tri(
                         thang=thang,
                         gia_tri=float(gia_tri_7_thang[i]),
                         nguon=nguon,
-                        nguoi_cap_nhat_id=nguoi_cap_nhat,
+                        van_ban_id=van_ban_id,
+                        nguoi_xac_nhan_id=nguoi_xac_nhan,
                         thoi_diem_cap_nhat=_thoi_diem_cap_nhat(thang),
                     )
                 )
                 so_ban_ghi += 1
     db.flush()
     return so_ban_ghi
+
+
+def seed_hang_cho_ton_dong(db: Session, map_dv: dict[str, DonVi]) -> None:
+    """2 dòng hàng chờ xác nhận TỒN ĐỌNG QUÁ 3 NGÀY (luật cảnh báo 8.8 v0.2):
+    báo cáo tháng 7 của Xã Ngọc Lặc có 2 số máy đọc chưa ai xác nhận."""
+    dv = map_dv["NGOCLAC"]
+    vb = (
+        db.query(VanBan)
+        .filter(VanBan.co_quan_id == dv.id, VanBan.loai == "bao_cao")
+        .order_by(VanBan.ngay_ban_hanh.desc())
+        .first()
+    )
+    if vb is None:
+        return
+    ct_dtc04 = db.query(ChiTieu).filter_by(ma="DTC04").one()
+    ct_dtc05 = db.query(ChiTieu).filter_by(ma="DTC05").one()
+    ngay_cu = datetime(NAM, 7, 19, 8)  # ~5 ngày trước "hôm nay" của demo
+    db.add_all(
+        [
+            TrichXuatCho(
+                van_ban_id=vb.id,
+                chi_tieu_id=ct_dtc04.id,
+                don_vi_id=dv.id,
+                nam=NAM,
+                thang=7,
+                gia_tri_may_doc=12,
+                doan_trich="Toàn địa bàn có 12 dự án đang triển khai, trong "
+                "đó có 2 dự án chậm tiến độ.",
+                do_tin_cay="trung_binh",
+                trang_thai="cho_xac_nhan",
+                thoi_diem=ngay_cu,
+            ),
+            TrichXuatCho(
+                van_ban_id=vb.id,
+                chi_tieu_id=ct_dtc05.id,
+                don_vi_id=dv.id,
+                nam=NAM,
+                thang=7,
+                gia_tri_may_doc=2,
+                doan_trich="Toàn địa bàn có 12 dự án đang triển khai, trong "
+                "đó có 2 dự án chậm tiến độ.",
+                do_tin_cay="cao",
+                trang_thai="cho_xac_nhan",
+                thoi_diem=ngay_cu,
+            ),
+        ]
+    )
 
 
 def seed_nghi_quyet(db: Session, map_ct: dict[str, ChiTieu]) -> None:
@@ -848,21 +1076,26 @@ def seed_all(db: Session) -> dict[str, int]:
     map_ct = seed_danh_muc(db)
     map_nd = seed_nguoi_dung(db, map_dv)
     so_gia_tri = seed_gia_tri(db, map_dv, map_ct, map_nd)
+    seed_van_ban_khac(db, map_dv)
+    seed_hang_cho_ton_dong(db, map_dv)
     seed_nghi_quyet(db, map_ct)
     seed_kiem_ke(db)
     db.commit()
+    so_van_ban = db.query(VanBan).count()
     # Bản ghi mở đầu chuỗi nhật ký chống sửa lén (hash chain)
     audit.ghi_nhat_ky(
         db,
         map_nd["admin"].id,
         "khoi_tao_du_lieu",
-        f"Seed dữ liệu mô phỏng: {so_gia_tri} bản ghi giá trị chỉ tiêu.",
+        f"Seed dữ liệu mô phỏng: {so_gia_tri} giá trị chỉ tiêu (Lớp 2), "
+        f"{so_van_ban} văn bản (Lớp 1).",
     )
     return {
         "don_vi": len(map_dv),
         "chi_tieu": len(map_ct),
         "nguoi_dung": len(map_nd),
         "gia_tri": so_gia_tri,
+        "van_ban": so_van_ban,
     }
 
 
@@ -881,7 +1114,9 @@ def main() -> None:
         f"(mật khẩu demo: {MAT_KHAU_DEMO})"
     )
     print(f"  - Giá trị chỉ tiêu:  {thong_ke['gia_tri']} bản ghi (tháng 01–07/{NAM})")
+    print(f"  - Văn bản Lớp 1:     {thong_ke['van_ban']} (kèm đoạn + chỉ mục FTS5)")
     print("Lưu ý: toàn bộ là DỮ LIỆU MÔ PHỎNG phục vụ trình diễn.")
+    print("Chạy tiếp: python scripts/make_sample_docs.py để xuất file .docx mẫu.")
 
 
 if __name__ == "__main__":

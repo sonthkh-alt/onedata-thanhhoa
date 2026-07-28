@@ -10,7 +10,10 @@
 
 <div class="thong-diep-chinh">
   Anh/chị chỉ phải nhập <strong>MỘT LẦN</strong> — mọi báo cáo, bảng biểu sẽ được
-  hệ thống tự tổng hợp từ số liệu này.
+  hệ thống tự tổng hợp từ số liệu này. Kênh 3 chỉ hiển thị ô nhập cho chỉ tiêu
+  <strong>chưa có</strong> từ hệ thống nghiệp vụ (kênh 1) hoặc văn bản (kênh 2)
+  — kỳ này chỉ còn <strong>{{ so_o_duoc_nhap }}</strong> ô phải nhập tay:
+  minh chứng việc nhập tay đang được thu hẹp dần.
 </div>
 
 {% if thong_bao %}<div class="canh-bao canh-bao--ok">{{ thong_bao }}</div>{% endif %}
@@ -86,14 +89,19 @@
         <td>
           {% if ct.cong_thuc %}
           <span class="tu-tinh" title="Công thức: {{ ct.cong_thuc }}">Hệ thống tự tính</span>
-          {% else %}
+          {% elif duoc_nhap[ct.id] %}
           <input type="text" name="gt_{{ ct.ma }}" inputmode="decimal"
                  placeholder="{{ 'Nhập giá trị' if not gt else 'Sửa (ghi đè)' }}">
+          {% else %}
+          <span class="tu-tinh" title="Đã có từ kênh 1/kênh 2 — không phải nhập lại">
+            Đã có từ {{ "hệ thống" if gt.nguon == "he_thong" else "văn bản" }}</span>
           {% endif %}
         </td>
         <td class="thoi-diem">
           {% if gt %}{{ gt.thoi_diem_cap_nhat.strftime("%Y-%m-%d %H:%M") }}
-          <span class="nguon-tag">{{ "hệ thống" if gt.nguon == "he_thong" else "nhập tay" }}</span>
+          <span class="nguon-tag">{{ {"he_thong": "hệ thống", "van_ban": "trích từ văn bản",
+            "nhap_tay": "nhập tay"}[gt.nguon] }}</span>
+          {% if gt.van_ban_id %}<a class="ghi-chu" href="/van-ban/{{ gt.van_ban_id }}">📄</a>{% endif %}
           {% else %}<em>chưa nhập</em>{% endif %}
         </td>
       </tr>

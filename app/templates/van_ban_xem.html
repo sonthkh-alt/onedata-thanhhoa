@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ vb.so }}/{{ vb.ky_hieu }} — Kho văn bản{% endblock %}
+{% block content %}
+<p><a href="/van-ban">← Về Kho văn bản</a></p>
+<h1>📄 {{ ten_loai[vb.loai] }} số {{ vb.so }}/{{ vb.ky_hieu }}
+  {% if vb.mat %}<span class="nguon-tag" style="background:#c0392b;color:#fff">MẬT — chặn khỏi tìm kiếm/AI/trích xuất</span>{% endif %}
+</h1>
+
+<table class="bang-nhap">
+  <tbody>
+    <tr><th style="width:220px">Trích yếu</th><td>{{ vb.trich_yeu }}</td></tr>
+    <tr><th>Cơ quan ban hành</th><td>{{ vb.co_quan.ten if vb.co_quan else "—" }}</td></tr>
+    <tr><th>Ngày ban hành</th><td>{{ vb.ngay_ban_hanh.strftime("%Y-%m-%d") if vb.ngay_ban_hanh else "—" }}</td></tr>
+    <tr><th>Thời điểm vào Kho</th><td>{{ vb.thoi_diem_tiep_nhan.strftime("%Y-%m-%d %H:%M") }}</td></tr>
+    <tr><th>File gốc</th>
+      <td>{% if co_file %}<a class="nut" href="/van-ban/{{ vb.id }}/tai-file">⬇ Tải file .docx gốc</a>
+        {% else %}<em>Chưa sinh file (chạy scripts/make_sample_docs.py)</em>{% endif %}</td></tr>
+  </tbody>
+</table>
+
+<h2>Toàn văn</h2>
+<div class="tap-du-lieu">
+  {% for doan in vb.toan_van.split("\n\n") %}
+  <p style="text-align:justify">{{ doan }}</p>
+  {% endfor %}
+</div>
+{% endblock %}

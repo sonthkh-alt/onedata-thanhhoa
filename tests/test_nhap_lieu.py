@@ -95,30 +95,48 @@ def test_canh_bao_luy_ke_giam_van_luu(client, db):
 
 
 def test_phan_tram_ngoai_khoang_bi_chan(client, db):
+    """Tháng 4: AS05 là nhập tay (kênh 3) nên sửa được — nhưng 150% bị chặn."""
     dang_nhap(client, "xa.hacthanh")
-    resp = client.post("/nhap-lieu", data={"thang": "7", "gt_AS05": "150"})
+    resp = client.post("/nhap-lieu", data={"thang": "4", "gt_AS05": "150"})
     assert resp.status_code == 200
     assert "phải nằm trong [0; 100]" in resp.text
     db.expire_all()
-    as05 = lay_gia_tri(db, "AS05", "HACTHANH", 7)
+    as05 = lay_gia_tri(db, "AS05", "HACTHANH", 4)
     assert as05 is None or as05.gia_tri != 150
 
 
-def test_sua_ghi_de_va_log(client, db):
-    """Sửa AS03 hai lần → ghi đè MỘT bản ghi + log sua_so_lieu."""
+def test_kenh_3_khong_ghi_de_so_lieu_kenh_1_2(client, db):
+    """v0.2: chỉ tiêu đã có từ kênh 1/2 (hệ thống, văn bản) KHÔNG nhập tay được.
+
+    AS03 tháng 6 có nguồn 'van_ban' (báo cáo tháng 6 trong Kho) → gửi giá
+    trị mới phải bị bỏ qua.
+    """
     dang_nhap(client, "xa.hacthanh")
-    client.post("/nhap-lieu", data={"thang": "7", "gt_AS03": "500"})
-    client.post("/nhap-lieu", data={"thang": "7", "gt_AS03": "512"})
+    truoc = lay_gia_tri(db, "AS03", "HACTHANH", 6)
+    assert truoc.nguon == "van_ban"
+
+    client.post("/nhap-lieu", data={"thang": "6", "gt_AS03": "77777"})
+    db.expire_all()
+    sau = lay_gia_tri(db, "AS03", "HACTHANH", 6)
+    assert sau.gia_tri == truoc.gia_tri  # không bị ghi đè
+    assert sau.nguon == "van_ban"
+
+
+def test_sua_ghi_de_va_log(client, db):
+    """Tháng 4 (nhập tay): sửa AS03 hai lần → ghi đè MỘT bản ghi + log."""
+    dang_nhap(client, "xa.hacthanh")
+    client.post("/nhap-lieu", data={"thang": "4", "gt_AS03": "500"})
+    client.post("/nhap-lieu", data={"thang": "4", "gt_AS03": "512"})
 
     db.expire_all()
-    as03 = lay_gia_tri(db, "AS03", "HACTHANH", 7)
+    as03 = lay_gia_tri(db, "AS03", "HACTHANH", 4)
     assert as03.gia_tri == 512
     # Vẫn chỉ MỘT bản ghi cho (chỉ tiêu, đơn vị, kỳ)
     ct = db.query(ChiTieu).filter_by(ma="AS03").one()
     dv = db.query(DonVi).filter_by(ma="HACTHANH").one()
     so_ban_ghi = (
         db.query(GiaTriChiTieu)
-        .filter_by(chi_tieu_id=ct.id, don_vi_id=dv.id, nam=2026, thang=7)
+        .filter_by(chi_tieu_id=ct.id, don_vi_id=dv.id, nam=2026, thang=4)
         .count()
     )
     assert so_ban_ghi == 1
@@ -128,12 +146,12 @@ def test_sua_ghi_de_va_log(client, db):
 def test_chuyen_vien_xa_khong_sua_duoc_xa_khac(client, db):
     """Gửi don_vi=NGASON nhưng tài khoản Hạc Thành → dữ liệu Nga Sơn không đổi."""
     dang_nhap(client, "xa.hacthanh")
-    truoc = lay_gia_tri(db, "AS03", "NGASON", 7).gia_tri
+    truoc = lay_gia_tri(db, "AS03", "NGASON", 4).gia_tri
 
     client.post(
-        "/nhap-lieu", data={"thang": "7", "don_vi": "NGASON", "gt_AS03": "99999"}
+        "/nhap-lieu", data={"thang": "4", "don_vi": "NGASON", "gt_AS03": "99999"}
     )
 
     db.expire_all()
-    assert lay_gia_tri(db, "AS03", "NGASON", 7).gia_tri == truoc
-    assert lay_gia_tri(db, "AS03", "HACTHANH", 7).gia_tri == 99999
+    assert lay_gia_tri(db, "AS03", "NGASON", 4).gia_tri == truoc
+    assert lay_gia_tri(db, "AS03", "HACTHANH", 4).gia_tri == 99999

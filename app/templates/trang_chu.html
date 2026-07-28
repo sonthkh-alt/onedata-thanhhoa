@@ -28,12 +28,25 @@
 
 <div class="luoi-the">
   {% if nguoi_dung.vai_tro in ["chuyen_vien_xa", "quan_tri"] %}
+  <div class="the the--linhvuc">
+    <h2>📚 Kho văn bản + Máy trích xuất (KÊNH 2)</h2>
+    <p>Tải báo cáo vừa phát hành — máy đọc số liệu, anh/chị CHỈ XÁC NHẬN.</p>
+    <p><a class="nut" href="/van-ban/tai-len">Tiếp nhận văn bản</a>
+      <a class="nut nut--xam" href="/trich-xuat">Hàng chờ xác nhận</a></p>
+  </div>
+
   <div class="the">
-    <h2>📝 Nhập số liệu tại nguồn</h2>
-    <p>Nhập MỘT LẦN — mọi báo cáo, bảng biểu được hệ thống tự tổng hợp.</p>
+    <h2>📝 Nhập tại nguồn (kênh 3)</h2>
+    <p>Chỉ nhập phần CHƯA có từ hệ thống nghiệp vụ hoặc văn bản.</p>
     <p><a class="nut" href="/nhap-lieu">Vào nhập số liệu</a></p>
   </div>
   {% endif %}
+
+  <div class="the">
+    <h2>📖 Tra cứu Kho văn bản</h2>
+    <p>Toàn văn + tìm kiếm; văn bản mật bị chặn tự động.</p>
+    <p><a class="nut" href="/van-ban">Mở Kho văn bản</a></p>
+  </div>
 
   {% if nguoi_dung.vai_tro in ["lanh_dao", "dai_bieu_hdnd", "quan_tri"] %}
   <div class="the">

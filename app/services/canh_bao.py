@@ -8,13 +8,15 @@
 """
 
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
-from app.models import ChiTieu, DonVi, GiaTriChiTieu
+from app.models import ChiTieu, DonVi, GiaTriChiTieu, TrichXuatCho
 
 NGUONG_GIAI_NGAN = 30.0  # %
 NGUONG_TTHC_DUNG_HAN = 90.0  # %
+SO_NGAY_TON_DONG = 3  # hàng chờ xác nhận quá 3 ngày → cảnh báo (v0.2)
 
 
 @dataclass
@@ -124,6 +126,34 @@ def tim_diem_nong(db: Session, thang: int = 7, nam: int = 2026) -> list[DiemNong
                         muc_do="trung_binh",
                     )
                 )
+
+    # Luật 5 (v0.2): bản ghi trong hàng chờ xác nhận tồn đọng quá 3 ngày
+    han = datetime.now() - timedelta(days=SO_NGAY_TON_DONG)
+    ton_dong = (
+        db.query(TrichXuatCho.don_vi_id, DonVi.ten, DonVi.ma)
+        .join(DonVi, DonVi.id == TrichXuatCho.don_vi_id)
+        .filter(
+            TrichXuatCho.trang_thai == "cho_xac_nhan",
+            TrichXuatCho.thoi_diem < han,
+        )
+        .all()
+    )
+    dem_theo_xa: dict[str, list] = {}
+    for _dv_id, ten, ma in ton_dong:
+        dem_theo_xa.setdefault(ma, [ten, 0])
+        dem_theo_xa[ma][1] += 1
+    for ma, (ten, so_dong) in dem_theo_xa.items():
+        ket_qua.append(
+            DiemNong(
+                don_vi=ten,
+                ma_don_vi=ma,
+                chi_tieu=f"{so_dong} số liệu máy trích chờ xác nhận",
+                gia_tri=f"quá {SO_NGAY_TON_DONG} ngày",
+                luat="Hàng chờ kênh 2 tồn đọng — số liệu đã đọc được nhưng "
+                "chưa ai xác nhận",
+                muc_do="trung_binh",
+            )
+        )
 
     ket_qua.sort(key=lambda d: (d.muc_do != "cao", d.don_vi))
     return ket_qua

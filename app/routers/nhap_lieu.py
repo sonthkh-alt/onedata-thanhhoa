@@ -60,9 +60,11 @@ def _upsert_gia_tri(
     gia_tri: float,
     nguon: str,
     nguoi_dung: NguoiDung,
+    van_ban_id: int | None = None,
 ) -> str:
     """Ghi giá trị một chỉ tiêu (một số liệu chỉ có MỘT bản ghi).
 
+    Kênh 2 truyền `van_ban_id` để giữ liên kết về văn bản gốc ở Lớp 1.
     Trả về "nhap" nếu tạo mới, "sua" nếu ghi đè.
     """
     ban_ghi = (
@@ -81,14 +83,16 @@ def _upsert_gia_tri(
                 thang=thang,
                 gia_tri=gia_tri,
                 nguon=nguon,
-                nguoi_cap_nhat_id=nguoi_dung.id,
+                van_ban_id=van_ban_id,
+                nguoi_xac_nhan_id=nguoi_dung.id,
                 thoi_diem_cap_nhat=datetime.now(),
             )
         )
         return "nhap"
     ban_ghi.gia_tri = gia_tri
     ban_ghi.nguon = nguon
-    ban_ghi.nguoi_cap_nhat_id = nguoi_dung.id
+    ban_ghi.van_ban_id = van_ban_id
+    ban_ghi.nguoi_xac_nhan_id = nguoi_dung.id
     ban_ghi.thoi_diem_cap_nhat = datetime.now()
     return "sua"
 
@@ -153,6 +157,17 @@ def _kiem_tra_gia_tri(
     return (None, None)
 
 
+def _duoc_nhap_tay(ct: ChiTieu, gt: GiaTriChiTieu | None) -> bool:
+    """Kênh 3 (v0.2) CHỈ nhập chỉ tiêu chưa có giá trị từ kênh 1/kênh 2.
+
+    Được nhập khi: chưa có giá trị kỳ này, hoặc giá trị hiện có vốn là
+    nhập tay (sửa lại chính kênh 3). Chỉ tiêu dẫn xuất không bao giờ nhập.
+    """
+    if ct.cong_thuc:
+        return False
+    return gt is None or gt.nguon == "nhap_tay"
+
+
 def _du_lieu_trang(
     db: Session,
     nguoi_dung: NguoiDung,
@@ -170,6 +185,7 @@ def _du_lieu_trang(
         if nguoi_dung.vai_tro == "quan_tri"
         else []
     )
+    duoc_nhap = {ct.id: _duoc_nhap_tay(ct, gia_tri_ky.get(ct.id)) for ct in ds_chi_tieu}
     return {
         "nguoi_dung": nguoi_dung,
         "don_vi": don_vi,
@@ -179,6 +195,8 @@ def _du_lieu_trang(
         "cac_thang": CAC_THANG,
         "ds_chi_tieu": ds_chi_tieu,
         "gia_tri_ky": gia_tri_ky,
+        "duoc_nhap": duoc_nhap,
+        "so_o_duoc_nhap": sum(1 for v in duoc_nhap.values() if v),
         "ds_xa": ds_xa,
     }
 
@@ -233,9 +251,11 @@ async def luu_nhap_lieu(
     so_da_luu = 0
     da_luu: list[tuple[ChiTieu, float, float | None]] = []
 
+    gia_tri_ky_hien_tai = _gia_tri_ky(db, dv.id, thang)
     for ct in ds_chi_tieu:
-        if ct.cong_thuc:
-            continue  # chỉ tiêu dẫn xuất: khóa nhập tay
+        # Kênh 3 chỉ nhận chỉ tiêu CHƯA có từ kênh 1/kênh 2 (v0.2 — 9.4)
+        if not _duoc_nhap_tay(ct, gia_tri_ky_hien_tai.get(ct.id)):
+            continue
         gia_tri_tho = (form.get(f"gt_{ct.ma}") or "").strip()
         if gia_tri_tho == "":
             continue

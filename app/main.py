@@ -22,6 +22,8 @@ from app.routers import (
     kiem_chung,
     kiem_ke,
     nhap_lieu,
+    trich_xuat,
+    van_ban,
 )
 from app.services import kiem_ke as kiem_ke_service
 
@@ -40,6 +42,8 @@ templates = Jinja2Templates(directory=APP_DIR / "templates")
 templates.env.globals["TEN_VAI_TRO"] = TEN_VAI_TRO
 
 app.include_router(auth.router)
+app.include_router(van_ban.router)
+app.include_router(trich_xuat.router)
 app.include_router(nhap_lieu.router)
 app.include_router(dashboard.router)
 app.include_router(cong_khai.router)
