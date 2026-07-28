@@ -54,20 +54,29 @@ def test_validator_giu_limit_co_san():
 # ------------------------- Bộ câu hỏi mẫu offline -------------------------
 
 
-def test_toan_bo_cau_hoi_mau_chay_duoc(csdl_demo):
-    """Cả ~20 câu hỏi mẫu: khớp đúng chính nó, SQL qua validator và thực thi
-    được trên Kho dữ liệu; tối thiểu 18 câu có dữ liệu trả về."""
+def test_toan_bo_cau_hoi_mau_chay_duoc(csdl_demo, db):
+    """~25 câu mẫu đủ 3 loại: khớp đúng chính nó và trả được kết quả
+    (bảng số liệu với so_lieu/lai; đoạn văn bản với van_ban/lai)."""
     ds_mau = ai_query.tai_cau_hoi_mau()
-    assert len(ds_mau) >= 20
+    assert len(ds_mau) >= 25
+    cac_loai = {m.get("loai", "so_lieu") for m in ds_mau}
+    assert cac_loai == {"so_lieu", "van_ban", "lai"}  # đủ cả 3 loại
 
-    so_cau_co_du_lieu = 0
+    so_cau_co_ket_qua = 0
     for mau in ds_mau:
-        ket_qua = ai_query.hoi_offline(mau["cau_hoi"])
-        assert ket_qua.sql is not None, f"Không khớp câu mẫu: {mau['cau_hoi']}"
-        assert ket_qua.cau_hoi_mau == mau["cau_hoi"]
-        if ket_qua.so_dong:
-            so_cau_co_du_lieu += 1
-    assert so_cau_co_du_lieu >= 18
+        ket_qua = ai_query.hoi_offline(mau["cau_hoi"], db)
+        assert (
+            ket_qua.cau_hoi_mau == mau["cau_hoi"]
+        ), f"Không khớp câu mẫu: {mau['cau_hoi']}"
+        loai = mau.get("loai", "so_lieu")
+        assert ket_qua.loai == loai
+        if loai in ("so_lieu", "lai"):
+            assert ket_qua.sql is not None
+        if loai in ("van_ban", "lai"):
+            assert ket_qua.doan_van_ban, f"Không có đoạn văn bản: {mau['cau_hoi']}"
+        if ket_qua.so_dong or ket_qua.doan_van_ban:
+            so_cau_co_ket_qua += 1
+    assert so_cau_co_ket_qua >= len(ds_mau) - 2
 
 
 def test_cau_hoi_diem_nong_giai_ngan(csdl_demo):

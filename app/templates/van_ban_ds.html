@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Kho văn bản — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>📚 Lớp 1 — Kho văn bản, tri thức số</h1>
+<p class="mo-ta">Văn bản điện tử đã ban hành là NGUỒN dữ liệu: máy trích số liệu
+  từ chính văn bản, công chức chỉ xác nhận — không gõ lại vào biểu mẫu.</p>
+
+{% if nguoi_dung.vai_tro in ["chuyen_vien_xa", "quan_tri"] %}
+<p><a class="nut" href="/van-ban/tai-len">⬆ Tiếp nhận văn bản (.docx)</a>
+  <a class="nut nut--xam" href="/trich-xuat">Hàng chờ xác nhận số liệu</a></p>
+{% endif %}
+
+<form method="get" action="/van-ban" class="chon-ky">
+  <input type="text" name="q" value="{{ q }}" placeholder="Tìm toàn văn: ví dụ 'giải phóng mặt bằng'"
+         style="flex:1;min-width:240px;padding:0.45rem 0.7rem;border:1px solid var(--mau-vien);border-radius:4px">
+  <select name="co_quan" onchange="this.form.submit()">
+    <option value="">Mọi cơ quan</option>
+    {% for dv in ds_co_quan %}
+    <option value="{{ dv.ma }}" {% if dv.ma == loc_co_quan %}selected{% endif %}>{{ dv.ten }}</option>
+    {% endfor %}
+  </select>
+  <select name="loai" onchange="this.form.submit()">
+    <option value="">Mọi loại</option>
+    {% for ma, ten in ten_loai.items() %}
+    <option value="{{ ma }}" {% if ma == loc_loai %}selected{% endif %}>{{ ten }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="nut">Tìm kiếm</button>
+</form>
+
+{% if ket_qua_tim is not none %}
+<div class="khoi-tra-loi">
+  <h2>Kết quả tìm toàn văn cho “{{ q }}” — {{ ket_qua_tim | length }} đoạn</h2>
+  {% for kq in ket_qua_tim %}
+  <div class="the buoc-dieu-tra">
+    <p>{{ kq.doan }}</p>
+    <p class="ghi-chu">📄 <a href="/van-ban/{{ kq.van_ban_id }}">{{ kq.so_ky_hieu }}</a>
+      — {{ kq.trich_yeu }} — {{ kq.ten_co_quan }} — {{ kq.ngay_ban_hanh }}</p>
+  </div>
+  {% else %}
+  <p>Không tìm thấy trong Kho văn bản.</p>
+  {% endfor %}
+  <p class="ghi-chu">Tìm kiếm đã lọc theo quyền và tự động loại văn bản mật.</p>
+</div>
+{% endif %}
+
+<h2>Danh sách văn bản ({{ ds_van_ban | length }})</h2>
+<table class="bang-nhap">
+  <thead>
+    <tr><th>Số/KH</th><th>Loại</th><th>Trích yếu</th><th>Cơ quan</th><th>Ngày BH</th></tr>
+  </thead>
+  <tbody>
+    {% for vb in ds_van_ban %}
+    <tr>
+      <td><a href="/van-ban/{{ vb.id }}">{{ vb.so }}/{{ vb.ky_hieu }}</a>
+        {% if vb.mat %}<span class="nguon-tag" style="background:#c0392b;color:#fff">MẬT</span>{% endif %}</td>
+      <td>{{ ten_loai[vb.loai] }}</td>
+      <td>{{ vb.trich_yeu[:90] }}{{ "…" if vb.trich_yeu|length > 90 else "" }}</td>
+      <td>{{ vb.co_quan.ten if vb.co_quan else "—" }}</td>
+      <td>{{ vb.ngay_ban_hanh.strftime("%Y-%m-%d") if vb.ngay_ban_hanh else "—" }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

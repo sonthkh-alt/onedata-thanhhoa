@@ -23,6 +23,8 @@ class Settings(BaseSettings):
     anthropic_model: str = "claude-sonnet-4-6"
     database_url: str = "sqlite:///data/onedata.db"
     secret_key: str = "doi-chuoi-nay-khi-chay-that"
+    # Đường dẫn mô hình embedding tải sẵn (models/...). Để trống → dùng FTS5.
+    embedding_model_path: str = ""
 
     # Tên phiên cookie và thời hạn (giây) — 8 giờ, đủ cho buổi demo
     session_cookie: str = "onedata_session"

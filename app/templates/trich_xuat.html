@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Xác nhận số liệu máy trích — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>✅ Xác nhận số liệu máy trích <span class="ma-ky">kênh 2 — máy trích xuất, người xác nhận</span></h1>
+
+<div class="thong-diep-chinh">
+  <strong>Anh/chị không phải nhập lại</strong> — chỉ xác nhận số liệu hệ thống
+  đã đọc từ chính báo cáo vừa phát hành.
+</div>
+
+{% if hang_cho %}
+<p>
+  Hàng chờ có <strong>{{ hang_cho | length }}</strong> số liệu máy đọc được,
+  trong đó <strong>{{ so_tin_cay_cao }}</strong> dòng độ tin cậy cao.
+  {% if so_tin_cay_cao %}
+  <form method="post" action="/trich-xuat/xac-nhan-tin-cay-cao" style="display:inline">
+    {% if van_ban_id %}<input type="hidden" name="van_ban_id" value="{{ van_ban_id }}">{% endif %}
+    <button type="submit" class="nut">⚡ Xác nhận tất cả {{ so_tin_cay_cao }} dòng độ tin cậy cao</button>
+  </form>
+  {% endif %}
+</p>
+
+<table class="bang-nhap">
+  <thead>
+    <tr><th>Chỉ tiêu</th><th>Kỳ</th><th>Giá trị máy đọc</th><th>Câu trích dẫn</th>
+      <th>Tin cậy</th><th>Thao tác</th></tr>
+  </thead>
+  <tbody>
+    {% for muc in hang_cho %}
+    {% set d = muc.dong %}
+    <tr>
+      <td><strong>{{ d.chi_tieu.ma }}</strong> — {{ d.chi_tieu.ten }}<br>
+        <span class="ghi-chu">{{ d.don_vi.ten }}</span></td>
+      <td>{{ d.nam }}{{ "%02d"|format(d.thang) }}</td>
+      <td>
+        <form method="post" action="/trich-xuat/{{ d.id }}/xac-nhan" id="form-{{ d.id }}">
+          <input type="text" name="gia_tri" value="{{ '%.6g'|format(d.gia_tri_may_doc) }}"
+                 inputmode="decimal" style="width:110px"> {{ d.chi_tieu.don_vi_tinh }}
+        </form>
+      </td>
+      <td style="max-width:380px">
+        “{{ muc.doan_dam }}”<br>
+        <a class="ghi-chu" href="/van-ban/{{ d.van_ban_id }}">📄 Mở văn bản gốc #{{ d.van_ban_id }}</a>
+      </td>
+      <td>{{ muc.ten_tin_cay }}</td>
+      <td>
+        <button type="submit" form="form-{{ d.id }}" class="nut">Xác nhận</button>
+        <form method="post" action="/trich-xuat/{{ d.id }}/tu-choi" style="display:inline">
+          <button type="submit" class="nut nut--xam">Từ chối</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<p class="ghi-chu">Sửa giá trị rồi bấm Xác nhận = "Sửa &amp; xác nhận". Số liệu
+  xác nhận xong vào thẳng Lớp 2 với nguồn "trích từ văn bản", giữ liên kết về văn
+  bản gốc và tên người xác nhận — bấm số trên dashboard sẽ truy được về đây.</p>
+{% else %}
+<p>🎉 Hàng chờ trống — mọi số liệu máy trích đã được xử lý.</p>
+<p><a class="nut" href="/van-ban/tai-len">⬆ Tiếp nhận văn bản mới</a>
+  <a class="nut nut--xam" href="/van-ban">Về Kho văn bản</a></p>
+{% endif %}
+
+<p class="nguyen-tac">Chất lượng dữ liệu theo nguyên tắc của tỉnh:
+  <em>“Đúng - Đủ - Sạch - Sống - Liên thông - Thống nhất - Dùng chung”</em></p>
+{% endblock %}

@@ -114,7 +114,7 @@ def ho_chieu_so_lieu(
     chi_tieu = db.get(ChiTieu, gt.chi_tieu_id)
     don_vi = db.get(DonVi, gt.don_vi_id)
     nguoi_cap_nhat = (
-        db.get(NguoiDung, gt.nguoi_cap_nhat_id) if gt.nguoi_cap_nhat_id else None
+        db.get(NguoiDung, gt.nguoi_xac_nhan_id) if gt.nguoi_xac_nhan_id else None
     )
     lich_su = (
         db.query(NhatKy)

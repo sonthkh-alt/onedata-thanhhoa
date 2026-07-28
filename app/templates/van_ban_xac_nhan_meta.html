@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Rà siêu dữ liệu văn bản — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>📝 Rà siêu dữ liệu trước khi lưu</h1>
+<p class="mo-ta">Hệ thống đã đọc file <strong>{{ ten_goc }}</strong> và điền sẵn
+  các trường dưới đây — anh/chị sửa nếu máy bóc chưa đúng, rồi bấm Lưu.</p>
+
+<form method="post" action="/van-ban/luu" class="form-gop-y" style="max-width:640px">
+  <input type="hidden" name="ten_tam" value="{{ ten_tam }}">
+  <label>Số văn bản</label>
+  <input type="text" name="so" value="{{ meta.so }}">
+  <label>Ký hiệu</label>
+  <input type="text" name="ky_hieu" value="{{ meta.ky_hieu }}">
+  <label>Loại văn bản</label>
+  <select name="loai">
+    {% for ma, ten in ten_loai.items() %}
+    <option value="{{ ma }}" {% if ma == meta.loai %}selected{% endif %}>{{ ten }}</option>
+    {% endfor %}
+  </select>
+  <label>Trích yếu</label>
+  <input type="text" name="trich_yeu" value="{{ meta.trich_yeu }}">
+  <label>Cơ quan ban hành</label>
+  <select name="co_quan_id" required>
+    {% for dv in ds_co_quan %}
+    <option value="{{ dv.id }}" {% if dv.id == meta.co_quan_id %}selected{% endif %}>{{ dv.ten }}</option>
+    {% endfor %}
+  </select>
+  <label>Ngày ban hành</label>
+  <input type="date" name="ngay_ban_hanh"
+         value="{{ meta.ngay_ban_hanh.isoformat() if meta.ngay_ban_hanh else '' }}">
+  <label><input type="checkbox" name="mat" value="true"> Văn bản MẬT
+    (sẽ bị chặn khỏi tìm kiếm, AI và máy trích xuất)</label>
+  <button type="submit" class="nut">💾 Lưu vào Kho và chạy máy trích xuất</button>
+</form>
+
+<h2>Toàn văn máy đã đọc</h2>
+<div class="tap-du-lieu" style="max-height:300px;overflow-y:auto">
+  {% for dong in toan_van.split("\n")[:60] %}<p>{{ dong }}</p>{% endfor %}
+</div>
+{% endblock %}

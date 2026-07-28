@@ -36,13 +36,14 @@ def trang_hoi_dap(
 
     ket_qua = None
     if cau_hoi and cau_hoi.strip():
-        ket_qua = ai_query.hoi(cau_hoi)
+        ket_qua = ai_query.hoi(cau_hoi, db, nguoi_dung)
         ghi_nhat_ky(
             db,
             nguoi_dung.id,
             "hoi_dap_ai",
-            f"[{ket_qua.che_do}] Hỏi (GET): {cau_hoi.strip()[:300]} | "
-            f"SQL: {ket_qua.sql or '(không có)'} | {ket_qua.so_dong} dòng",
+            f"[{ket_qua.che_do}/{ket_qua.loai}] Hỏi (GET): {cau_hoi.strip()[:300]} | "
+            f"SQL: {ket_qua.sql or '(không có)'} | {ket_qua.so_dong} dòng | "
+            f"{len(ket_qua.doan_van_ban)} đoạn văn bản",
         )
     return templates.TemplateResponse(
         request, "hoi_dap.html", _ngu_canh(request, nguoi_dung, ket_qua)
@@ -59,13 +60,14 @@ def gui_cau_hoi(
     """Nhận câu hỏi, trả lời từ Kho dữ liệu, ghi nhật ký đầy đủ."""
     from app.main import templates
 
-    ket_qua = ai_query.hoi(cau_hoi)
+    ket_qua = ai_query.hoi(cau_hoi, db, nguoi_dung)
     ghi_nhat_ky(
         db,
         nguoi_dung.id,
         "hoi_dap_ai",
-        f"[{ket_qua.che_do}] Hỏi: {cau_hoi.strip()[:300]} | "
-        f"SQL: {ket_qua.sql or '(không có)'} | {ket_qua.so_dong} dòng"
+        f"[{ket_qua.che_do}/{ket_qua.loai}] Hỏi: {cau_hoi.strip()[:300]} | "
+        f"SQL: {ket_qua.sql or '(không có)'} | {ket_qua.so_dong} dòng | "
+        f"{len(ket_qua.doan_van_ban)} đoạn văn bản"
         + (f" | Lỗi: {ket_qua.loi}" if ket_qua.loi else ""),
     )
     return templates.TemplateResponse(

@@ -12,6 +12,9 @@ __pycache__/
 *.db
 data/*.db
 outputs/
+uploads/
+data/seed/van_ban_mau/
+models/
 
 # Van ban tham khao cua tinh (ban du thao, khong dua len GitHub)
 *.pdf

@@ -54,9 +54,11 @@ class KetQuaHoiDap:
 
     cau_hoi: str
     tra_loi: str
+    loai: str = "so_lieu"  # so_lieu | van_ban | lai (định tuyến 2 lớp v0.2)
     sql: str | None = None
     cot: list[str] = field(default_factory=list)
     dong: list[list] = field(default_factory=list)
+    doan_van_ban: list[dict] = field(default_factory=list)  # đoạn Lớp 1 dẫn nguồn
     che_do: str = "offline"
     cau_hoi_mau: str | None = None
     loi: str | None = None
@@ -64,6 +66,46 @@ class KetQuaHoiDap:
     @property
     def so_dong(self) -> int:
         return len(self.dong)
+
+
+# Từ khóa định tuyến offline (chuẩn hóa không dấu)
+TU_KHOA_LOP_VAN_BAN = (
+    "van ban",
+    "bao cao nao",
+    "noi gi",
+    "giai trinh",
+    "nguyen nhan",
+    "ke hoach",
+    "thong bao",
+    "ket luan",
+    "chi dao",
+)
+TU_KHOA_LOP_SO_LIEU = (
+    "bao nhieu",
+    "ty le",
+    "xa nao",
+    "tong",
+    "xep hang",
+    "cao nhat",
+    "thap nhat",
+    "duoi",
+    "tren",
+    "so lieu",
+    "danh sach",
+)
+
+
+def phan_loai_cau_hoi(cau_hoi: str) -> str:
+    """Định tuyến câu hỏi: `so_lieu` | `van_ban` | `lai` (chế độ offline
+    dùng từ khóa; chế độ online có thể hỏi mô hình)."""
+    hoi = chuan_hoa(cau_hoi)
+    co_van_ban = any(tk in hoi for tk in TU_KHOA_LOP_VAN_BAN)
+    co_so_lieu = any(tk in hoi for tk in TU_KHOA_LOP_SO_LIEU)
+    if co_van_ban and co_so_lieu:
+        return "lai"
+    if co_van_ban:
+        return "van_ban"
+    return "so_lieu"
 
 
 def chuan_hoa(van_ban: str) -> str:
@@ -85,6 +127,8 @@ def tim_cau_hoi_mau(cau_hoi: str) -> dict | None:
     hoi = chuan_hoa(cau_hoi)
     tot_nhat, diem_max = None, 0
     for mau in tai_cau_hoi_mau():
+        if chuan_hoa(mau["cau_hoi"]) == hoi:
+            return mau  # khớp nguyên câu → chọn ngay, không so từ khóa
         tu_khoa = mau["tu_khoa"]
         diem = sum(1 for tk in tu_khoa if chuan_hoa(tk) in hoi)
         if diem == len(tu_khoa) and diem > diem_max:
@@ -168,16 +212,8 @@ def _dinh_dang_dong(cot: list[str], dong: list[list]) -> list[list]:
     return ket_qua
 
 
-def hoi_offline(cau_hoi: str) -> KetQuaHoiDap:
-    """Chế độ offline: so khớp câu hỏi mẫu → SQL đã kiểm soát → kết quả."""
-    mau = tim_cau_hoi_mau(cau_hoi)
-    if mau is None:
-        return KetQuaHoiDap(
-            cau_hoi=cau_hoi,
-            tra_loi=TRA_LOI_KHONG_CO_DU_LIEU
-            + " Anh/chị có thể chọn một câu hỏi gợi ý bên dưới.",
-            che_do="offline",
-        )
+def _tra_loi_so_lieu(mau: dict, cau_hoi: str) -> KetQuaHoiDap:
+    """Nhánh Lớp 2: chạy SQL đã ánh xạ sẵn (qua bộ kiểm soát)."""
     try:
         sql = validate_sql(mau["sql"])
         cot, dong = thuc_thi_sql(sql)
@@ -208,6 +244,80 @@ def hoi_offline(cau_hoi: str) -> KetQuaHoiDap:
         dong=_dinh_dang_dong(cot, dong),
         che_do="offline",
         cau_hoi_mau=mau["cau_hoi"],
+    )
+
+
+def _tim_doan_van_ban(cau_hoi_fts: str, db=None, nguoi_dung=None) -> list[dict]:
+    """Nhánh Lớp 1: lấy 5–8 đoạn liên quan (đã lọc quyền, loại mật)."""
+    from app.db import SessionLocal
+    from app.services import search
+
+    phien = db or SessionLocal()
+    try:
+        return search.tim_kiem(phien, cau_hoi_fts, nguoi_dung)
+    finally:
+        if db is None:
+            phien.close()
+
+
+def hoi_offline(cau_hoi: str, db=None, nguoi_dung=None) -> KetQuaHoiDap:
+    """Chế độ offline: so khớp câu mẫu → định tuyến so_lieu | van_ban | lai.
+
+    Không khớp câu mẫu: câu thiên về văn bản vẫn tìm được qua FTS5;
+    câu số liệu không khớp → trả lời rõ "Không có dữ liệu phù hợp".
+    """
+    mau = tim_cau_hoi_mau(cau_hoi)
+    loai = mau.get("loai", "so_lieu") if mau else phan_loai_cau_hoi(cau_hoi)
+
+    if mau is not None and loai == "so_lieu":
+        kq = _tra_loi_so_lieu(mau, cau_hoi)
+        kq.loai = "so_lieu"
+        return kq
+
+    if loai in ("van_ban", "lai"):
+        truy_van_fts = (mau or {}).get("truy_van_fts") or cau_hoi
+        cac_doan = _tim_doan_van_ban(truy_van_fts, db, nguoi_dung)
+        kq_so_lieu: KetQuaHoiDap | None = None
+        if loai == "lai" and mau is not None and mau.get("sql"):
+            kq_so_lieu = _tra_loi_so_lieu(mau, cau_hoi)
+
+        if not cac_doan and kq_so_lieu is None:
+            return KetQuaHoiDap(
+                cau_hoi=cau_hoi,
+                tra_loi="Không tìm thấy trong Kho dữ liệu dùng chung "
+                "(cả lớp số liệu lẫn lớp văn bản).",
+                loai=loai,
+                che_do="offline",
+            )
+
+        phan_van_ban = (
+            f"Tìm thấy {len(cac_doan)} đoạn liên quan trong Kho văn bản — "
+            "trích dẫn kèm số/ký hiệu, ngày ban hành ở dưới."
+            if cac_doan
+            else "Không tìm thấy văn bản liên quan trong Kho."
+        )
+        if kq_so_lieu is not None and kq_so_lieu.dong:
+            tra_loi = f"{kq_so_lieu.tra_loi} {phan_van_ban}"
+        else:
+            tra_loi = phan_van_ban
+        return KetQuaHoiDap(
+            cau_hoi=cau_hoi,
+            tra_loi=tra_loi,
+            loai=loai,
+            sql=kq_so_lieu.sql if kq_so_lieu else None,
+            cot=kq_so_lieu.cot if kq_so_lieu else [],
+            dong=kq_so_lieu.dong if kq_so_lieu else [],
+            doan_van_ban=cac_doan,
+            che_do="offline",
+            cau_hoi_mau=mau["cau_hoi"] if mau else None,
+        )
+
+    return KetQuaHoiDap(
+        cau_hoi=cau_hoi,
+        tra_loi=TRA_LOI_KHONG_CO_DU_LIEU
+        + " Anh/chị có thể chọn một câu hỏi gợi ý bên dưới.",
+        loai="so_lieu",
+        che_do="offline",
     )
 
 
@@ -288,9 +398,50 @@ def hoi_online(cau_hoi: str) -> KetQuaHoiDap:
         )
 
 
-def hoi(cau_hoi: str) -> KetQuaHoiDap:
-    """Cửa vào duy nhất: chọn chế độ theo cấu hình OFFLINE."""
+def hoi(cau_hoi: str, db=None, nguoi_dung=None) -> KetQuaHoiDap:
+    """Cửa vào duy nhất: chọn chế độ theo cấu hình OFFLINE.
+
+    `db` + `nguoi_dung` phục vụ nhánh văn bản (lọc quyền, loại mật).
+    """
     cau_hoi = cau_hoi.strip()
     if settings.offline or not settings.anthropic_api_key:
-        return hoi_offline(cau_hoi)
-    return hoi_online(cau_hoi)
+        return hoi_offline(cau_hoi, db, nguoi_dung)
+    loai = phan_loai_cau_hoi(cau_hoi)
+    if loai == "so_lieu":
+        return hoi_online(cau_hoi)
+    # Nhánh văn bản/lai online: lấy đoạn (đã lọc quyền/mật) rồi nhờ mô hình
+    # tổng hợp CHỈ từ các đoạn đó; lỗi API → hiển thị đoạn thô như offline.
+    kq = hoi_offline(cau_hoi, db, nguoi_dung)
+    kq.che_do = "online"
+    if not kq.doan_van_ban:
+        return kq
+    try:
+        import anthropic
+
+        client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+        boi_canh = json.dumps(kq.doan_van_ban, ensure_ascii=False)
+        phan_hoi = client.messages.create(
+            model=settings.anthropic_model,
+            max_tokens=600,
+            system=(
+                "Trả lời 2–4 câu tiếng Việt CHỈ dựa trên các đoạn văn bản "
+                "được cung cấp; BẮT BUỘC dẫn số/ký hiệu và ngày ban hành của "
+                "văn bản. Không có thông tin thì nói rõ 'Không tìm thấy "
+                "trong Kho'."
+            ),
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Câu hỏi: {cau_hoi}\nCác đoạn văn bản: {boi_canh}",
+                }
+            ],
+        )
+        tra_loi_vb = phan_hoi.content[0].text.strip()
+        kq.tra_loi = (
+            f"{kq.tra_loi.split(' Tìm thấy')[0]} {tra_loi_vb}"
+            if kq.loai == "lai" and kq.dong
+            else tra_loi_vb
+        )
+    except Exception as e:
+        kq.loi = f"Không gọi được AI online, hiển thị đoạn thô: {str(e)[:150]}"
+    return kq

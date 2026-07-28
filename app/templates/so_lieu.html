@@ -18,8 +18,16 @@
   <tbody>
     <tr><th style="width:260px">Đơn vị cung cấp</th>
       <td>{{ don_vi.ten }} — mã ĐVHC {{ don_vi.ma_dvhc or "—" }} — mã định danh {{ don_vi.ma_dinh_danh or "—" }}</td></tr>
-    <tr><th>Nguồn bản ghi</th>
-      <td>{{ "Đồng bộ từ hệ thống chuyên ngành" if gt.nguon == "he_thong" else "Nhập tay tại nguồn (cấp xã)" }}</td></tr>
+    <tr><th>Nguồn bản ghi (kênh thu nhận)</th>
+      <td>{{ {"he_thong": "Kênh 1 — đồng bộ từ hệ thống nghiệp vụ",
+              "van_ban": "Kênh 2 — máy trích từ văn bản, người xác nhận",
+              "nhap_tay": "Kênh 3 — nhập tại nguồn (cấp xã)"}[gt.nguon] }}</td></tr>
+    {% if gt.van_ban %}
+    <tr><th>Văn bản gốc (Lớp 1)</th>
+      <td><a class="nut" href="/van-ban/{{ gt.van_ban.id }}">📄 Mở văn bản
+        {{ gt.van_ban.so }}/{{ gt.van_ban.ky_hieu }}</a>
+        — {{ gt.van_ban.trich_yeu[:120] }}</td></tr>
+    {% endif %}
     <tr><th>CSDL nguồn theo Danh mục QĐ 2053/QĐ-UBND</th>
       <td>{{ chi_tieu.nguon_du_lieu }}</td></tr>
     <tr><th>Cơ quan chủ chỉ tiêu</th><td>{{ chi_tieu.co_quan_chu_chi_tieu }}</td></tr>

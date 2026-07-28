@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Tiếp nhận văn bản — Một dữ liệu – Không báo cáo lại{% endblock %}
+{% block content %}
+<h1>⬆ Tiếp nhận văn bản vào Kho (Lớp 1)</h1>
+<div class="thong-diep-chinh">
+  Trong thực tế, văn bản tự động đổ về Kho từ hệ thống quản lý văn bản
+  (TD Office) ngay khi phát hành. Bản demo mô phỏng luồng đó bằng thao tác
+  tải file .docx — <strong>đây vẫn là việc công chức làm hằng ngày, không
+  phát sinh thao tác mới</strong>.
+</div>
+
+<form method="post" action="/van-ban/tai-len" enctype="multipart/form-data" class="form-gop-y">
+  <label for="tep"><strong>Chọn file văn bản (.docx) vừa phát hành:</strong></label>
+  <input type="file" id="tep" name="tep" accept=".docx" required>
+  <button type="submit" class="nut">Đọc văn bản và bóc siêu dữ liệu</button>
+</form>
+
+<p class="ghi-chu">Sau khi đọc, hệ thống điền sẵn số/ký hiệu, trích yếu, ngày ban
+  hành, cơ quan — anh/chị rà và sửa lại trước khi lưu. Văn bản lưu xong sẽ được
+  <strong>máy trích xuất</strong> dò số liệu và đưa vào hàng chờ xác nhận.</p>
+{% endblock %}

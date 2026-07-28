@@ -31,7 +31,9 @@
 
 {% if ket_qua %}
 <div class="khoi-tra-loi">
-  <h2>Trả lời</h2>
+  <h2>Trả lời
+    <span class="ma-ky">{{ {"so_lieu": "lớp số liệu", "van_ban": "lớp văn bản",
+      "lai": "xuyên 2 lớp: số liệu + văn bản"}[ket_qua.loai] }}</span></h2>
   <p class="tra-loi">{{ ket_qua.tra_loi }}</p>
   {% if ket_qua.loi %}
   <p class="canh-bao canh-bao--nhe">Ghi chú kỹ thuật: {{ ket_qua.loi }}</p>
@@ -50,6 +52,19 @@
   </table>
   <p class="ghi-chu">Nguồn: Kho dữ liệu dùng chung (view chỉ đọc v_so_lieu) —
     {{ ket_qua.so_dong }} dòng — dữ liệu mô phỏng phục vụ trình diễn.</p>
+  {% endif %}
+
+  {% if ket_qua.doan_van_ban %}
+  <h2>📚 Văn bản dẫn nguồn (Lớp 1)</h2>
+  {% for kq in ket_qua.doan_van_ban %}
+  <div class="the buoc-dieu-tra">
+    <p>“{{ kq.doan }}”</p>
+    <p class="ghi-chu">📄 <a href="/van-ban/{{ kq.van_ban_id }}">{{ kq.so_ky_hieu }}</a>
+      — {{ kq.trich_yeu }} — {{ kq.ten_co_quan }} — ban hành {{ kq.ngay_ban_hanh }}</p>
+  </div>
+  {% endfor %}
+  <p class="ghi-chu">Trích dẫn đã lọc theo quyền của người đang đăng nhập,
+    tự động loại văn bản mật.</p>
   {% endif %}
 
   {% if ket_qua.sql %}

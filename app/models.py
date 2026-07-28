@@ -9,6 +9,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    LargeBinary,
     String,
     Text,
     UniqueConstraint,
@@ -21,8 +22,12 @@ from app.db import Base
 LOAI_DON_VI = ("xa", "phuong", "so_nganh", "tinh")
 VUNG = ("do_thi", "dong_bang", "mien_nui")
 TAN_SUAT = ("thang", "quy", "nam")
-NGUON = ("he_thong", "nhap_tay")
+# 3 kênh thu nhận (v0.2): hệ thống nghiệp vụ | trích từ văn bản | nhập tại nguồn
+NGUON = ("he_thong", "van_ban", "nhap_tay")
 VAI_TRO = ("quan_tri", "lanh_dao", "chuyen_vien_xa", "dai_bieu_hdnd")
+LOAI_VAN_BAN = ("bao_cao", "ke_hoach", "thong_bao", "cong_van")
+TRANG_THAI_TRICH_XUAT = ("cho_xac_nhan", "da_xac_nhan", "da_sua", "tu_choi")
+DO_TIN_CAY = ("cao", "trung_binh", "thap")
 # 3 lớp chia sẻ theo QĐ 2053/QĐ-UBND ngày 07/7/2026
 MUC_CHIA_SE = ("chuyen_nganh", "dung_chung", "mo")
 TRANG_THAI = ("dang_hieu_luc", "het_hieu_luc")
@@ -98,6 +103,9 @@ class ChiTieu(Base):
     )
     cong_thuc: Mapped[str | None] = mapped_column(String(100), nullable=True)
     rang_buoc: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    # Kênh 2 (v0.2): danh sách cụm từ giúp máy nhận diện chỉ tiêu trong văn
+    # bản — lưu JSON array, ví dụ ["giải ngân lũy kế", "đã giải ngân"]
+    tu_khoa_trich_xuat: Mapped[str] = mapped_column(Text, default="[]")
     dinh_nghia: Mapped[str] = mapped_column(Text, default="")
     cong_khai: Mapped[bool] = mapped_column(Boolean, default=False)
     trang_thai: Mapped[str] = mapped_column(
@@ -111,9 +119,11 @@ class ChiTieu(Base):
 
 
 class GiaTriChiTieu(Base):
-    """Giá trị một chỉ tiêu của một đơn vị trong một kỳ (năm/tháng).
+    """Giá trị một chỉ tiêu của một đơn vị trong một kỳ (năm/tháng) — Lớp 2.
 
     Ràng buộc UNIQUE thể hiện nguyên tắc "một số liệu chỉ có một bản ghi".
+    Nếu `nguon='van_ban'` thì bắt buộc có `van_ban_id` (liên kết về đúng văn
+    bản gốc ở Lớp 1) và `nguoi_xac_nhan_id` (người đã xác nhận số máy trích).
     """
 
     __tablename__ = "gia_tri_chi_tieu"
@@ -130,7 +140,10 @@ class GiaTriChiTieu(Base):
     thang: Mapped[int] = mapped_column(Integer, nullable=False)
     gia_tri: Mapped[float] = mapped_column(Float, nullable=False)
     nguon: Mapped[str] = mapped_column(String(20), nullable=False, default="nhap_tay")
-    nguoi_cap_nhat_id: Mapped[int | None] = mapped_column(
+    van_ban_id: Mapped[int | None] = mapped_column(
+        ForeignKey("van_ban.id"), nullable=True
+    )
+    nguoi_xac_nhan_id: Mapped[int | None] = mapped_column(
         ForeignKey("nguoi_dung.id"), nullable=True
     )
     thoi_diem_cap_nhat: Mapped[datetime] = mapped_column(
@@ -139,6 +152,88 @@ class GiaTriChiTieu(Base):
 
     chi_tieu: Mapped["ChiTieu"] = relationship()
     don_vi: Mapped["DonVi"] = relationship(back_populates="gia_tri")
+    van_ban: Mapped["VanBan | None"] = relationship()
+
+
+class VanBan(Base):
+    """Lớp 1 — văn bản, tri thức số: toàn văn + siêu dữ liệu.
+
+    Văn bản `mat=True` bị chặn khỏi tìm kiếm, AI và máy trích xuất.
+    """
+
+    __tablename__ = "van_ban"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    so: Mapped[str] = mapped_column(String(20), default="")
+    ky_hieu: Mapped[str] = mapped_column(String(60), default="")
+    loai: Mapped[str] = mapped_column(String(20), nullable=False, default="bao_cao")
+    trich_yeu: Mapped[str] = mapped_column(Text, nullable=False)
+    co_quan_id: Mapped[int | None] = mapped_column(
+        ForeignKey("don_vi.id"), nullable=True
+    )
+    ngay_ban_hanh: Mapped[date | None] = mapped_column(Date, nullable=True)
+    duong_dan_file: Mapped[str | None] = mapped_column(String(400), nullable=True)
+    toan_van: Mapped[str] = mapped_column(Text, default="")
+    mat: Mapped[bool] = mapped_column(Boolean, default=False)
+    thoi_diem_tiep_nhan: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
+
+    co_quan: Mapped["DonVi | None"] = relationship()
+    cac_doan: Mapped[list["VanBanDoan"]] = relationship(
+        back_populates="van_ban", cascade="all, delete-orphan"
+    )
+
+
+class VanBanDoan(Base):
+    """Đoạn văn bản (chia nhỏ để tìm kiếm ngữ nghĩa/FTS5).
+
+    `embedding` là BLOB vector (nullable — chạy chế độ FTS5 thì để trống).
+    """
+
+    __tablename__ = "van_ban_doan"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    van_ban_id: Mapped[int] = mapped_column(ForeignKey("van_ban.id"), nullable=False)
+    thu_tu: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    noi_dung: Mapped[str] = mapped_column(Text, nullable=False)
+    embedding: Mapped[bytes | None] = mapped_column(LargeBinary, nullable=True)
+
+    van_ban: Mapped["VanBan"] = relationship(back_populates="cac_doan")
+
+
+class TrichXuatCho(Base):
+    """Hàng chờ kênh 2: số liệu máy đọc được từ văn bản, chờ NGƯỜI xác nhận.
+
+    Tuyệt đối không ghi thẳng vào Lớp 2 khi chưa qua bước người xác nhận.
+    """
+
+    __tablename__ = "trich_xuat_cho"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    van_ban_id: Mapped[int] = mapped_column(ForeignKey("van_ban.id"), nullable=False)
+    chi_tieu_id: Mapped[int] = mapped_column(ForeignKey("chi_tieu.id"), nullable=False)
+    don_vi_id: Mapped[int] = mapped_column(ForeignKey("don_vi.id"), nullable=False)
+    nam: Mapped[int] = mapped_column(Integer, nullable=False)
+    thang: Mapped[int] = mapped_column(Integer, nullable=False)
+    gia_tri_may_doc: Mapped[float] = mapped_column(Float, nullable=False)
+    doan_trich: Mapped[str] = mapped_column(Text, default="")
+    do_tin_cay: Mapped[str] = mapped_column(
+        String(15), nullable=False, default="trung_binh"
+    )
+    trang_thai: Mapped[str] = mapped_column(
+        String(15), nullable=False, default="cho_xac_nhan"
+    )
+    nguoi_xu_ly_id: Mapped[int | None] = mapped_column(
+        ForeignKey("nguoi_dung.id"), nullable=True
+    )
+    thoi_diem: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, default=datetime.now
+    )
+
+    van_ban: Mapped["VanBan"] = relationship()
+    chi_tieu: Mapped["ChiTieu"] = relationship()
+    don_vi: Mapped["DonVi"] = relationship()
 
 
 class MauBaoCao(Base):
